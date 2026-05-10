@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clients – ColourChem</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>Clients</span></div>
+      <div class="user-menu">
+        <button class="notif-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8C18 6.4 17.4 4.9 16.2 3.8C15.1 2.6 13.6 2 12 2C10.4 2 8.9 2.6 7.8 3.8C6.6 4.9 6 6.4 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="notif-dot"></span></button>
+        <div class="user-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=colorist" alt=""></div>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Clients</h1>
+          <p class="page-sub">Manage client profiles and hair histories</p>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('addClientModal')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Add Client
+        </button>
+      </div>
+
+      <!-- SEARCH + FILTER -->
+      <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center">
+        <div class="search-wrap" style="flex:1;min-width:200px">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="M14 14L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input type="text" id="clientSearch" placeholder="Search clients…" oninput="filterClients()" style="width:100%">
+        </div>
+        <div style="display:flex;gap:0.5rem">
+          <button class="btn btn-outline btn-sm filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+          <button class="btn btn-outline btn-sm filter-btn" data-filter="high" onclick="setFilter('high',this)">⚠️ High Risk</button>
+          <button class="btn btn-outline btn-sm filter-btn" data-filter="recent" onclick="setFilter('recent',this)">Recent</button>
+        </div>
+      </div>
+
+      <!-- CLIENTS GRID -->
+      <div class="clients-grid" id="clientsGrid">
+        <!-- Demo clients – replace with API data -->
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD CLIENT MODAL -->
+<div class="modal-overlay" id="addClientModal">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2 class="modal-title">Add New Client</h2>
+      <button class="modal-close" onclick="closeModal('addClientModal')">✕</button>
+    </div>
+
+    <div style="background:var(--surface-2);border-radius:var(--r-sm);padding:0.75rem 1rem;margin-bottom:1.5rem;font-size:0.85rem;color:var(--text-muted);border-left:3px solid var(--primary)">
+      Client info and hair profile are kept separate so you can update the hair history independently after each session.
+    </div>
+
+    <h4 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:1rem">Client Info</h4>
+    <div class="form-group"><label>Client Name *</label><input type="text" id="clientName" placeholder="e.g. Emma Richardson"></div>
+    <div class="form-group"><label>Notes</label><textarea id="clientNotes" placeholder="Allergies, preferences, contact info…"></textarea></div>
+
+    <h4 style="font-family:var(--font-display);font-size:1.1rem;margin:1.25rem 0 1rem">Hair Profile</h4>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Natural Colour</label>
+        <select id="naturalColour">
+          <option value="">Select…</option>
+          <option>Black</option><option>Brown</option><option>Blonde</option><option>Red</option><option>Grey/White</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Current Colour</label>
+        <input type="text" id="currentColour" placeholder="e.g. Bleached blonde">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Hair Texture</label>
+        <select id="texture">
+          <option value="">Select…</option>
+          <option>Straight</option><option>Wavy</option><option>Curly</option><option>Coily</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Porosity Level</label>
+        <select id="porosity">
+          <option value="">Select…</option>
+          <option>Low</option><option>Medium</option><option>High</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Chemical History</label>
+      <textarea id="chemHistory" placeholder="Previous bleach, relaxers, perms, colour treatments…"></textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem">
+      <button class="btn btn-outline" onclick="closeModal('addClientModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveClient()">Save Client</button>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENT DETAIL MODAL -->
+<div class="modal-overlay" id="clientDetailModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-hd">
+      <h2 class="modal-title" id="detailName">Client Name</h2>
+      <button class="modal-close" onclick="closeModal('clientDetailModal')">✕</button>
+    </div>
+    <div id="clientDetailBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+<script>
+initApp();
+
+// ---- DEMO DATA (replace with API) ----
+let clients = [
+  { id:1, name:'Emma Richardson',  natural:'Brown',  current:'Caramel Balayage', texture:'Wavy',     porosity:'Medium', chem:'Balayage x3, no relaxers', risk:'low',  lastSession:'2 hours ago', sessions:8  },
+  { id:2, name:'Sofia Martinez',   natural:'Black',  current:'Platinum Blonde',  texture:'Straight', porosity:'High',   chem:'Full bleach x2, highlights', risk:'high', lastSession:'1 day ago',    sessions:12 },
+  { id:3, name:'Jade Kowalski',    natural:'Brown',  current:'Cherry Red',       texture:'Curly',    porosity:'High',   chem:'Red dye x4, bleach bath',  risk:'high', lastSession:'3 days ago',   sessions:6  },
+  { id:4, name:'Aisha Dunmore',    natural:'Black',  current:'Honey Blonde',     texture:'Coily',    porosity:'Low',    chem:'First time colouring',     risk:'low',  lastSession:'5 days ago',   sessions:2  },
+  { id:5, name:'Maya Chen',        natural:'Black',  current:'Auburn',           texture:'Straight', porosity:'Medium', chem:'Semi-permanent dye only',  risk:'medium',lastSession:'1 week ago',   sessions:4  },
+  { id:6, name:'Priya Nair',       natural:'Black',  current:'Dark Brown',       texture:'Wavy',     porosity:'Low',    chem:'None',                     risk:'low',  lastSession:'2 weeks ago',  sessions:3  },
+];
+
+const AVATAR_COLORS = ['#8b6fbd','#f06292','#66bb6a','#ffa726','#42a5f5','#26c6da','#ab47bc','#ef5350'];
+
+let activeFilter = 'all';
+
+function renderClients(list) {
+  const grid = document.getElementById('clientsGrid');
+  if (!list.length) {
+    grid.innerHTML = '<p style="color:var(--text-muted);padding:2rem">No clients found.</p>';
+    return;
+  }
+  grid.innerHTML = list.map((c, i) => `
+    <div class="client-card" onclick="showDetail(${c.id})">
+      <div class="client-avatar" style="background:${AVATAR_COLORS[i % AVATAR_COLORS.length]}">${c.name.charAt(0)}</div>
+      <p class="client-name">${c.name}</p>
+      <p class="client-meta">${c.texture} • ${c.porosity} porosity • ${c.sessions} sessions</p>
+      <div class="client-tags">
+        <span class="badge badge-${c.risk}">${c.risk.charAt(0).toUpperCase()+c.risk.slice(1)} risk</span>
+        <span class="badge badge-purple">${c.current}</span>
+      </div>
+      <p class="client-meta" style="margin-top:0.5rem">Last session: ${c.lastSession}</p>
+    </div>`).join('');
+}
+
+function filterClients() {
+  const q = document.getElementById('clientSearch').value.toLowerCase();
+  let list = clients.filter(c => c.name.toLowerCase().includes(q) || c.current.toLowerCase().includes(q));
+  if (activeFilter === 'high') list = list.filter(c => c.risk === 'high');
+  if (activeFilter === 'recent') list = list.slice(0, 3);
+  renderClients(list);
+}
+
+function setFilter(f, btn) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterClients();
+}
+
+function showDetail(id) {
+  const c = clients.find(x => x.id === id);
+  document.getElementById('detailName').textContent = c.name;
+  document.getElementById('clientDetailBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+      <div><p style="font-size:0.8rem;color:var(--text-muted)">Natural Colour</p><p style="font-weight:600">${c.natural}</p></div>
+      <div><p style="font-size:0.8rem;color:var(--text-muted)">Current Colour</p><p style="font-weight:600">${c.current}</p></div>
+      <div><p style="font-size:0.8rem;color:var(--text-muted)">Texture</p><p style="font-weight:600">${c.texture}</p></div>
+      <div><p style="font-size:0.8rem;color:var(--text-muted)">Porosity</p><p style="font-weight:600">${c.porosity}</p></div>
+    </div>
+    <div class="form-group"><label>Chemical History</label><div style="background:var(--surface-2);padding:0.75rem;border-radius:var(--r-sm);font-size:0.88rem">${c.chem}</div></div>
+    <div class="form-group">
+      <label>Damage Risk Level</label>
+      <div style="display:flex;align-items:center;gap:1rem">
+        <span class="badge badge-${c.risk}" style="font-size:0.9rem;padding:0.35rem 1rem">${c.risk.toUpperCase()}</span>
+        <div style="flex:1"><div class="damage-meter"><div class="damage-fill" style="width:${c.risk==='low'?'25%':c.risk==='medium'?'60%':'90%'}"></div></div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:0.75rem;margin-top:1.5rem">
+      <a href="session.html" class="btn btn-primary" style="flex:1;justify-content:center">Start New Session</a>
+      <button class="btn btn-outline" onclick="editHairProfile(${c.id})">Edit Hair Profile</button>
+    </div>`;
+  openModal('clientDetailModal');
+}
+
+function editHairProfile(id) {
+  closeModal('clientDetailModal');
+  showToast('Edit hair profile — connect to PUT /edit-hair-profile/:id');
+}
+
+async function saveClient() {
+  const name = document.getElementById('clientName').value.trim();
+  if (!name) { showToast('Client name is required', 'error'); return; }
+
+  const payload = {
+    client_name: name,
+    natural_colour: document.getElementById('naturalColour').value,
+    current_colour: document.getElementById('currentColour').value,
+    texture: document.getElementById('texture').value,
+    porosity: document.getElementById('porosity').value,
+    chem_history: document.getElementById('chemHistory').value,
+    notes: document.getElementById('clientNotes').value,
+  };
+
+  // --- CONNECT BACKEND ---
+  // Step 1: Create client
+  // const clientRes = await apiCall('/clients', { method:'POST', body: JSON.stringify({ client_name: payload.client_name }) });
+  // Step 2: Create hair profile
+  // await apiCall('/profiles', { method:'POST', body: JSON.stringify({ clientID: clientRes.id, ...payload }) });
+
+  // DEMO
+  const newClient = { id: clients.length + 1, name, natural: payload.natural_colour || 'Unknown', current: payload.current_colour || 'Natural', texture: payload.texture || '—', porosity: payload.porosity || '—', chem: payload.chem_history || 'None', risk: 'low', lastSession: 'New client', sessions: 0 };
+  clients.unshift(newClient);
+  renderClients(clients);
+  closeModal('addClientModal');
+  showToast('Client saved!', 'success');
+}
+
+renderClients(clients);
+</script>
+</body>
+</html>

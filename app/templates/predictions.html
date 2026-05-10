@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Predictions – ColourChem</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar" id="sidebar"></nav>
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>AI Predictions</span></div>
+      <div class="user-menu">
+        <button class="notif-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8C18 6.4 17.4 4.9 16.2 3.8C15.1 2.6 13.6 2 12 2C10.4 2 8.9 2.6 7.8 3.8C6.6 4.9 6 6.4 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="notif-dot"></span></button>
+        <div class="user-avatar"><img src="https://api.dicebear.com/7.x/avataaars/svg?seed=colorist" alt=""></div>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">AI Predictions</h1>
+          <p class="page-sub">Damage assessments and colour outcomes across all sessions</p>
+        </div>
+        <a href="session.html" class="btn btn-primary btn-sm">+ New Session</a>
+      </div>
+
+      <!-- STATS ROW -->
+      <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:1.5rem">
+        <div class="stat-card">
+          <div class="stat-icon green"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><p class="stat-val">91%</p><p class="stat-lbl">Overall Accuracy</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18C1.55 18.48 1.55 19.06 1.82 19.54C2.09 20.02 2.6 20.32 3.15 20.32H20.85C21.4 20.32 21.91 20.02 22.18 19.54C22.45 19.06 22.45 18.48 22.18 18L13.71 3.86C13.44 3.38 12.93 3.08 12.38 3.08C11.83 3.08 11.32 3.38 11.05 3.86H10.29Z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div><p class="stat-val" style="color:var(--warning)">3</p><p class="stat-lbl">Active High-Risk</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon purple"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14v-5h2v5h-2zm0-8V6h2v2h-2z" fill="white"/></svg></div>
+          <div><p class="stat-val">47</p><p class="stat-lbl">Total Predictions</p></div>
+        </div>
+      </div>
+
+      <!-- PREDICTIONS TABLE -->
+      <div class="card">
+        <div class="card-hd">
+          <h3 class="card-title">All Predictions</h3>
+          <div style="display:flex;gap:0.5rem">
+            <select style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-sm);padding:0.35rem 0.75rem;font-size:0.82rem;color:var(--text)">
+              <option>All Risk Levels</option>
+              <option>High Risk</option>
+              <option>Medium Risk</option>
+              <option>Low Risk</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Session Date</th>
+                <th>Target Shade</th>
+                <th>Damage Score</th>
+                <th>Risk Level</th>
+                <th>Success Rate</th>
+                <th>Feedback</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="predictionsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- QUICK ANALYSIS -->
+      <div class="card" style="margin-top:1.25rem">
+        <h3 class="card-title">Quick Damage Analysis</h3>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem">Upload a hair photo for an instant standalone damage prediction (no session needed)</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start">
+          <div>
+            <div class="upload-zone" onclick="document.getElementById('quickUpload').click()" id="quickZone">
+              <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="20" r="4" stroke="currentColor" stroke-width="2"/><path d="M6 32L16 24L24 30L32 20L42 32" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <strong>Upload hair photo</strong>
+              <small>Sends to /analyze-damage endpoint</small>
+            </div>
+            <input type="file" id="quickUpload" accept="image/*" style="display:none" onchange="runQuickAnalysis(this)">
+            <img id="quickPreview" style="display:none;width:100%;border-radius:var(--r-md);margin-top:0.75rem;max-height:200px;object-fit:cover">
+          </div>
+          <div id="quickResult" style="display:none">
+            <div class="card" style="border:2px solid var(--primary)">
+              <p style="text-align:center;font-family:var(--font-display);font-size:3.5rem;font-weight:700;color:var(--primary)" id="qScore">—</p>
+              <p style="text-align:center;color:var(--text-muted);margin-bottom:1rem">Damage Score</p>
+              <div class="damage-meter"><div class="damage-fill" id="qMeter" style="width:0%"></div></div>
+              <p id="qRisk" style="text-align:center;margin-top:0.75rem"></p>
+              <p id="qMsg" style="font-size:0.82rem;color:var(--text-muted);margin-top:0.75rem;text-align:center"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+<script>
+initApp();
+
+const predictions = [
+  { client:'Emma Richardson', date:'Today, 10:23am', shade:'Caramel Balayage',   score:22, risk:'Low',    success:'96%', feedback:'✓ Matched' },
+  { client:'Sofia Martinez',  date:'Yesterday',      shade:'Platinum Blonde',    score:81, risk:'High',   success:'71%', feedback:'⚡ Partial' },
+  { client:'Jade Kowalski',   date:'3 days ago',     shade:'Cherry Red',         score:74, risk:'High',   success:'68%', feedback:'⚡ Partial' },
+  { client:'Aisha Dunmore',   date:'5 days ago',     shade:'Honey Blonde',       score:18, risk:'Low',    success:'94%', feedback:'✓ Matched' },
+  { client:'Maya Chen',       date:'1 week ago',     shade:'Auburn Tones',       score:45, risk:'Medium', success:'85%', feedback:'✓ Matched' },
+  { client:'Priya Nair',      date:'2 weeks ago',    shade:'Dark Brown Refresh', score:12, risk:'Low',    success:'98%', feedback:'✓ Matched' },
+];
+
+const badgeMap = { Low:'badge-low', Medium:'badge-medium', High:'badge-high' };
+
+document.getElementById('predictionsBody').innerHTML = predictions.map(p => `
+  <tr>
+    <td><strong>${p.client}</strong></td>
+    <td style="color:var(--text-muted)">${p.date}</td>
+    <td>${p.shade}</td>
+    <td>
+      <div style="display:flex;align-items:center;gap:0.5rem">
+        <div style="flex:1;height:6px;background:var(--border);border-radius:3px;max-width:80px"><div style="height:100%;width:${p.score}%;background:linear-gradient(90deg,#4caf50,#ff9800,#f44336);border-radius:3px"></div></div>
+        <span style="font-weight:600;font-size:0.85rem">${p.score}%</span>
+      </div>
+    </td>
+    <td><span class="badge ${badgeMap[p.risk]}">${p.risk}</span></td>
+    <td><strong>${p.success}</strong></td>
+    <td style="color:var(--text-muted);font-size:0.82rem">${p.feedback}</td>
+    <td><a href="session.html" style="font-size:0.8rem;color:var(--primary)">New session →</a></td>
+  </tr>`).join('');
+
+async function runQuickAnalysis(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('quickPreview').src = URL.createObjectURL(file);
+  document.getElementById('quickPreview').style.display = 'block';
+  document.getElementById('quickZone').style.display = 'none';
+  showToast('Analysing…');
+
+  // --- CONNECT BACKEND ---
+  // const formData = new FormData();
+  // formData.append('hair_image', file);
+  // const res = await fetch(API_BASE + '/analyze-damage', { method:'POST', credentials:'include', body: formData });
+  // const result = await res.json();
+  // const score = result.damage_score; const risk = result.damage_risk;
+
+  await new Promise(r => setTimeout(r, 1800));
+  const score = Math.floor(Math.random() * 70) + 10;
+  const risk = score > 65 ? 'High' : score > 40 ? 'Medium' : 'Low';
+
+  document.getElementById('qScore').textContent = score + '%';
+  document.getElementById('qMeter').style.width = score + '%';
+  document.getElementById('qRisk').innerHTML = `<span class="badge badge-${risk.toLowerCase()}">${risk} Risk</span>`;
+  document.getElementById('qMsg').textContent = risk === 'High' ? 'Significant damage detected — consider bond treatment before chemical service.' : risk === 'Medium' ? 'Moderate damage present — proceed with caution.' : 'Hair appears healthy — safe for standard chemical services.';
+  document.getElementById('quickResult').style.display = 'block';
+  showToast('Analysis complete', 'success');
+}
+</script>
+</body>
+</html>

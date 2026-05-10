@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ColourChem – Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #8b6fbd;
+  --primary-light: #c891d4;
+  --primary-dark: #6b4fa3;
+  --accent: #ff6b9d;
+  --bg: #f7f5fb;
+  --surface: #ffffff;
+  --surface-2: #f0ecf8;
+  --text: #1e1a2e;
+  --text-muted: #7a7490;
+  --border: #e2daf0;
+  --shadow-md: 0 4px 24px rgba(107,79,163,0.14);
+  --shadow-lg: 0 12px 48px rgba(107,79,163,0.2);
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Outfit', sans-serif;
+  --r-sm: 8px; --r-md: 14px; --r-lg: 22px; --r-full: 9999px;
+  --transition: 0.25s ease;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;display:flex;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+button{border:none;background:none;cursor:pointer;font-family:inherit}
+input{font-family:inherit;border:none;outline:none}
+
+.auth-container{display:flex;width:100%;min-height:100vh}
+
+/* LEFT PANEL */
+.auth-left{
+  flex:0 0 480px;background:linear-gradient(150deg,#3b2466 0%,#6b4fa3 45%,#c891d4 100%);
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:3rem;position:relative;overflow:hidden;
+}
+.auth-left::before{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.auth-left-content{position:relative;z-index:1}
+.brand-logo{display:flex;align-items:center;gap:0.75rem;margin-bottom:4rem}
+.brand-logo svg{width:44px;height:44px}
+.brand-name{font-family:var(--font-display);font-size:2rem;font-weight:700;color:white}
+
+.auth-headline{font-family:var(--font-display);font-size:3rem;font-weight:300;color:white;line-height:1.2;margin-bottom:1.5rem}
+.auth-headline em{font-style:italic;font-weight:600}
+.auth-desc{color:rgba(255,255,255,0.75);font-size:1rem;line-height:1.7;max-width:360px}
+
+.feature-pills{display:flex;flex-direction:column;gap:0.75rem;margin-top:3rem}
+.feature-pill{
+  display:flex;align-items:center;gap:0.85rem;
+  background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.2);border-radius:var(--r-full);
+  padding:0.65rem 1.25rem;width:fit-content;
+  color:white;font-size:0.9rem;font-weight:400;
+}
+.pill-icon{font-size:1.1rem}
+
+.auth-left-footer{position:relative;z-index:1;color:rgba(255,255,255,0.5);font-size:0.8rem}
+
+/* RIGHT PANEL */
+.auth-right{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:2rem;background:var(--surface);
+}
+.auth-form-box{width:100%;max-width:420px}
+.form-tab-row{display:flex;gap:0;margin-bottom:2.5rem;border-bottom:2px solid var(--border)}
+.form-tab{
+  padding:0.75rem 1.25rem;font-size:0.95rem;font-weight:500;color:var(--text-muted);
+  cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:var(--transition);
+}
+.form-tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+
+.form-title{font-family:var(--font-display);font-size:2rem;font-weight:600;color:var(--text);margin-bottom:0.25rem}
+.form-sub{color:var(--text-muted);margin-bottom:2rem;font-size:0.95rem}
+
+.input-group{margin-bottom:1.25rem}
+.input-group label{display:block;font-size:0.85rem;font-weight:500;margin-bottom:0.4rem;color:var(--text)}
+.input-wrap{position:relative}
+.input-wrap input{
+  width:100%;padding:0.85rem 1rem;background:var(--surface-2);
+  border:2px solid transparent;border-radius:var(--r-sm);font-size:0.95rem;
+  transition:var(--transition);color:var(--text);
+}
+.input-wrap input:focus{background:white;border-color:var(--primary);box-shadow:0 0 0 4px rgba(139,111,189,0.1)}
+.input-wrap input::placeholder{color:#bbb}
+
+.form-options{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+.checkbox-wrap{display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:var(--text-muted);cursor:pointer}
+.checkbox-wrap input{accent-color:var(--primary)}
+.forgot-link{font-size:0.875rem;color:var(--primary);font-weight:500}
+.forgot-link:hover{text-decoration:underline}
+
+.btn-submit{
+  width:100%;padding:0.9rem;background:linear-gradient(135deg,var(--primary),var(--primary-light));
+  color:white;border-radius:var(--r-sm);font-size:1rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:0.5rem;
+  box-shadow:0 4px 18px rgba(139,111,189,0.35);transition:var(--transition);
+  margin-bottom:1.5rem;
+}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 26px rgba(139,111,189,0.45)}
+.btn-submit svg{transition:transform 0.2s}
+.btn-submit:hover svg{transform:translateX(3px)}
+
+.divider{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;color:var(--text-muted);font-size:0.875rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+.btn-google{
+  width:100%;padding:0.85rem;background:var(--surface);color:var(--text);
+  border:2px solid var(--border);border-radius:var(--r-sm);font-size:0.95rem;
+  display:flex;align-items:center;justify-content:center;gap:0.75rem;
+  font-weight:500;transition:var(--transition);margin-bottom:2rem;
+}
+.btn-google:hover{border-color:var(--primary);background:var(--surface-2)}
+
+.switch-text{text-align:center;font-size:0.9rem;color:var(--text-muted)}
+.switch-link{color:var(--primary);font-weight:600;cursor:pointer}
+.switch-link:hover{text-decoration:underline}
+
+/* Signup panel hidden by default */
+.signup-panel{display:none}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;
+  background:#1e1a2e;color:white;padding:1rem 1.5rem;
+  border-radius:var(--r-md);font-size:0.9rem;
+  box-shadow:var(--shadow-lg);z-index:999;opacity:0;
+  transform:translateY(20px);transition:all 0.3s ease;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:800px){
+  .auth-left{display:none}
+  .auth-right{background:var(--bg)}
+}
+</style>
+</head>
+<body>
+<div class="auth-container">
+
+  <!-- LEFT: Branding -->
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <div class="brand-logo">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#f0d0f8;stop-opacity:1"/>
+              <stop offset="100%" style="stop-color:#ffffff;stop-opacity:1"/>
+            </linearGradient>
+          </defs>
+          <path d="M100,30 Q130,40 140,70 Q145,90 140,110 Q135,130 120,145 Q105,155 100,170" fill="none" stroke="url(#lg)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M100,30 Q70,40 60,70 Q55,90 60,110 Q65,130 80,145 Q95,155 100,170" fill="none" stroke="url(#lg)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M85,35 Q75,45 70,65 Q68,80 72,95" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+          <path d="M115,35 Q125,45 130,65 Q132,80 128,95" fill="none" stroke="url(#lg)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+          <circle cx="100" cy="25" r="9" fill="url(#lg)"/>
+        </svg>
+        <span class="brand-name">ColourChem</span>
+      </div>
+
+      <h2 class="auth-headline">Professional<br><em>Hair Chemistry</em><br>Platform</h2>
+      <p class="auth-desc">Powered by AI damage prediction and real-time color simulation — built for hairdressers who take their craft seriously.</p>
+
+      <div class="feature-pills">
+        <div class="feature-pill"><span class="pill-icon">🧠</span> AI Damage Prediction</div>
+        <div class="feature-pill"><span class="pill-icon">🎨</span> Color Simulation Engine</div>
+        <div class="feature-pill"><span class="pill-icon">👥</span> Multi-Client Management</div>
+        <div class="feature-pill"><span class="pill-icon">📊</span> Formula Archive</div>
+        <div class="feature-pill"><span class="pill-icon">🔄</span> Feedback Training Loop</div>
+      </div>
+    </div>
+
+    <div class="auth-left-footer">
+      © 2025 ColourChem · Capstone Project
+    </div>
+  </div>
+
+  <!-- RIGHT: Form -->
+  <div class="auth-right">
+    <div class="auth-form-box">
+
+      <div class="form-tab-row">
+        <div class="form-tab active" id="loginTab" onclick="showPanel('login')">Sign In</div>
+        <div class="form-tab" id="signupTab" onclick="showPanel('signup')">Create Account</div>
+      </div>
+
+      <!-- LOGIN -->
+      <div id="loginPanel">
+        <h2 class="form-title">Welcome back</h2>
+        <p class="form-sub">Sign in to continue your color journey</p>
+
+        <div class="input-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="loginEmail" placeholder="your@email.com">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="loginPassword" placeholder="Enter your password">
+          </div>
+        </div>
+        <div class="form-options">
+          <label class="checkbox-wrap"><input type="checkbox"> Remember me</label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button class="btn-submit" onclick="handleLogin()">
+          <span>Sign In</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9H15M15 9L10 4M15 9L10 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="divider">or</div>
+        <button class="btn-google">
+          <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Continue with Google
+        </button>
+        <p class="switch-text">Don't have an account? <span class="switch-link" onclick="showPanel('signup')">Sign up</span></p>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signupPanel" class="signup-panel">
+        <h2 class="form-title">Create account</h2>
+        <p class="form-sub">Join ColourChem and elevate your craft</p>
+
+        <div class="input-group">
+          <label>Username</label>
+          <div class="input-wrap">
+            <input type="text" id="signupUsername" placeholder="e.g. sarah_styles">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <input type="email" id="signupEmail" placeholder="your@email.com">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="signupPassword" placeholder="Min. 6 characters">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Confirm Password</label>
+          <div class="input-wrap">
+            <input type="password" id="signupConfirm" placeholder="Repeat password">
+          </div>
+        </div>
+        <button class="btn-submit" onclick="handleSignup()">
+          <span>Create Account</span>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9H15M15 9L10 4M15 9L10 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <p class="switch-text">Already have an account? <span class="switch-link" onclick="showPanel('login')">Sign in</span></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function showPanel(panel) {
+  const isLogin = panel === 'login';
+  document.getElementById('loginPanel').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('signupPanel').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('loginTab').classList.toggle('active', isLogin);
+  document.getElementById('signupTab').classList.toggle('active', !isLogin);
+}
+
+function showToast(msg, type='info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = type === 'error' ? '#c62828' : '#1e1a2e';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { showToast('Please fill in all fields', 'error'); return; }
+
+  // --- CONNECT BACKEND ---
+  // Replace the block below with a real fetch call to your Flask API:
+  //
+  // const res = await fetch('http://localhost:5000/login', {
+  //   method: 'POST', credentials: 'include',
+  //   headers: {'Content-Type':'application/json'},
+  //   body: JSON.stringify({ email, password })
+  // });
+  // const data = await res.json();
+  // if (!res.ok) { showToast(data.error || 'Login failed', 'error'); return; }
+  // sessionStorage.setItem('cc_user', JSON.stringify(data.user));
+
+  // DEMO – stores locally
+  const user = { email, name: email.split('@')[0], loggedIn: true };
+  sessionStorage.setItem('cc_user', JSON.stringify(user));
+
+  showToast('Signing in…');
+  setTimeout(() => window.location.href = 'dashboard.html', 800);
+}
+
+async function handleSignup() {
+  const username = document.getElementById('signupUsername').value;
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+  const confirm = document.getElementById('signupConfirm').value;
+  if (!username || !email || !password) { showToast('Please fill in all fields', 'error'); return; }
+  if (password !== confirm) { showToast('Passwords do not match', 'error'); return; }
+  if (password.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
+
+  // --- CONNECT BACKEND ---
+  // const res = await fetch('http://localhost:5000/signup', {
+  //   method: 'POST', headers: {'Content-Type':'application/json'},
+  //   body: JSON.stringify({ username, email, password })
+  // });
+  // const data = await res.json();
+  // if (!res.ok) { showToast(data.error || 'Signup failed', 'error'); return; }
+
+  showToast('Account created! Signing you in…');
+  const user = { email, name: username, loggedIn: true };
+  sessionStorage.setItem('cc_user', JSON.stringify(user));
+  setTimeout(() => window.location.href = 'dashboard.html', 1000);
+}
+
+// Redirect if already logged in
+const u = sessionStorage.getItem('cc_user');
+if (u && JSON.parse(u).loggedIn) window.location.href = 'dashboard.html';
+</script>
+</body>
+</html>

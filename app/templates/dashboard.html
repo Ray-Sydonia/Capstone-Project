@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard – ColourChem</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <!-- MAIN -->
+  <main class="main-content">
+    <header class="top-bar">
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="M14 14L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Search clients, formulas…">
+      </div>
+      <div class="user-menu">
+        <button class="notif-btn" onclick="alert('3 new notifications:\n• Caramel Balayage saved\n• Damage alert: Emma R.\n• Weekly summary ready')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8C18 6.4 17.4 4.9 16.2 3.8C15.1 2.6 13.6 2 12 2C10.4 2 8.9 2.6 7.8 3.8C6.6 4.9 6 6.4 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+        <div class="user-avatar">
+          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=colorist" alt="User">
+        </div>
+      </div>
+    </header>
+
+    <div class="content-area">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title" id="welcomeTitle">Welcome back</h1>
+          <p class="page-sub">Here's what's happening with your clients today</p>
+        </div>
+        <div style="display:flex;gap:0.75rem">
+          <a href="clients.html" class="btn btn-outline btn-sm">View Clients</a>
+          <a href="session.html" class="btn btn-primary btn-sm">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+            New Session
+          </a>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 21V19C17 16.8 15.2 15 13 15H5C2.8 15 1 16.8 1 19V21" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/><path d="M23 21V19C23 17.1 21.7 15.5 20 15.1" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M16 3.1C17.7 3.5 19 5.1 19 7C19 8.9 17.7 10.5 16 10.9" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <p class="stat-val">14</p>
+            <p class="stat-lbl">Total Clients</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon pink">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 11L12 14L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H16" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <p class="stat-val">38</p>
+            <p class="stat-lbl">Sessions This Month</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div>
+            <p class="stat-val">91%</p>
+            <p class="stat-lbl">Avg. Prediction Accuracy</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18C1.64 18.3 1.55 18.65 1.56 19C1.57 19.36 1.67 19.7 1.86 20C2.05 20.3 2.31 20.54 2.63 20.7C2.94 20.87 3.3 20.95 3.65 20.95H20.35C20.71 20.95 21.06 20.87 21.38 20.7C21.7 20.54 21.96 20.3 22.15 20C22.34 19.7 22.44 19.36 22.45 19C22.46 18.65 22.37 18.3 22.18 18L13.71 3.86C13.51 3.56 13.24 3.32 12.92 3.16C12.6 3 12.25 2.92 11.9 2.92C11.55 2.92 11.2 3 10.88 3.16C10.56 3.32 10.29 3.56 10.29 3.86Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9V13M12 17H12.01" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <p class="stat-val" style="color:var(--warning)">2</p>
+            <p class="stat-lbl">High Damage Alerts</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT ROW -->
+      <div class="content-row">
+        <!-- Recent Sessions -->
+        <div class="card">
+          <div class="card-hd">
+            <h3 class="card-title">Recent Sessions</h3>
+            <a href="clients.html" class="view-all">View all →</a>
+          </div>
+          <div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:linear-gradient(135deg,#8b4513,#d2691e)"></div>
+              <div class="activity-info">
+                <p class="activity-name">Caramel Balayage</p>
+                <p class="activity-meta">Emma R. • Lv.7→9 • 20 vol • <span class="badge badge-low">Low risk</span></p>
+              </div>
+              <span class="activity-time">2h ago</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:linear-gradient(135deg,#4a148c,#7b1fa2)"></div>
+              <div class="activity-info">
+                <p class="activity-name">Violet Vivid Mix</p>
+                <p class="activity-meta">Sofia M. • Lv.10 base • 30 vol • <span class="badge badge-medium">Med risk</span></p>
+              </div>
+              <span class="activity-time">1d ago</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:linear-gradient(135deg,#b71c1c,#c62828)"></div>
+              <div class="activity-info">
+                <p class="activity-name">Cherry Red Correction</p>
+                <p class="activity-meta">Jade K. • Lv.6→8 • 30 vol • <span class="badge badge-high">High risk</span></p>
+              </div>
+              <span class="activity-time">3d ago</span>
+            </div>
+            <div class="activity-item">
+              <div class="activity-dot" style="background:linear-gradient(135deg,#e8e5a0,#f5f2c8)"></div>
+              <div class="activity-info">
+                <p class="activity-name">Platinum Transition</p>
+                <p class="activity-meta">Aisha D. • Lv.5→10 • 40 vol • <span class="badge badge-high">High risk</span></p>
+              </div>
+              <span class="activity-time">5d ago</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="card-hd">
+            <h3 class="card-title">Quick Actions</h3>
+          </div>
+          <div class="action-grid">
+            <a href="clients.html" class="action-btn">
+              <div class="action-icon grad-purple">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M17 21V19C17 16.8 15.2 15 13 15H5C2.8 15 1 16.8 1 19V21" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/><path d="M23 21V19M20 15C21.7 15.5 23 17.1 23 19" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <span class="action-lbl">Manage Clients</span>
+            </a>
+            <a href="session.html" class="action-btn">
+              <div class="action-icon grad-green">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <span class="action-lbl">New Session</span>
+            </a>
+            <a href="predictions.html" class="action-btn">
+              <div class="action-icon grad-blue">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M2 20H22M5 20V14M9 20V8M13 20V12M17 20V4" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <span class="action-lbl">AI Predictions</span>
+            </a>
+            <a href="archive.html" class="action-btn">
+              <div class="action-icon grad-orange">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <span class="action-lbl">Formula Archive</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAMAGE ALERTS -->
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-hd">
+          <h3 class="card-title">⚠️ Active Damage Alerts</h3>
+          <a href="predictions.html" class="view-all">View all predictions →</a>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div style="background:#fff3e0;border-radius:var(--r-sm);padding:1rem;border-left:4px solid var(--warning)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <strong>Sofia Martinez</strong>
+              <span class="badge badge-high">High Risk</span>
+            </div>
+            <p style="font-size:0.82rem;color:var(--text-muted)">Platinum bleach session scheduled. High porosity + previous chemical damage detected.</p>
+            <a href="session.html" style="font-size:0.8rem;color:var(--primary);font-weight:600;margin-top:0.4rem;display:inline-block">Review before session →</a>
+          </div>
+          <div style="background:#fff3e0;border-radius:var(--r-sm);padding:1rem;border-left:4px solid var(--warning)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
+              <strong>Aisha Dunmore</strong>
+              <span class="badge badge-medium">Medium Risk</span>
+            </div>
+            <p style="font-size:0.82rem;color:var(--text-muted)">Red correction over previously dyed hair. Recommend strand test before full application.</p>
+            <a href="session.html" style="font-size:0.8rem;color:var(--primary);font-weight:600;margin-top:0.4rem;display:inline-block">Run strand test →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Popular Formulas -->
+      <div class="card">
+        <div class="card-hd">
+          <h3 class="card-title">Top Formulas This Week</h3>
+          <a href="archive.html" class="view-all">Archive →</a>
+        </div>
+        <div class="formula-grid">
+          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#ffd700,#ffed4e)"></div><div class="formula-info"><h4>Golden Blonde</h4><p>Lv.8 • 87% success</p></div></div>
+          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#8b4513,#d2691e)"></div><div class="formula-info"><h4>Rich Caramel</h4><p>Lv.7 • 92% success</p></div></div>
+          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#800000,#cd5c5c)"></div><div class="formula-info"><h4>Auburn Red</h4><p>Lv.6 • 89% success</p></div></div>
+          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#2c1810,#4a2c1f)"></div><div class="formula-info"><h4>Espresso Brown</h4><p>Lv.4 • 95% success</p></div></div>
+          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#e6e6fa,#d8bfd8)"></div><div class="formula-info"><h4>Lavender Dream</h4><p>Lv.10 • 84% success</p></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+<script>
+  initApp();
+  // Personalize welcome
+  const u = sessionStorage.getItem('cc_user');
+  if (u) {
+    const usr = JSON.parse(u);
+    const n = usr.name || usr.email.split('@')[0];
+    document.getElementById('welcomeTitle').textContent = 'Welcome back, ' + n.charAt(0).toUpperCase() + n.slice(1);
+  }
+</script>
+</body>
+</html>
