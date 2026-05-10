@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+from tensorflow.keras.applications.resnet50 import preprocess_input
 
 try:
     import tensorflow as tf
@@ -15,13 +16,20 @@ except Exception as e:
     model = None
     print(f"TensorFlow error: {type(e).__name__}: {e}")  # ← shows the REAL error
 
-CLASS_NAMES = ["breakage", "chemical_damage","dry","healthy", "heat_damage", "split_ends"]
+CLASS_NAMES = [
+"breakage", 
+"chemical_damage",
+"dry",
+"healthy", 
+"heat_damage", 
+"split_ends"]
 
 def preprocess_image(image_file):
     img = Image.open(image_file).convert("RGB")
     img = img.resize((224, 224))
-    img_array = np.array(img) / 255.0
-    return np.expand_dims(img_array, axis=0)
+    img_array = np.array(img, dtype=np.float32)
+    img_array = np.expand_dims(img_array, axis=0)
+    return preprocess_input(img_array)  # ✅ matches ResNet50 training
 
 def predict_damage(image_file):
     if not TENSORFLOW_AVAILABLE:
@@ -33,6 +41,11 @@ def predict_damage(image_file):
     
     img_input = preprocess_image(image_file)
     prediction = model.predict(img_input)[0]
+
+    # ✅ Add this temporarily
+    print("Raw predictions:", prediction)
+    print("Class scores:", dict(zip(CLASS_NAMES, prediction)))
+
     class_index = int(np.argmax(prediction))
     confidence = float(np.max(prediction))
 
