@@ -9,29 +9,46 @@ from flask import render_template, request, jsonify, send_from_directory, abort,
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
-from tensorflow.keras.models import load_model
-from tensorflow.keras.utils import load_img, img_to_array
-from tensorflow.keras.applications.resnet50 import preprocess_input
 from datetime import datetime
-from . import app
+from flask import render_template, request, jsonify, redirect, url_for, current_app
 from .db import db
-from .model import User, Client, HairProfiles, DyeSession, FormulaArchive, StrandPredictions
+from .models import User, Client, HairProfiles, DyeSession, FormulaArchive  # fixed: was .model
 from .forms import SignupForm, LoginForm, PhotoUploadForm, ClientForm, HairProfileForm
 from .utils.s3 import upload_to_s3
 from ai.damage_model import predict_damage
 import numpy as np
 import os
 
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+
+main = Blueprint('main', __name__)
+
+# Tensorflow loaded safely — won't crash the app if missing
+try:
+    from tensorflow.keras.models import load_model
+    from tensorflow.keras.utils import load_img, img_to_array
+    from tensorflow.keras.applications.resnet50 import preprocess_input
+    IMG_SIZE = 224
+    class_names = ["black", "brown", "blonde", "red"]
+    #model = load_model(r"C:\xampp\htdocs\Capstone-Project\hair_damage_resnet50_model.keras")
+    TENSORFLOW_AVAILABLE = True
+except Exception:
+    TENSORFLOW_AVAILABLE = False
+    print("WARNING: TensorFlow not available. /predict route will be disabled.")
+
 
 IMG_SIZE = 224
 class_names = ["black", "brown", "blonde", "red"]  # match your training classes
-model = load_model("path/to/your_model.h5")
+#model = load_model(r"C:\xampp\htdocs\Capstone-Project\hair_damage_resnet50_model.keras")
 
 ###
 # Routing for your application.
 ###
+@main.route('/test')
+def test_page():
+    return render_template('test.html')
 
-@app.route('/')
+@main.route('/')
 def home():
     return render_template("index.html")
 
@@ -40,8 +57,11 @@ def home():
 # ============================================
 
 
-@app.route("/predict", methods=["POST"])
+@main.route("/predict", methods=["POST"])
 def predict():
+    if not TENSORFLOW_AVAILABLE:
+        return jsonify({"error": "TensorFlow model not available"}), 503
+    
     file = request.files.get("image")
     if not file:
         return jsonify({"error": "No image provided"}), 400
@@ -69,20 +89,30 @@ def predict():
         "image_url": s3_url
     })
     
-@app.route('/analyze-damage', methods=['POST'])
-@login_required
+@main.route('/analyze-damage', methods=['POST'])
 def analyze_damage():
     file = request.files.get('hair_image')
 
     if not file:
         return jsonify({"error": "No image provided"}), 400
 
-    # 🔹 Run AI model
-    result = predict_damage(file)
+    # Save file to memory first so both AI and S3 can use it
+    from io import BytesIO
+    file_bytes = BytesIO(file.read())  # read into memory once
 
+    # Reset for AI model
+    file_bytes.seek(0)
+    result = predict_damage(file_bytes)
+
+    # Reset for S3 upload
+    file_bytes.seek(0)
+    file.stream = file_bytes  # reassign stream
+    image_url = upload_to_s3(file)
+
+    result['image_url'] = image_url
     return jsonify(result)
 
-@app.route('/signup', methods=['POST'])
+@main.route('/signup', methods=['POST'])
 def signup():
     data = request.json
 
@@ -101,7 +131,7 @@ def signup():
 
     return jsonify({"message": "User created successfully"})
 
-@app.route('/login', methods=['POST'])
+@main.route('/login', methods=['POST'])
 def login():
     data = request.json
 
@@ -121,13 +151,13 @@ def login():
         }
     })
     
-@app.route('/logout', methods=['POST'])
+@main.route('/logout', methods=['POST'])
 @login_required
 def logout():
     logout_user()
     return jsonify({"message": "Logged out successfully"})
 
-@app.route('/clients', methods=['POST'])
+@main.route('/clients', methods=['POST'])
 def create_client():
     data = request.json
     client = Client(
@@ -138,7 +168,7 @@ def create_client():
     db.session.commit()
     return jsonify({"id": client.clientID})
 
-@app.route('/clients', methods=['GET'])
+@main.route('/clients', methods=['GET'])
 def get_clients():
     clients = Client.query.all()
     return jsonify([
@@ -146,7 +176,7 @@ def get_clients():
         for c in clients
     ])
     
-@app.route('/clients/<int:id>', methods=['PUT'])
+@main.route('/clients/<int:id>', methods=['PUT'])
 def update_client(id):
     client = Client.query.get_or_404(id)
     data = request.json
@@ -154,14 +184,14 @@ def update_client(id):
     db.session.commit()
     return jsonify({"message": "Updated"})
 
-@app.route('/clients/<int:id>', methods=['DELETE'])
+@main.route('/clients/<int:id>', methods=['DELETE'])
 def delete_client(id):
     client = Client.query.get_or_404(id)
     db.session.delete(client)
     db.session.commit()
     return jsonify({"message": "Deleted"})
 
-@app.route('/add-client', methods=['GET', 'POST'])
+@main.route('/add-client', methods=['GET', 'POST'])
 @login_required
 def add_client():
     client_form = ClientForm()
@@ -193,7 +223,7 @@ def add_client():
 
     return render_template('add_client.html', client_form=client_form, hair_form=hair_form)
 
-@app.route('/edit-hair-profile/<int:profile_id>', methods=['GET', 'POST'])
+@main.route('/edit-hair-profile/<int:profile_id>', methods=['GET', 'POST'])
 @login_required
 def edit_hair_profile(profile_id):
     profile = HairProfiles.query.get_or_404(profile_id)
@@ -206,7 +236,7 @@ def edit_hair_profile(profile_id):
 
     return render_template('edit_profile.html', form=form)
 
-@app.route('/profiles', methods=['POST'])
+@main.route('/profiles', methods=['POST'])
 def create_profile():
     data = request.json
     profile = HairProfiles(
@@ -221,7 +251,7 @@ def create_profile():
     db.session.commit()
     return jsonify({"id": profile.profileID})
 
-@app.route('/profiles', methods=['GET'])
+@main.route('/profiles', methods=['GET'])
 def get_profiles():
     profiles = HairProfiles.query.all()
     return jsonify([
@@ -229,14 +259,14 @@ def get_profiles():
         for p in profiles
     ])
     
-@app.route('/profiles/<int:id>', methods=['DELETE'])
+@main.route('/profiles/<int:id>', methods=['DELETE'])
 def delete_profile(id):
     profile = HairProfiles.query.get_or_404(id)
     db.session.delete(profile)
     db.session.commit()
     return jsonify({"message": "Deleted"})
 
-@app.route('/sessions', methods=['POST'])
+@main.route('/sessions', methods=['POST'])
 def create_session():
     file = request.files.get('hair_image')
     data = request.form
@@ -278,7 +308,7 @@ def create_session():
         "prediction": prediction
     })
 
-@app.route('/sessions', methods=['GET'])
+@main.route('/sessions', methods=['GET'])
 def get_sessions():
     sessions = DyeSession.query.all()
     return jsonify([
@@ -286,14 +316,14 @@ def get_sessions():
         for s in sessions
     ])
     
-@app.route('/sessions/<int:id>', methods=['DELETE'])
+@main.route('/sessions/<int:id>', methods=['DELETE'])
 def delete_session(id):
     session = DyeSession.query.get_or_404(id)
     db.session.delete(session)
     db.session.commit()
     return jsonify({"message": "Deleted"})
 
-@app.route('/formulas', methods=['POST'])
+@main.route('/formulas', methods=['POST'])
 def create_formula():
     data = request.json
     formula = FormulaArchive(
@@ -307,7 +337,7 @@ def create_formula():
     db.session.commit()
     return jsonify({"id": formula.formulaID})
 
-@app.route('/formulas', methods=['GET'])
+@main.route('/formulas', methods=['GET'])
 def get_formulas():
     formulas = FormulaArchive.query.all()
     return jsonify([
@@ -315,14 +345,14 @@ def get_formulas():
         for f in formulas
     ])
     
-@app.route('/formulas/<int:id>', methods=['DELETE'])
+@main.route('/formulas/<int:id>', methods=['DELETE'])
 def delete_formula(id):
     formula = FormulaArchive.query.get_or_404(id)
     db.session.delete(formula)
     db.session.commit()
     return jsonify({"message": "Deleted"})
 
-@app.route('/predictions', methods=['POST'])
+@main.route('/predictions', methods=['POST'])
 def create_prediction():
     data = request.json
     prediction = StrandPredictions(
@@ -339,7 +369,7 @@ def create_prediction():
     db.session.commit()
     return jsonify({"id": prediction.predictionID})
 
-@app.route('/predictions', methods=['GET'])
+@main.route('/predictions', methods=['GET'])
 def get_predictions():
     predictions = StrandPredictions.query.all()
     return jsonify([
@@ -347,7 +377,7 @@ def get_predictions():
         for p in predictions
     ])
     
-@app.route('/predictions/<int:id>', methods=['DELETE'])
+@main.route('/predictions/<int:id>', methods=['DELETE'])
 def delete_prediction(id):
     prediction = StrandPredictions.query.get_or_404(id)
     db.session.delete(prediction)
@@ -374,14 +404,14 @@ def form_errors(form):
 
     return error_messages
 
-@app.route('/<file_name>.txt')
+@main.route('/<file_name>.txt')
 def send_text_file(file_name):
     """Send your static text file."""
     file_dot_text = file_name + '.txt'
     return app.send_static_file(file_dot_text)
 
 
-@app.after_request
+@main.after_request
 def add_header(response):
     """
     Add headers to both force latest IE rendering engine or Chrome Frame,
@@ -393,7 +423,7 @@ def add_header(response):
     return response
 
 
-@app.errorhandler(404)
+@main.errorhandler(404)
 def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
