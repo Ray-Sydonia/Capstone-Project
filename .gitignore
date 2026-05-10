@@ -34,3 +34,5 @@ venv
 # Environment Variables
 .env
 .flaskenv
+
+*.keras
