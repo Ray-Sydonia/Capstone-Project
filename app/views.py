@@ -18,6 +18,7 @@ from .db import db
 from .model import User, Client, HairProfiles, DyeSession, FormulaArchive, StrandPredictions
 from .forms import SignupForm, LoginForm, PhotoUploadForm, ClientForm, HairProfileForm
 from .utils.s3 import upload_to_s3
+from ai.damage_model import predict_damage
 import numpy as np
 import os
 
@@ -67,6 +68,19 @@ def predict():
         "confidence": f"{confidence:.2f}%",
         "image_url": s3_url
     })
+    
+@app.route('/analyze-damage', methods=['POST'])
+@login_required
+def analyze_damage():
+    file = request.files.get('hair_image')
+
+    if not file:
+        return jsonify({"error": "No image provided"}), 400
+
+    # 🔹 Run AI model
+    result = predict_damage(file)
+
+    return jsonify(result)
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -224,16 +238,45 @@ def delete_profile(id):
 
 @app.route('/sessions', methods=['POST'])
 def create_session():
-    data = request.json
+    file = request.files.get('hair_image')
+    data = request.form
+
+    if not file:
+        return jsonify({"error": "Image required"}), 400
+
+    # AI Prediction
+    prediction = predict_damage(file)
+
+    # Upload to S3
+    image_url = upload_to_s3(file)
+
+    # Save to DB
     session = DyeSession(
         profileID=data['profileID'],
         desired_shade=data.get('desired_shade'),
         developer_vol=data.get('developer_vol'),
-        input_hair_pic_url=data.get('input_hair_pic_url')
+        input_hair_pic_url=image_url
     )
+
     db.session.add(session)
     db.session.commit()
-    return jsonify({"id": session.session_id})
+
+    # Save prediction
+    pred = StrandPredictions(
+        session_id=session.session_id,
+        predicted_colour=data.get('desired_shade'),
+        damage_risk=prediction['damage_risk'],
+        damage_score=prediction['damage_score']
+    )
+
+    db.session.add(pred)
+    db.session.commit()
+
+    return jsonify({
+        "session_id": session.session_id,
+        "image_url": image_url,
+        "prediction": prediction
+    })
 
 @app.route('/sessions', methods=['GET'])
 def get_sessions():
