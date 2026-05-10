@@ -13,7 +13,8 @@ def create_app():
 
     with app.app_context():
         from . import models
-        from . import views       
+        from . import views
         db.create_all()
+        app.register_blueprint(views.bp)  # ✅ register the blueprint
 
     return app
