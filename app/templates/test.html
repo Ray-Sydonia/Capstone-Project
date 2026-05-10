@@ -33,32 +33,37 @@
   <h3>Result:</h3>
   <pre id="result"></pre>
 
-  <script>
-    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+  <button type="submit" id="submitBtn">Analyze</button>
 
-      const file = document.getElementById("image").files[0];
+<script>
+  document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById("submitBtn");
+    btn.disabled = true;        // disable button immediately
+    btn.innerText = "Analyzing...";
 
-      const formData = new FormData();
-      formData.append("hair_image", file);
+    const file = document.getElementById("image").files[0];
+    const formData = new FormData();
+    formData.append("hair_image", file);
+    formData.append("hair_data", JSON.stringify({
+      porosity: document.getElementById("porosity").value,
+      texture: document.getElementById("texture").value,
+      chem_history: document.getElementById("chem_history").value
+    }));
 
-      // send hair data as JSON string
-      formData.append("hair_data", JSON.stringify({
-        porosity: document.getElementById("porosity").value,
-        texture: document.getElementById("texture").value,
-        chem_history: document.getElementById("chem_history").value
-      }));
-
-      const res = await fetch("http://localhost:5000/analyze-damage", {
-        method: "POST",
-        body: formData
-      });
-
-      const data = await res.json();
-
-      document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    const res = await fetch("http://localhost:5000/analyze-damage", {
+      method: "POST",
+      body: formData
     });
-  </script>
+
+    const data = await res.json();
+    document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+    
+    btn.disabled = false;       // re-enable after response
+    btn.innerText = "Analyze";
+  });
+</script>
 
 </body>
 </html>

@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Enum
 from .db import db
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'User'
 
     userID = db.Column(db.Integer, primary_key=True)

@@ -13,7 +13,7 @@ class Config(object):
     # Database (MySQL)
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
-        'mysql+pymysql://root:password@localhost/colour_chem_db'
+        'mysql+pymysql://root:K%40ija1342@localhost/colour_chem_db'
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
