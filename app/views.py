@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 from datetime import datetime
 from flask import render_template, request, jsonify, redirect, url_for, current_app
 from .db import db
+from ai.damage_model import predict_damage
 from .models import User, Client, HairProfiles, DyeSession, FormulaArchive  # fixed: was .model
 from .forms import SignupForm, LoginForm, PhotoUploadForm, ClientForm, HairProfileForm
 from .utils.s3 import upload_to_s3

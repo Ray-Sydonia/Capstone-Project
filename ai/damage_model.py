@@ -15,7 +15,7 @@ except Exception as e:
     model = None
     print(f"TensorFlow error: {type(e).__name__}: {e}")  # ← shows the REAL error
 
-CLASS_NAMES = ["Healthy", "Split Ends", "Dry", "Heat Damage", "Chemical Damage"]
+CLASS_NAMES = ["breakage", "chemical_damage","dry","healthy", "heat_damage", "split_ends"]
 
 def preprocess_image(image_file):
     img = Image.open(image_file).convert("RGB")

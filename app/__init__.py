@@ -8,7 +8,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:K%40ija1342@localhost/colour_chem_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Rainbow%402004@localhost/colour_chem_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = 'your-secret-key-here'  # required for flask-login
 
