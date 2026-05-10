@@ -5,29 +5,68 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
 
-from flask import render_template, request, jsonify, send_file
-import os
-from . import app
-from flask import request, jsonify, send_from_directory, abort
+from flask import render_template, request, jsonify, send_from_directory, abort, redirect, url_for
 from flask_login import login_user, logout_user, login_required, current_user
-from .db import db
-from .model import User, Client, HairProfiles, DyeSession, FormulaArchive
-from .forms import SignupForm, LoginForm, PhotoUploadForm, ClientForm, HairProfileForm
-from datetime import datetime, date
-import os
-import math
-from sqlalchemy import or_, and_
-from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.exc import IntegrityError
+from tensorflow.keras.models import load_model
+from tensorflow.keras.utils import load_img, img_to_array
+from tensorflow.keras.applications.resnet50 import preprocess_input
+from datetime import datetime
+from . import app
+from .db import db
+from .model import User, Client, HairProfiles, DyeSession, FormulaArchive, StrandPredictions
+from .forms import SignupForm, LoginForm, PhotoUploadForm, ClientForm, HairProfileForm
+from .utils.s3 import upload_to_s3
+import numpy as np
+import os
 
+
+IMG_SIZE = 224
+class_names = ["black", "brown", "blonde", "red"]  # match your training classes
+model = load_model("path/to/your_model.h5")
 
 ###
 # Routing for your application.
 ###
 
 @app.route('/')
-def index():
-    return jsonify(message="This is the beginning of our API")
+def home():
+    return render_template("index.html")
+
+# ============================================
+# PREDICTION
+# ============================================
+
+
+@app.route("/predict", methods=["POST"])
+def predict():
+    file = request.files.get("image")
+    if not file:
+        return jsonify({"error": "No image provided"}), 400
+
+    # Step 1: Upload to S3, get URL back
+    s3_url = upload_to_s3(file)
+
+    # Step 2: Download from S3 into memory for the model
+    import requests as http_requests
+    from io import BytesIO
+
+    img_data = http_requests.get(s3_url).content
+    img = load_img(BytesIO(img_data), target_size=(IMG_SIZE, IMG_SIZE))
+
+    # Step 3: Preprocess and predict
+    img_array = preprocess_input(np.expand_dims(img_to_array(img), axis=0))
+    predictions = model.predict(img_array)
+    predicted_class = class_names[np.argmax(predictions)]
+    confidence = float(np.max(predictions) * 100)
+
+    # Step 4: Return result with S3 URL
+    return jsonify({
+        "prediction": predicted_class,
+        "confidence": f"{confidence:.2f}%",
+        "image_url": s3_url
+    })
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -37,14 +76,12 @@ def signup():
     if User.query.filter_by(email=data['email']).first():
         return jsonify({"error": "Email already exists"}), 400
 
-    hashed_password = generate_password_hash(data['password'])
-
     new_user = User(
-        user_name=data['user_name'],
-        email=data['email'],
-        password=hashed_password
+        user_name=data['username'],
+        email=data['email']
     )
 
+    new_user.set_password(data['password']) 
     db.session.add(new_user)
     db.session.commit()
 

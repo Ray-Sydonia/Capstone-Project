@@ -24,7 +24,7 @@ class Config(object):
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
     AWS_S3_BUCKET = os.environ.get('AWS_S3_BUCKET')
-    AWS_S3_REGION = os.environ.get('AWS_S3_REGION', 'us-east-1')
+    AWS_S3_REGION = os.environ.get('AWS_S3_REGION', 'us-east-2')
 
     # 📦 File Limits (important)
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB max upload
@@ -35,11 +35,5 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     
-def get_s3_client():
-    return boto3.client(
-        "s3",
-        aws_access_key_id=current_app.config['AWS_ACCESS_KEY_ID'],
-        aws_secret_access_key=current_app.config['AWS_SECRET_ACCESS_KEY'],
-        region_name=current_app.config['AWS_S3_REGION']
-    )
+
     
