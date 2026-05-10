@@ -26,6 +26,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+*.keras
 
 # Python
 __pycache__
@@ -35,4 +36,3 @@ venv
 .env
 .flaskenv
 
-*.keras
