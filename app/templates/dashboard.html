@@ -1,223 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard – ColourChem</title>
-<link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dashboard — ColourChem</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#7c5cbf;--pl:#b07fd4;--pd:#5a3fa0;--accent:#e8a0c0;--bg:#f8f5ff;--surface:#fff;--s2:#f2ecff;--s3:#ede6ff;--text:#1c1830;--muted:#7a7490;--border:#e0d6f5;--success:#219a52;--warn:#e67e22;--error:#c0392b;--shadow:0 2px 12px rgba(100,70,180,.08);--shadow-md:0 4px 20px rgba(100,70,180,.13);--shadow-lg:0 8px 40px rgba(100,70,180,.18);--font-d:'Cormorant Garamond',serif;--font-b:'Outfit',sans-serif;--r:10px;--r-lg:18px;--r-full:9999px;--t:.22s ease;--sidebar:260px}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit} button{border:none;background:none;cursor:pointer;font-family:inherit}
+input{font-family:inherit;border:none;outline:none;background:none}
+.app{display:flex;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:100;animation:slideL .35s ease}
+@keyframes slideL{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+.sb-hdr{padding:1.35rem 1.25rem 1rem;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid var(--border)}
+.sb-logo{width:32px;height:32px;flex-shrink:0}
+.sb-brand{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--pd)}
+.nav-section{padding:.9rem 0;flex:1}
+.nav-lbl{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.5rem 1.25rem .25rem;display:block}
+.nav-list{list-style:none}
+.nav-item a{display:flex;align-items:center;gap:.7rem;padding:.58rem 1.25rem;color:var(--muted);font-size:.85rem;font-weight:400;transition:var(--t);border-left:3px solid transparent}
+.nav-item a:hover{background:var(--s2);color:var(--primary)}
+.nav-item.active a{background:linear-gradient(90deg,rgba(124,92,191,.12),transparent);color:var(--primary);border-left-color:var(--primary);font-weight:500}
+.sb-footer{border-top:1px solid var(--border);padding:.5rem 0}
+.sb-user{display:flex;align-items:center;gap:.7rem;padding:.85rem 1.25rem}
+.sb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--pl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
+.sb-un{font-size:.82rem;font-weight:600}
+.sb-ue{font-size:.72rem;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;animation:fadeM .35s ease .1s both}
+@keyframes fadeM{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.9rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.topbar-l{display:flex;align-items:center;gap:.9rem}
+.searchbar{display:flex;align-items:center;gap:.45rem;background:var(--s2);border:1.5px solid transparent;border-radius:var(--r-full);padding:.36rem .9rem;transition:var(--t)}
+.searchbar:focus-within{border-color:var(--primary);background:var(--surface)}
+.searchbar svg{color:var(--muted);flex-shrink:0}
+.searchbar input{background:none;width:180px;font-size:.82rem;color:var(--text)}
+.searchbar input::placeholder{color:var(--muted)}
+.topbar-r{display:flex;align-items:center;gap:.55rem}
+.notif-btn{width:34px;height:34px;border-radius:50%;background:var(--s2);display:flex;align-items:center;justify-content:center;color:var(--muted);position:relative;cursor:pointer;transition:var(--t)}
+.notif-btn:hover{background:var(--s3);color:var(--primary)}
+.notif-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--accent);border:2px solid var(--surface)}
+.tb-av{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:linear-gradient(135deg,var(--primary),var(--pl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:#fff}
+.content{padding:2rem;flex:1}
+/* PAGE HEADER */
+.page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem}
+.page-title{font-family:var(--font-d);font-size:2.2rem;font-weight:700;line-height:1.1}
+.page-sub{color:var(--muted);font-size:.875rem;margin-top:.2rem}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.68rem 1.3rem;border-radius:var(--r);font-size:.875rem;font-weight:500;cursor:pointer;border:none;transition:var(--t)}
+.btn-primary{background:linear-gradient(135deg,var(--pd),var(--primary),var(--pl));color:#fff;box-shadow:0 4px 14px rgba(124,92,191,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,92,191,.42)}
+.btn-sm{padding:.42rem .85rem;font-size:.8rem}
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.2rem;display:flex;align-items:center;gap:.9rem;box-shadow:var(--shadow);transition:var(--t)}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.stat-ic{width:44px;height:44px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.si-p{background:linear-gradient(135deg,var(--pd),var(--pl));color:#fff}
+.si-pk{background:linear-gradient(135deg,#c0392b,#e91e8c);color:#fff}
+.si-g{background:linear-gradient(135deg,#219a52,#81c784);color:#fff}
+.si-b{background:linear-gradient(135deg,#1565c0,#64b5f6);color:#fff}
+.stat-val{font-size:1.65rem;font-weight:700;line-height:1}
+.stat-lbl{font-size:.76rem;color:var(--muted);margin-top:.08rem}
+.stat-chg{font-size:.7rem;color:var(--success);margin-top:.12rem}
+/* CONTENT GRID */
+.content-grid{display:grid;grid-template-columns:1fr 295px;gap:1.2rem;margin-bottom:1.2rem}
+/* CARD */
+.card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.5rem;box-shadow:var(--shadow)}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.card-hdr h3{font-size:.95rem;font-weight:600}
+.view-all{font-size:.78rem;color:var(--primary);font-weight:500}
+.view-all:hover{color:var(--pd)}
+/* ACTIVITY */
+.act-list{display:flex;flex-direction:column;gap:.55rem}
+.act-item{display:flex;align-items:center;gap:.8rem;padding:.6rem .7rem;border-radius:var(--r);transition:var(--t);cursor:pointer}
+.act-item:hover{background:var(--s2);transform:translateX(4px)}
+.act-dot{width:36px;height:36px;border-radius:50%;flex-shrink:0;border:3px solid var(--surface);box-shadow:var(--shadow)}
+.act-name{font-size:.85rem;font-weight:500}
+.act-meta{font-size:.72rem;color:var(--muted);margin-top:.03rem}
+.act-time{font-size:.7rem;color:var(--muted);white-space:nowrap;margin-left:auto;padding-left:.5rem}
+/* QA */
+.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.qa-btn{display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:.85rem;background:var(--s2);border-radius:var(--r);cursor:pointer;transition:var(--t);border:1.5px solid transparent;text-decoration:none;color:inherit}
+.qa-btn:hover{background:var(--surface);border-color:var(--primary);box-shadow:var(--shadow);transform:translateY(-1px)}
+.qa-ic{width:40px;height:40px;border-radius:var(--r);display:flex;align-items:center;justify-content:center}
+.qa-lbl{font-size:.76rem;font-weight:500}
+/* FORMULA GRID */
+.formula-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.7rem}
+.fc{border-radius:var(--r);overflow:hidden;border:1px solid var(--border);background:var(--surface);transition:var(--t);cursor:pointer}
+.fc:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.fc-prev{height:62px}
+.fc-info{padding:.6rem .7rem}
+.fc-name{font-size:.8rem;font-weight:600}
+.fc-meta{font-size:.7rem;color:var(--muted);margin-top:.08rem}
+@media(max-width:1100px){.stats-grid{grid-template-columns:repeat(2,1fr)}.content-grid{grid-template-columns:1fr}.formula-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){:root{--sidebar:68px}.sb-brand,.nav-item a span,.nav-lbl,.sb-un,.sb-ue{display:none}.nav-item a{justify-content:center;padding:.65rem}.sb-hdr{justify-content:center;padding:1rem .5rem}.content{padding:1rem}.stats-grid{grid-template-columns:1fr 1fr}.topbar{padding:.7rem 1rem}.formula-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
+<script>
+(function(){
+  const u=JSON.parse(localStorage.getItem('cc_user')||'null');
+  if(!u||!u.loggedIn){location.href='login.html';return}
+  window.CC_USER=u;
+  window.logout=function(){localStorage.removeItem('cc_user');location.href='login.html'};
+})();
+</script>
 <div class="app">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-hdr">
+    <svg class="sb-logo" viewBox="0 0 80 80" fill="none">
+      <defs><linearGradient id="slg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#b07fd4"/><stop offset="100%" stop-color="#5a3fa0"/></linearGradient></defs>
+      <path d="M40 12Q52 17 56 34Q59 44 56 54Q53 64 44 71Q42 73 40 76" stroke="url(#slg)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <path d="M40 12Q28 17 24 34Q21 44 24 54Q27 64 36 71Q38 73 40 76" stroke="url(#slg)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <circle cx="40" cy="9" r="5.5" fill="url(#slg)"/>
+    </svg>
+    <span class="sb-brand">ColourChem</span>
+  </div>
+  <div class="nav-section">
+    <span class="nav-lbl">Main</span>
+    <ul class="nav-list">
+      <li class="nav-item active"><a href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
+      <li class="nav-item"><a href="clients.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
+      <li class="nav-item"><a href="color-mixer.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Color Mixer</span></a></li>
+      <li class="nav-item"><a href="strand-test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="archive.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
+      <li class="nav-item"><a href="sessions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
+    </ul>
+    <span class="nav-lbl" style="margin-top:.5rem">Account</span>
+    <ul class="nav-list">
+      <li class="nav-item"><a href="profile.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
+      <li class="nav-item"><a href="#" onclick="logout();return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Logout</span></a></li>
+    </ul>
+  </div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-av" id="sbAv">S</div>
+      <div><div class="sb-un" id="sbName">Stylist</div><div class="sb-ue" id="sbEmail">email</div></div>
+    </div>
+  </div>
+</nav>
 
-  <!-- SIDEBAR -->
-  <nav class="sidebar" id="sidebar"></nav>
-
-  <!-- MAIN -->
-  <main class="main-content">
-    <header class="top-bar">
-      <div class="search-wrap">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="M14 14L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input type="text" placeholder="Search clients, formulas…">
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-l">
+      <div class="searchbar">
+        <svg width="15" height="15" viewBox="0 0 20 20" fill="none"><circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/><path d="M14 14l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Search formulas, clients…">
       </div>
-      <div class="user-menu">
-        <button class="notif-btn" onclick="alert('3 new notifications:\n• Caramel Balayage saved\n• Damage alert: Emma R.\n• Weekly summary ready')">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M18 8C18 6.4 17.4 4.9 16.2 3.8C15.1 2.6 13.6 2 12 2C10.4 2 8.9 2.6 7.8 3.8C6.6 4.9 6 6.4 6 8C6 15 3 17 3 17H21C21 17 18 15 18 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span class="notif-dot"></span>
-        </button>
-        <div class="user-avatar">
-          <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=colorist" alt="User">
-        </div>
+    </div>
+    <div class="topbar-r">
+      <button class="notif-btn" onclick="alert('3 notifications:\n\n• Caramel Balayage saved\n• New trend: Lavender Dreams\n• Weekly summary ready')">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+      <div class="tb-av" id="tbAv">S</div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="page-hdr">
+      <div>
+        <h1 class="page-title">Welcome back, <span id="userName">Stylist</span> 👋</h1>
+        <p class="page-sub">Here's what's happening with your colour projects today</p>
       </div>
-    </header>
+      <a href="color-mixer.html" class="btn btn-primary btn-sm">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        New Session
+      </a>
+    </div>
 
-    <div class="content-area">
-      <div class="page-header">
-        <div>
-          <h1 class="page-title" id="welcomeTitle">Welcome back</h1>
-          <p class="page-sub">Here's what's happening with your clients today</p>
-        </div>
-        <div style="display:flex;gap:0.75rem">
-          <a href="clients.html" class="btn btn-outline btn-sm">View Clients</a>
-          <a href="session.html" class="btn btn-primary btn-sm">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1V13M1 7H13" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-            New Session
-          </a>
-        </div>
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-ic si-p"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div><div class="stat-val" id="st-formulas">—</div><div class="stat-lbl">Saved Formulas</div><div class="stat-chg">↑ 4 this week</div></div>
       </div>
-
-      <!-- STATS -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon purple">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 21V19C17 16.8 15.2 15 13 15H5C2.8 15 1 16.8 1 19V21" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/><path d="M23 21V19C23 17.1 21.7 15.5 20 15.1" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M16 3.1C17.7 3.5 19 5.1 19 7C19 8.9 17.7 10.5 16 10.9" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <p class="stat-val">14</p>
-            <p class="stat-lbl">Total Clients</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon pink">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 11L12 14L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V5C3 3.9 3.9 3 5 3H16" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <p class="stat-val">38</p>
-            <p class="stat-lbl">Sessions This Month</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon green">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div>
-            <p class="stat-val">91%</p>
-            <p class="stat-lbl">Avg. Prediction Accuracy</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon orange">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18C1.64 18.3 1.55 18.65 1.56 19C1.57 19.36 1.67 19.7 1.86 20C2.05 20.3 2.31 20.54 2.63 20.7C2.94 20.87 3.3 20.95 3.65 20.95H20.35C20.71 20.95 21.06 20.87 21.38 20.7C21.7 20.54 21.96 20.3 22.15 20C22.34 19.7 22.44 19.36 22.45 19C22.46 18.65 22.37 18.3 22.18 18L13.71 3.86C13.51 3.56 13.24 3.32 12.92 3.16C12.6 3 12.25 2.92 11.9 2.92C11.55 2.92 11.2 3 10.88 3.16C10.56 3.32 10.29 3.56 10.29 3.86Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 9V13M12 17H12.01" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <p class="stat-val" style="color:var(--warning)">2</p>
-            <p class="stat-lbl">High Damage Alerts</p>
-          </div>
-        </div>
+      <div class="stat-card">
+        <div class="stat-ic si-pk"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/><path d="M3 21c0-4 3.5-7 7-7h4c3.5 0 7 3 7 7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div><div class="stat-val" id="st-clients">—</div><div class="stat-lbl">Active Clients</div><div class="stat-chg">↑ 2 this month</div></div>
       </div>
-
-      <!-- MAIN CONTENT ROW -->
-      <div class="content-row">
-        <!-- Recent Sessions -->
-        <div class="card">
-          <div class="card-hd">
-            <h3 class="card-title">Recent Sessions</h3>
-            <a href="clients.html" class="view-all">View all →</a>
-          </div>
-          <div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:linear-gradient(135deg,#8b4513,#d2691e)"></div>
-              <div class="activity-info">
-                <p class="activity-name">Caramel Balayage</p>
-                <p class="activity-meta">Emma R. • Lv.7→9 • 20 vol • <span class="badge badge-low">Low risk</span></p>
-              </div>
-              <span class="activity-time">2h ago</span>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:linear-gradient(135deg,#4a148c,#7b1fa2)"></div>
-              <div class="activity-info">
-                <p class="activity-name">Violet Vivid Mix</p>
-                <p class="activity-meta">Sofia M. • Lv.10 base • 30 vol • <span class="badge badge-medium">Med risk</span></p>
-              </div>
-              <span class="activity-time">1d ago</span>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:linear-gradient(135deg,#b71c1c,#c62828)"></div>
-              <div class="activity-info">
-                <p class="activity-name">Cherry Red Correction</p>
-                <p class="activity-meta">Jade K. • Lv.6→8 • 30 vol • <span class="badge badge-high">High risk</span></p>
-              </div>
-              <span class="activity-time">3d ago</span>
-            </div>
-            <div class="activity-item">
-              <div class="activity-dot" style="background:linear-gradient(135deg,#e8e5a0,#f5f2c8)"></div>
-              <div class="activity-info">
-                <p class="activity-name">Platinum Transition</p>
-                <p class="activity-meta">Aisha D. • Lv.5→10 • 40 vol • <span class="badge badge-high">High risk</span></p>
-              </div>
-              <span class="activity-time">5d ago</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="card">
-          <div class="card-hd">
-            <h3 class="card-title">Quick Actions</h3>
-          </div>
-          <div class="action-grid">
-            <a href="clients.html" class="action-btn">
-              <div class="action-icon grad-purple">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M17 21V19C17 16.8 15.2 15 13 15H5C2.8 15 1 16.8 1 19V21" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/><path d="M23 21V19M20 15C21.7 15.5 23 17.1 23 19" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-              </div>
-              <span class="action-lbl">Manage Clients</span>
-            </a>
-            <a href="session.html" class="action-btn">
-              <div class="action-icon grad-green">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 5V19M5 12H19" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-              </div>
-              <span class="action-lbl">New Session</span>
-            </a>
-            <a href="predictions.html" class="action-btn">
-              <div class="action-icon grad-blue">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M2 20H22M5 20V14M9 20V8M13 20V12M17 20V4" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-              </div>
-              <span class="action-lbl">AI Predictions</span>
-            </a>
-            <a href="archive.html" class="action-btn">
-              <div class="action-icon grad-orange">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12 2L15 8L22 9L17 14L18 21L12 18L6 21L7 14L2 9L9 8L12 2Z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-              </div>
-              <span class="action-lbl">Formula Archive</span>
-            </a>
-          </div>
-        </div>
+      <div class="stat-card">
+        <div class="stat-ic si-g"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div><div class="stat-val">91%</div><div class="stat-lbl">Avg. Success Rate</div><div class="stat-chg">↑ 3% vs last month</div></div>
       </div>
-
-      <!-- DAMAGE ALERTS -->
-      <div class="card" style="margin-bottom:1.25rem">
-        <div class="card-hd">
-          <h3 class="card-title">⚠️ Active Damage Alerts</h3>
-          <a href="predictions.html" class="view-all">View all predictions →</a>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-          <div style="background:#fff3e0;border-radius:var(--r-sm);padding:1rem;border-left:4px solid var(--warning)">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
-              <strong>Sofia Martinez</strong>
-              <span class="badge badge-high">High Risk</span>
-            </div>
-            <p style="font-size:0.82rem;color:var(--text-muted)">Platinum bleach session scheduled. High porosity + previous chemical damage detected.</p>
-            <a href="session.html" style="font-size:0.8rem;color:var(--primary);font-weight:600;margin-top:0.4rem;display:inline-block">Review before session →</a>
-          </div>
-          <div style="background:#fff3e0;border-radius:var(--r-sm);padding:1rem;border-left:4px solid var(--warning)">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
-              <strong>Aisha Dunmore</strong>
-              <span class="badge badge-medium">Medium Risk</span>
-            </div>
-            <p style="font-size:0.82rem;color:var(--text-muted)">Red correction over previously dyed hair. Recommend strand test before full application.</p>
-            <a href="session.html" style="font-size:0.8rem;color:var(--primary);font-weight:600;margin-top:0.4rem;display:inline-block">Run strand test →</a>
-          </div>
-        </div>
+      <div class="stat-card">
+        <div class="stat-ic si-b"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="white" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div><div class="stat-val" id="st-sessions">—</div><div class="stat-lbl">Sessions This Month</div><div class="stat-chg">↑ 2 vs last month</div></div>
       </div>
+    </div>
 
-      <!-- Popular Formulas -->
+    <!-- CONTENT GRID -->
+    <div class="content-grid">
+      <!-- Recent Sessions -->
       <div class="card">
-        <div class="card-hd">
-          <h3 class="card-title">Top Formulas This Week</h3>
-          <a href="archive.html" class="view-all">Archive →</a>
+        <div class="card-hdr"><h3>Recent Sessions</h3><a href="sessions.html" class="view-all">View all →</a></div>
+        <div class="act-list">
+          <div class="act-item"><div class="act-dot" style="background:linear-gradient(135deg,#8b4513,#d2691e)"></div><div><div class="act-name">Caramel Balayage</div><div class="act-meta">Level 7→9 · 20 vol · Maria S.</div></div><span class="act-time">2h ago</span></div>
+          <div class="act-item"><div class="act-dot" style="background:linear-gradient(135deg,#4a148c,#ab47bc)"></div><div><div class="act-name">Violet Vivid Mix</div><div class="act-meta">Level 10 base · 10 vol · Priya T.</div></div><span class="act-time">1d ago</span></div>
+          <div class="act-item"><div class="act-dot" style="background:linear-gradient(135deg,#b71c1c,#e53935)"></div><div><div class="act-name">Cherry Red Correction</div><div class="act-meta">Level 6→8 · Low damage · Aisha M.</div></div><span class="act-time">3d ago</span></div>
+          <div class="act-item"><div class="act-dot" style="background:linear-gradient(135deg,#e8e0a0,#f5f0d8)"></div><div><div class="act-name">Platinum Transition</div><div class="act-meta">Level 5→10 · High porosity · Claire J.</div></div><span class="act-time">5d ago</span></div>
         </div>
-        <div class="formula-grid">
-          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#ffd700,#ffed4e)"></div><div class="formula-info"><h4>Golden Blonde</h4><p>Lv.8 • 87% success</p></div></div>
-          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#8b4513,#d2691e)"></div><div class="formula-info"><h4>Rich Caramel</h4><p>Lv.7 • 92% success</p></div></div>
-          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#800000,#cd5c5c)"></div><div class="formula-info"><h4>Auburn Red</h4><p>Lv.6 • 89% success</p></div></div>
-          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#2c1810,#4a2c1f)"></div><div class="formula-info"><h4>Espresso Brown</h4><p>Lv.4 • 95% success</p></div></div>
-          <div class="formula-card"><div class="formula-preview" style="background:linear-gradient(135deg,#e6e6fa,#d8bfd8)"></div><div class="formula-info"><h4>Lavender Dream</h4><p>Lv.10 • 84% success</p></div></div>
+      </div>
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-hdr"><h3>Quick Actions</h3></div>
+        <div class="qa-grid">
+          <a href="color-mixer.html" class="qa-btn"><div class="qa-ic" style="background:linear-gradient(135deg,var(--pd),var(--pl));color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="white" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span class="qa-lbl">Color Mixer</span></a>
+          <a href="clients.html" class="qa-btn"><div class="qa-ic" style="background:linear-gradient(135deg,#c0392b,#e91e8c);color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="white" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span class="qa-lbl">Add Client</span></a>
+          <a href="strand-test.html" class="qa-btn"><div class="qa-ic" style="background:linear-gradient(135deg,#219a52,#81c784);color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="qa-lbl">Strand Test</span></a>
+          <a href="archive.html" class="qa-btn"><div class="qa-ic" style="background:linear-gradient(135deg,#e67e22,#f9a825);color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span class="qa-lbl">Archive</span></a>
+          <a href="sessions.html" class="qa-btn"><div class="qa-ic" style="background:linear-gradient(135deg,#1565c0,#64b5f6);color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="white" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span class="qa-lbl">Sessions</span></a>
+          <a href="profile.html" class="qa-btn"><div class="qa-ic" style="background:linear-gradient(135deg,#607d8b,#90a4ae);color:#fff"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="white" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div><span class="qa-lbl">Profile</span></a>
         </div>
       </div>
     </div>
-  </main>
+
+    <!-- POPULAR FORMULAS -->
+    <div class="card">
+      <div class="card-hdr"><h3>Popular Formulas This Week</h3><a href="archive.html" class="view-all">View all →</a></div>
+      <div class="formula-grid">
+        <div class="fc" onclick="location.href='archive.html'"><div class="fc-prev" style="background:linear-gradient(135deg,#d4a017,#f5d878)"></div><div class="fc-info"><div class="fc-name">Golden Blonde</div><div class="fc-meta">Level 8 · 87%</div></div></div>
+        <div class="fc" onclick="location.href='archive.html'"><div class="fc-prev" style="background:linear-gradient(135deg,#7b3f00,#c47a27)"></div><div class="fc-info"><div class="fc-name">Rich Caramel</div><div class="fc-meta">Level 7 · 92%</div></div></div>
+        <div class="fc" onclick="location.href='archive.html'"><div class="fc-prev" style="background:linear-gradient(135deg,#7b0000,#c0392b)"></div><div class="fc-info"><div class="fc-name">Auburn Red</div><div class="fc-meta">Level 6 · 89%</div></div></div>
+        <div class="fc" onclick="location.href='archive.html'"><div class="fc-prev" style="background:linear-gradient(135deg,#1a0a00,#3d1f00)"></div><div class="fc-info"><div class="fc-name">Espresso Brown</div><div class="fc-meta">Level 4 · 95%</div></div></div>
+        <div class="fc" onclick="location.href='archive.html'"><div class="fc-prev" style="background:linear-gradient(135deg,#d8bfd8,#e6c9f0)"></div><div class="fc-info"><div class="fc-name">Lavender Dream</div><div class="fc-meta">Level 10 · 84%</div></div></div>
+      </div>
+    </div>
+  </div>
+</main>
 </div>
 
-<div class="toast" id="toast"></div>
-<script src="app.js"></script>
 <script>
-  initApp();
-  // Personalize welcome
-  const u = sessionStorage.getItem('cc_user');
-  if (u) {
-    const usr = JSON.parse(u);
-    const n = usr.name || usr.email.split('@')[0];
-    document.getElementById('welcomeTitle').textContent = 'Welcome back, ' + n.charAt(0).toUpperCase() + n.slice(1);
-  }
+document.addEventListener('DOMContentLoaded',()=>{
+  const u=window.CC_USER;
+  if(!u) return;
+  const n=u.name||'Stylist';
+  const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+  const init=s=>(s||'S')[0].toUpperCase();
+  document.getElementById('userName').textContent=cap(n);
+  document.getElementById('sbName').textContent=cap(n);
+  document.getElementById('sbEmail').textContent=u.email||'';
+  document.getElementById('sbAv').textContent=init(n);
+  document.getElementById('tbAv').textContent=init(n);
+
+  // Live stats from localStorage
+  const fLen=(JSON.parse(localStorage.getItem('cc_formulas')||'[]')).length;
+  const cLen=(JSON.parse(localStorage.getItem('cc_clients')||'[]')).length;
+  const sLen=(JSON.parse(localStorage.getItem('cc_sessions')||'[]')).length;
+  document.getElementById('st-formulas').textContent=fLen||24;
+  document.getElementById('st-clients').textContent=cLen||8;
+  document.getElementById('st-sessions').textContent=sLen||12;
+
+  // Animate cards
+  document.querySelectorAll('.stat-card,.card,.fc').forEach((el,i)=>{
+    el.style.opacity='0';el.style.transform='translateY(14px)';el.style.transition='opacity .4s ease,transform .4s ease';
+    setTimeout(()=>{el.style.opacity='1';el.style.transform='translateY(0)'},60+i*35);
+  });
+});
 </script>
 </body>
 </html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ColourChem — Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#7c5cbf;--pl:#b07fd4;--pd:#5a3fa0;--bg:#f8f5ff;--surface:#fff;--s2:#f2ecff;--text:#1c1830;--muted:#7a7490;--border:#e0d6f5;--font-d:'Cormorant Garamond',serif;--font-b:'Outfit',sans-serif;--r:10px;--t:.22s ease}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);min-height:100vh;display:flex;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit} button{border:none;background:none;cursor:pointer;font-family:inherit}
+input,select{font-family:inherit;border:none;outline:none}
+.auth-page{display:flex;min-height:100vh;width:100%}
+.auth-left{width:400px;flex-shrink:0;background:linear-gradient(155deg,#3d2b8a 0%,#6b45b5 40%,#9b6fd4 75%,#d4a0e0 100%);padding:3rem 2.5rem;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.auth-left::before{content:'';position:absolute;top:-40%;right:-40%;width:200%;height:200%;background:radial-gradient(ellipse,rgba(255,255,255,.07) 0%,transparent 60%);animation:orb 22s ease-in-out infinite;pointer-events:none}
+@keyframes orb{0%,100%{transform:translate(0,0)}50%{transform:translate(20px,-25px)}}
+.brand{position:relative;z-index:2;text-align:center;color:#fff;animation:fu .7s ease .1s both}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.brand-logo{width:90px;height:90px;margin:0 auto 1.4rem;filter:drop-shadow(0 6px 18px rgba(0,0,0,.2))}
+.brand-name{font-family:var(--font-d);font-size:2.7rem;font-weight:700;letter-spacing:-.02em;line-height:1}
+.brand-tag{font-size:.85rem;opacity:.8;margin:.3rem 0 2.2rem;font-weight:300;letter-spacing:.05em}
+.brand-features{display:flex;flex-direction:column;gap:.5rem;text-align:left}
+.bf{display:flex;align-items:center;gap:.65rem;padding:.5rem .85rem;background:rgba(255,255,255,.12);border-radius:8px;border:1px solid rgba(255,255,255,.14);font-size:.82rem;transition:var(--t)}
+.bf:hover{background:rgba(255,255,255,.18);transform:translateX(4px)}
+.auth-right{flex:1;display:flex;align-items:center;justify-content:center;padding:2.5rem 2rem;overflow-y:auto}
+.auth-box{width:100%;max-width:450px;animation:fu .7s ease .2s both}
+.form-title{font-family:var(--font-d);font-size:2.4rem;font-weight:600;line-height:1}
+.form-sub{color:var(--muted);font-size:.875rem;margin:.35rem 0 1.75rem}
+.alert{padding:.68rem 1rem;border-radius:8px;font-size:.82rem;margin-bottom:.9rem;display:none}
+.alert-error{background:#fff0f3;border:1px solid #ffc0cb;color:#c0392b}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.8rem;font-weight:500;margin-bottom:.35rem;color:var(--text)}
+.fg input,.fg select{width:100%;padding:.72rem .9rem;background:var(--s2);border:2px solid transparent;border-radius:var(--r);font-size:.875rem;color:var(--text);transition:var(--t)}
+.fg input:focus,.fg select:focus{background:var(--surface);border-color:var(--primary);box-shadow:0 0 0 4px rgba(124,92,191,.1)}
+.fg input::placeholder{color:#ccc}
+.check-lbl{display:flex;align-items:center;gap:.45rem;font-size:.82rem;cursor:pointer;color:var(--muted);margin-bottom:1.2rem}
+.check-lbl input[type=checkbox]{width:15px;height:15px;accent-color:var(--primary);flex-shrink:0}
+.lnk{color:var(--primary);font-weight:500;transition:var(--t)}
+.lnk:hover{color:var(--pd)}
+.btn-primary{width:100%;padding:.86rem;display:flex;align-items:center;justify-content:center;gap:.5rem;background:linear-gradient(135deg,var(--pd),var(--primary),var(--pl));color:#fff;border-radius:var(--r);font-size:.92rem;font-weight:500;box-shadow:0 4px 16px rgba(124,92,191,.3);transition:var(--t);cursor:pointer;border:none}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,92,191,.42)}
+.btn-primary:disabled{opacity:.65;cursor:not-allowed;transform:none}
+.auth-footer{text-align:center;margin-top:1.35rem;font-size:.82rem;color:var(--muted)}
+.pw-strength{height:3px;border-radius:2px;margin-top:.35rem;transition:all .3s ease;background:var(--border)}
+@media(max-width:768px){.auth-left{display:none}}
+</style>
+</head>
+<body class="auth-page">
+<div class="auth-left">
+  <div class="brand">
+    <div class="brand-logo">
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(255,255,255,.95)"/><stop offset="100%" stop-color="rgba(255,255,255,.6)"/></linearGradient></defs>
+        <path d="M60 18Q78 26 84 50Q88 64 84 80Q80 96 68 108Q64 112 60 116" stroke="url(#g1)" stroke-width="4.5" stroke-linecap="round"/>
+        <path d="M60 18Q42 26 36 50Q32 64 36 80Q40 96 52 108Q56 112 60 116" stroke="url(#g1)" stroke-width="4.5" stroke-linecap="round"/>
+        <circle cx="60" cy="13" r="7.5" fill="url(#g1)"/>
+      </svg>
+    </div>
+    <div class="brand-name">ColourChem</div>
+    <div class="brand-tag">Professional Hair Color Chemistry</div>
+    <div class="brand-features">
+      <div class="bf">✨ Free to get started</div>
+      <div class="bf">🔒 Your data stays private</div>
+      <div class="bf">📱 Access from any device</div>
+      <div class="bf">🧪 AI damage prediction</div>
+    </div>
+  </div>
+</div>
+<div class="auth-right">
+  <div class="auth-box">
+    <h1 class="form-title">Create Account</h1>
+    <p class="form-sub">Join professional colourists on ColourChem</p>
+    <div class="alert alert-error" id="errMsg"></div>
+    <div class="form-row">
+      <div class="fg"><label>First Name</label><input type="text" id="fname" placeholder="Jane"></div>
+      <div class="fg"><label>Last Name</label><input type="text" id="lname" placeholder="Doe"></div>
+    </div>
+    <div class="fg"><label>Username</label><input type="text" id="uname" placeholder="janedoe"></div>
+    <div class="fg"><label>Email Address</label><input type="email" id="email" placeholder="jane@salon.com"></div>
+    <div class="form-row">
+      <div class="fg">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Min. 6 characters" oninput="checkPw(this.value)">
+        <div class="pw-strength" id="pwStr"></div>
+      </div>
+      <div class="fg"><label>Confirm Password</label><input type="password" id="confirm" placeholder="Repeat password"></div>
+    </div>
+    <label class="check-lbl"><input type="checkbox" id="terms"><span>I agree to the <a href="#" class="lnk">Terms of Service</a> and <a href="#" class="lnk">Privacy Policy</a></span></label>
+    <button class="btn-primary" id="signupBtn" onclick="doSignup()">
+      <span>Create Account</span>
+      <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <p class="auth-footer">Already have an account? <a href="login.html" class="lnk" style="font-weight:600">Sign in</a></p>
+  </div>
+</div>
+<script>
+function checkPw(v){
+  const s=document.getElementById('pwStr');
+  if(!v){s.style.background='var(--border)';s.style.width='100%';return}
+  const score=v.length>=8&&/[A-Z]/.test(v)&&/[0-9]/.test(v)?3:v.length>=6?2:1;
+  const c=['#e74c3c','#e67e22','#27ae60'][score-1];
+  const w=['33%','66%','100%'][score-1];
+  s.style.background=c;s.style.width=w;
+}
+function doSignup(){
+  const fname=document.getElementById('fname').value.trim();
+  const lname=document.getElementById('lname').value.trim();
+  const uname=document.getElementById('uname').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const pw=document.getElementById('password').value;
+  const conf=document.getElementById('confirm').value;
+  const terms=document.getElementById('terms').checked;
+  const err=document.getElementById('errMsg');
+  const btn=document.getElementById('signupBtn');
+  err.style.display='none';
+  if(!fname||!lname||!uname||!email||!pw||!conf){err.textContent='Please fill in all fields.';err.style.display='block';return}
+  if(pw.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return}
+  if(pw!==conf){err.textContent='Passwords do not match.';err.style.display='block';return}
+  if(!terms){err.textContent='Please accept the Terms of Service.';err.style.display='block';return}
+  btn.innerHTML='<span>Creating account…</span>';btn.disabled=true;
+  setTimeout(()=>{
+    localStorage.setItem('cc_user',JSON.stringify({email,name:uname,fname,lname,loggedIn:true,ts:Date.now()}));
+    location.href='dashboard.html';
+  },950);
+}
+</script>
+</body>
+</html>
