@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Color Mixer — ColourChem</title>
+<title>Strand Test — ColourChem</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -133,7 +133,8 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 .empty-state svg{opacity:.3}
 
 /* ── RESULTS COLUMN: no gap between cards ── */
-.results-col{display:flex;flex-direction:column;gap:0}
+.results-col{display:flex;  flex-direction:column;gap:.4rem;}
+.results-col .card{margin-bottom:0;}
 .results-col .card{margin-bottom:.7rem}
 .results-col .card:last-child{margin-bottom:0}
 
@@ -183,8 +184,8 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
     <ul class="nav-list">
       <li class="nav-item"><a href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
       <li class="nav-item"><a href="clients.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
-      <li class="nav-item active"><a href="color-mixer.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Color Mixer</span></a></li>
-      <li class="nav-item"><a href="strand-test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item active"><a href="strand_test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="damage_assessment.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Damage Assessment</span></a></li>
       <li class="nav-item"><a href="archive.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
       <li class="nav-item"><a href="sessions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
     </ul>
@@ -199,7 +200,7 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 
 <main class="main">
   <header class="topbar" id="topbar">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>Color Mixer</span></div>
+    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>Strand Test</span></div>
     <div class="topbar-r">
       <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveFormula()" style="display:none">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 21v-8H7v8M7 3v5h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -211,7 +212,7 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 
   <div class="content">
     <div class="page-hdr">
-      <div><h1 class="page-title">Color Mixing Predictor</h1><p class="page-sub">Simulate hair colour transformations with precision chemistry</p></div>
+      <div><h1 class="page-title">Strand Test</h1><p class="page-sub">Simulate hair colour transformations with precision chemistry</p></div>
     </div>
 
     <!-- MODE TABS -->
@@ -674,7 +675,7 @@ function predict(){
   document.getElementById('resultsArea').innerHTML=`
     <div class="rb"><div class="rb-hdr"><span class="rb-title">Damage Risk</span><span class="badge ${riskCls}">${riskLbl}</span></div>
     <div class="dmg-meter"><div class="dmg-fill" style="width:${dmg}%"></div></div>
-    <p class="rb-desc">Score: ${dmg}/100. ${dmg>60?'Use a bond strengthener (Olaplex, K18).':'Manageable with proper aftercare.'}</p></div>
+    <p class="rb-desc">${dmg>60?'Use a bond strengthener (Olaplex, K18).':'Manageable with proper aftercare.'}</p>
     <div class="rb"><div class="rb-hdr"><span class="rb-title">Predicted Lift</span></div>
     <div class="rb-big">Lv ${curLv} → ${achieved}</div>
     <p class="rb-desc">${diff>maxLift?`⚠️ Requested ${diff} levels but ${dev}vol lifts max ${maxLift}.`:'Achievable with selected developer.'}</p></div>
@@ -694,7 +695,13 @@ function predict(){
   document.getElementById('saveBtn').style.display='inline-flex';
   window._pred={curLv,tgtLv:achieved,dev,time,dmg,shade:document.getElementById('targetShade').value,brand:document.getElementById('dyeBrand').value,mode:'natural'};
   // Scroll to top
-  document.getElementById('topbar').scrollIntoView({behavior:'smooth'});
+  const resultsEl = document.getElementById('resultsArea');
+  if(resultsEl){
+    resultsEl.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+  }
 }
 
 // ── FASHION PREDICT ──
@@ -733,7 +740,7 @@ function predictFashion(){
   document.getElementById('resultsArea').innerHTML=`
     <div class="rb"><div class="rb-hdr"><span class="rb-title">Damage Risk</span><span class="badge ${riskCls}">${riskLbl}</span></div>
     <div class="dmg-meter"><div class="dmg-fill" style="width:${dmg}%"></div></div>
-    <p class="rb-desc">Score: ${dmg}/100. ${dmg>60?'Bond treatment (Olaplex, K18) strongly recommended.':'Manageable with proper aftercare.'}</p></div>
+    <p class="rb-desc">${dmg>60?'Bond treatment (Olaplex, K18) strongly recommended.':'Manageable with proper aftercare.'}</p>
     <div class="rb"><div class="rb-hdr"><span class="rb-title">Pre-Lightening</span></div>
     <div class="rb-big" style="font-size:1.1rem;color:${needsBleach?'var(--error)':'var(--success)'}">${needsBleach?'Required ⚠️':'Not required ✓'}</div>
     <p class="rb-desc">${needsBleach?`Hair needs to reach approx. Level ${baseLvNeeded} before applying fashion colour. Current lift capacity: ${maxLift} levels with ${dev}vol.`:`${dev}vol developer can achieve the required base level.`}</p></div>
