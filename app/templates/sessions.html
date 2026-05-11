@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sessions — ColourChem</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#7c5cbf;--pl:#b07fd4;--pd:#5a3fa0;--accent:#e8a0c0;--bg:#f8f5ff;--surface:#fff;--s2:#f2ecff;--s3:#ede6ff;--text:#1c1830;--muted:#7a7490;--border:#e0d6f5;--success:#219a52;--warn:#e67e22;--error:#c0392b;--shadow:0 2px 12px rgba(100,70,180,.08);--shadow-md:0 4px 20px rgba(100,70,180,.13);--shadow-lg:0 8px 40px rgba(100,70,180,.18);--font-d:'Cormorant Garamond',serif;--font-b:'Outfit',sans-serif;--r:10px;--r-lg:18px;--r-full:9999px;--t:.22s ease;--sidebar:260px}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}button{border:none;background:none;cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit;border:none;outline:none;background:none}
+.app{display:flex;min-height:100vh}
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:100}
+.sb-hdr{padding:1.35rem 1.25rem 1rem;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid var(--border)}
+.sb-logo{width:32px;height:32px;flex-shrink:0}
+.sb-brand{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--pd)}
+.nav-section{padding:.9rem 0;flex:1}
+.nav-lbl{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.5rem 1.25rem .25rem;display:block}
+.nav-list{list-style:none}
+.nav-item a{display:flex;align-items:center;gap:.7rem;padding:.58rem 1.25rem;color:var(--muted);font-size:.85rem;font-weight:400;transition:var(--t);border-left:3px solid transparent}
+.nav-item a:hover{background:var(--s2);color:var(--primary)}
+.nav-item.active a{background:linear-gradient(90deg,rgba(124,92,191,.12),transparent);color:var(--primary);border-left-color:var(--primary);font-weight:500}
+.sb-footer{border-top:1px solid var(--border);padding:.5rem 0}
+.sb-user{display:flex;align-items:center;gap:.7rem;padding:.85rem 1.25rem}
+.sb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--pl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
+.sb-un{font-size:.82rem;font-weight:600}.sb-ue{font-size:.72rem;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.9rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.breadcrumb{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--muted)}
+.breadcrumb a{color:var(--primary);font-weight:500}
+.topbar-r{display:flex;align-items:center;gap:.55rem}
+.tb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--pl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:#fff}
+.content{padding:2rem;flex:1}
+.page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem}
+.page-title{font-family:var(--font-d);font-size:2.2rem;font-weight:700;line-height:1.1}
+.page-sub{color:var(--muted);font-size:.875rem;margin-top:.2rem}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.45rem;padding:.68rem 1.3rem;border-radius:var(--r);font-size:.875rem;font-weight:500;cursor:pointer;border:none;transition:var(--t)}
+.btn-primary{background:linear-gradient(135deg,var(--pd),var(--primary),var(--pl));color:#fff;box-shadow:0 4px 14px rgba(124,92,191,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,92,191,.42)}
+.btn-primary:active{transform:translateY(0)}
+.btn-outline{background:var(--surface);border:1.5px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--primary);background:var(--s2);color:var(--primary)}
+.btn-danger{background:#fff0f3;color:var(--error);border:1.5px solid #ffd6df}
+.btn-danger:hover{background:var(--error);color:#fff;border-color:var(--error)}
+.btn-sm{padding:.42rem .85rem;font-size:.8rem}
+.btn-full{width:100%;justify-content:center}
+/* CARDS */
+.card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.4rem;box-shadow:var(--shadow)}
+.card-title{font-family:var(--font-d);font-size:1.2rem;font-weight:600;margin-bottom:1rem}
+/* FORMS */
+.fg{margin-bottom:1rem}
+.fg label{display:block;font-size:.8rem;font-weight:500;margin-bottom:.35rem;color:var(--text)}
+.fg input,.fg select,.fg textarea{width:100%;padding:.7rem .9rem;background:var(--s2);border:2px solid transparent;border-radius:var(--r);font-size:.875rem;color:var(--text);transition:var(--t)}
+.fg input:focus,.fg select:focus,.fg textarea:focus{background:var(--surface);border-color:var(--primary);box-shadow:0 0 0 4px rgba(124,92,191,.1)}
+.fg textarea{resize:vertical;min-height:80px}
+.fg select{cursor:pointer}.fg input::placeholder,.fg textarea::placeholder{color:#ccc}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;z-index:200;background:rgba(28,24,48,.5);backdrop-filter:blur(4px);align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--r-lg);width:90%;max-width:600px;max-height:92vh;overflow-y:auto;padding:2rem;box-shadow:var(--shadow-lg);animation:mIn .22s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.96) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem}
+.modal-title{font-family:var(--font-d);font-size:1.7rem;font-weight:600}
+.modal-x{width:28px;height:28px;border-radius:50%;background:var(--s2);color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:.9rem;cursor:pointer;flex-shrink:0;border:none;transition:var(--t)}
+.modal-x:hover{background:var(--border);color:var(--text)}
+.modal-sec{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:1.2rem 0 .6rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
+.modal-foot{display:flex;justify-content:flex-end;gap:.55rem;margin-top:1.2rem}
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border);border-radius:var(--r);padding:1.2rem;display:flex;align-items:center;justify-content:center;gap:.6rem;background:var(--s2);cursor:pointer;transition:var(--t);text-align:center;color:var(--muted)}
+.upload-zone:hover{border-color:var(--primary);background:rgba(124,92,191,.05)}
+.upload-zone small{font-size:.78rem}
+/* SESSIONS LIST */
+.sessions-list{display:flex;flex-direction:column;gap:1rem}
+.sess-card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.25rem;box-shadow:var(--shadow);transition:var(--t)}
+.sess-card:hover{box-shadow:var(--shadow-md)}
+.sess-inner{display:flex;gap:1rem;align-items:flex-start}
+.sess-dot{width:50px;height:50px;border-radius:50%;flex-shrink:0;border:3px solid var(--surface);box-shadow:var(--shadow)}
+.sess-body{flex:1;min-width:0}
+.sess-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.65rem}
+.sess-name{font-size:1rem;font-weight:600;color:var(--text)}
+.sess-meta{font-size:.78rem;color:var(--muted);margin-top:.08rem}
+.sess-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.6rem}
+.tag{display:inline-block;padding:.17rem .58rem;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-full);font-size:.72rem;color:var(--muted)}
+.badge{display:inline-block;padding:.18rem .65rem;border-radius:var(--r-full);font-size:.72rem;font-weight:600}
+.b-low{background:#e8f8ee;color:#219a52}.b-med{background:#fff3e0;color:#c87a00}.b-high{background:#feecec;color:var(--error)}.b-purple{background:#ede7f6;color:var(--pd)}
+.stars{font-size:1rem;letter-spacing:.05em}
+.star-on{color:#f5a623}.star-off{color:var(--border)}
+.sess-note{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:.4rem}
+.sess-actions{display:flex;gap:.4rem;align-items:center;flex-shrink:0}
+/* STAR RATING INPUT */
+.star-input{display:flex;gap:.35rem;font-size:1.6rem;cursor:pointer}
+.star-input span{color:var(--border);transition:var(--t);line-height:1}
+.star-input span.on{color:#f5a623}
+/* EMPTY */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.5rem 1.5rem;color:var(--muted);text-align:center;gap:.7rem;font-size:.875rem}
+.empty-state svg{opacity:.3}
+@media(max-width:768px){:root{--sidebar:68px}.sb-brand,.nav-item a span,.nav-lbl,.sb-un,.sb-ue{display:none}.nav-item a{justify-content:center;padding:.65rem}.sb-hdr{justify-content:center;padding:1rem .5rem}.content{padding:1rem}.topbar{padding:.7rem 1rem}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<script>
+(function(){
+  const u=JSON.parse(localStorage.getItem('cc_user')||'null');
+  if(!u||!u.loggedIn){location.href='login.html';return}
+  window.CC_USER=u;
+  window.logout=function(){localStorage.removeItem('cc_user');location.href='login.html'};
+})();
+</script>
+
+<div class="app">
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sb-hdr"><svg class="sb-logo" viewBox="0 0 80 80" fill="none"><defs><linearGradient id="slg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#b07fd4"/><stop offset="100%" stop-color="#5a3fa0"/></linearGradient></defs><path d="M40 12Q52 17 56 34Q59 44 56 54Q53 64 44 71Q42 73 40 76" stroke="url(#slg)" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M40 12Q28 17 24 34Q21 44 24 54Q27 64 36 71Q38 73 40 76" stroke="url(#slg)" stroke-width="3.5" stroke-linecap="round" fill="none"/><circle cx="40" cy="9" r="5.5" fill="url(#slg)"/></svg><span class="sb-brand">ColourChem</span></div>
+  <div class="nav-section">
+    <span class="nav-lbl">Main</span>
+    <ul class="nav-list">
+      <li class="nav-item"><a href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
+      <li class="nav-item"><a href="clients.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
+      <li class="nav-item"><a href="color-mixer.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Color Mixer</span></a></li>
+      <li class="nav-item"><a href="strand-test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="archive.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
+      <li class="nav-item active"><a href="sessions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
+    </ul>
+    <span class="nav-lbl" style="margin-top:.5rem">Account</span>
+    <ul class="nav-list">
+      <li class="nav-item"><a href="profile.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
+      <li class="nav-item"><a href="#" onclick="logout();return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Logout</span></a></li>
+    </ul>
+  </div>
+  <div class="sb-footer"><div class="sb-user"><div class="sb-av" id="sbAv">S</div><div><div class="sb-un" id="sbName">Stylist</div><div class="sb-ue" id="sbEmail"></div></div></div></div>
+</nav>
+
+<main class="main">
+  <header class="topbar">
+    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>Sessions</span></div>
+    <div class="topbar-r">
+      <button class="btn btn-primary btn-sm" onclick="openModal()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Log Session
+      </button>
+      <div class="tb-av" id="tbAv">S</div>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="page-hdr">
+      <div><h1 class="page-title">Dye Sessions</h1><p class="page-sub">Record outcomes, upload photos &amp; submit AI training feedback</p></div>
+    </div>
+    <div class="sessions-list" id="sessionsList"></div>
+    <div class="empty-state" id="sessEmpty" style="display:none">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><rect x="8" y="10" width="48" height="44" rx="4" stroke="currentColor" stroke-width="2"/><path d="M20 6v8M44 6v8M8 26h48" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <p style="font-size:1rem;font-weight:500">No sessions logged yet</p>
+      <p>Click "Log Session" to record your first dye session.</p>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- LOG SESSION MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2 class="modal-title">Log Dye Session</h2>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-sec">Session Details</div>
+    <div class="fg"><label>Client</label><select id="s_client"><option value="">No client linked</option></select></div>
+    <div class="form-row">
+      <div class="fg"><label>Session Date</label><input type="date" id="s_date"></div>
+      <div class="fg"><label>Desired Shade</label><input type="text" id="s_shade" placeholder="E.g. Caramel Balayage"></div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>Starting Level</label>
+        <select id="s_slvl"><option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
+      </div>
+      <div class="fg"><label>Target Level</label>
+        <select id="s_tlvl"><option value="">Select</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="fg"><label>Developer Volume</label>
+        <select id="s_dev"><option>10 vol</option><option>20 vol</option><option>30 vol</option><option>40 vol</option></select>
+      </div>
+      <div class="fg"><label>Processing Time (min)</label><input type="number" id="s_time" placeholder="30" min="5" max="120"></div>
+    </div>
+    <div class="fg"><label>Dye Brand &amp; Formula Used</label><input type="text" id="s_formula" placeholder="E.g. Wella Koleston Perfect 7/43 + 20 vol"></div>
+
+    <div class="modal-sec">Before &amp; After Photos</div>
+    <div class="form-row">
+      <div class="fg">
+        <label>Before Photo</label>
+        <div class="upload-zone" onclick="document.getElementById('s_before').click()">
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><rect x="3" y="7" width="26" height="19" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="14" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 22l7-7 4 4 7-7 7 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <small id="beforeLbl">Upload before photo</small>
+        </div>
+        <input type="file" id="s_before" accept="image/*" style="display:none" onchange="labelFile(this,'beforeLbl')">
+      </div>
+      <div class="fg">
+        <label>After Photo</label>
+        <div class="upload-zone" onclick="document.getElementById('s_after').click()">
+          <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><rect x="3" y="7" width="26" height="19" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="14" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 22l7-7 4 4 7-7 7 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <small id="afterLbl">Upload after photo</small>
+        </div>
+        <input type="file" id="s_after" accept="image/*" style="display:none" onchange="labelFile(this,'afterLbl')">
+      </div>
+    </div>
+
+    <div class="modal-sec">AI Training Feedback</div>
+    <div class="fg"><label>Actual Outcome vs. Prediction</label>
+      <select id="s_outcome">
+        <option>Better than predicted</option>
+        <option selected>As predicted</option>
+        <option>Slightly off – minor adjustment needed</option>
+        <option>Significantly off – major correction needed</option>
+        <option>Unexpected damage occurred</option>
+      </select>
+    </div>
+    <div class="fg"><label>Feedback Notes</label><textarea id="s_notes" placeholder="E.g. Result was slightly more orange than predicted on mid-lengths — porosity was higher than assessed…"></textarea></div>
+    <div class="fg">
+      <label>Client Satisfaction</label>
+      <div class="star-input" id="starInput">
+        <span data-v="1">☆</span><span data-v="2">☆</span><span data-v="3">☆</span><span data-v="4">☆</span><span data-v="5">☆</span>
+      </div>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-outline btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveSession()">Save Session</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const LC={1:['#1a1a1a','#2d2d2d'],2:['#2c1810','#4a2c1f'],3:['#4a3728','#6b5040'],4:['#6b4c3b','#8b6550'],5:['#8b6b4a','#a07850'],6:['#a07850','#c49a5a'],7:['#c49a5a','#d4ab6a'],8:['#d4ab6a','#e8c880'],9:['#e8c880','#f0d890'],10:['#f0d890','#f8f0dc']};
+const SAMPLES=[
+  {client:'Maria S.',date:'2025-05-08',shade:'Caramel Balayage',slvl:'7',tlvl:'9',dev:'20 vol',time:'35',formula:'Wella Koleston Perfect 7/43',outcome:'As predicted',stars:5,notes:'Lovely result, client very happy.',lc:['#c49a5a','#d4ab6a']},
+  {client:'Priya T.',date:'2025-05-07',shade:'Violet Vivid Mix',slvl:'10',tlvl:'10',dev:'10 vol',time:'25',formula:'Schwarzkopf Chroma ID 0-22',outcome:'Better than predicted',stars:4,notes:'Vivid tone lasted well. Recommend toner at 6 weeks.',lc:['#7b1fa2','#ab47bc']},
+  {client:'Aisha M.',date:'2025-05-04',shade:'Cherry Red Correction',slvl:'6',tlvl:'8',dev:'20 vol',time:'30',formula:'Redken Color Fusion 6R',outcome:'As predicted',stars:5,notes:'',lc:['#b71c1c','#e53935']},
+];
+
+let sessions=[];
+let selectedStars=0;
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const u=CC_USER;
+  const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+  const init=s=>(s||'S')[0].toUpperCase();
+  const n=u.name||'Stylist';
+  document.getElementById('sbName').textContent=cap(n);
+  document.getElementById('sbEmail').textContent=u.email||'';
+  document.getElementById('sbAv').textContent=init(n);
+  document.getElementById('tbAv').textContent=init(n);
+  // Load clients
+  const cs=JSON.parse(localStorage.getItem('cc_clients')||'[]');
+  const sel=document.getElementById('s_client');
+  cs.forEach(c=>{const o=document.createElement('option');o.textContent=`${c.fn} ${c.ln}`;sel.appendChild(o)});
+  // Set today's date
+  document.getElementById('s_date').valueAsDate=new Date();
+  // Load sessions
+  sessions=JSON.parse(localStorage.getItem('cc_sessions')||'[]');
+  if(!sessions.length)sessions=SAMPLES;
+  render();
+  setupStars();
+});
+
+function setupStars(){
+  const si=document.getElementById('starInput');
+  si.querySelectorAll('span').forEach(s=>{
+    s.addEventListener('click',()=>{
+      selectedStars=parseInt(s.dataset.v);
+      updateStarUI(selectedStars);
+    });
+    s.addEventListener('mouseenter',()=>updateStarUI(parseInt(s.dataset.v)));
+  });
+  si.addEventListener('mouseleave',()=>updateStarUI(selectedStars));
+}
+function updateStarUI(v){
+  document.getElementById('starInput').querySelectorAll('span').forEach((s,i)=>{
+    s.textContent=i<v?'★':'☆';
+    s.className=i<v?'on':'';
+  });
+}
+
+function render(){
+  const list=document.getElementById('sessionsList');
+  const empty=document.getElementById('sessEmpty');
+  if(!sessions.length){list.innerHTML='';empty.style.display='flex';return}
+  empty.style.display='none';
+  list.innerHTML=sessions.map((s,i)=>{
+    const [c1,c2]=s.lc||LC[Math.max(1,Math.min(10,parseInt(s.tlvl)||7))];
+    const stars='★'.repeat(s.stars||0)+'☆'.repeat(5-(s.stars||0));
+    const outcomeClass=s.outcome&&s.outcome.startsWith('Better')?'b-low':s.outcome&&s.outcome.startsWith('As')?'b-purple':s.outcome&&s.outcome.includes('Slightly')?'b-med':'b-high';
+    const dt=s.date?new Date(s.date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+    return `<div class="sess-card">
+      <div class="sess-inner">
+        <div class="sess-dot" style="background:linear-gradient(135deg,${c1},${c2})"></div>
+        <div class="sess-body">
+          <div class="sess-top">
+            <div>
+              <div class="sess-name">${s.shade}</div>
+              <div class="sess-meta">${s.client||'No client'} &nbsp;·&nbsp; ${dt}</div>
+            </div>
+            <div class="sess-actions">
+              <span class="badge ${outcomeClass}">${s.outcome||'As predicted'}</span>
+              <button class="btn btn-danger btn-sm" onclick="delSession(${i})">Delete</button>
+            </div>
+          </div>
+          <div class="sess-chips">
+            ${s.slvl?`<span class="tag">Lv ${s.slvl} → ${s.tlvl}</span>`:''}
+            ${s.dev?`<span class="tag">${s.dev}</span>`:''}
+            ${s.time?`<span class="tag">${s.time} min</span>`:''}
+            ${s.formula?`<span class="tag" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.formula}</span>`:''}
+          </div>
+          ${s.notes?`<div class="sess-note">"${s.notes}"</div>`:''}
+          <div class="stars" style="margin-top:.45rem">
+            <span class="star-on">${'★'.repeat(s.stars||0)}</span><span class="star-off">${'☆'.repeat(5-(s.stars||0))}</span>
+            <span style="font-size:.72rem;color:var(--muted);margin-left:.25rem">client satisfaction</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(){
+  selectedStars=0;
+  updateStarUI(0);
+  ['s_client','s_shade','s_slvl','s_tlvl','s_dev','s_time','s_formula','s_outcome','s_notes'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';
+  });
+  document.getElementById('s_date').valueAsDate=new Date();
+  document.getElementById('beforeLbl').textContent='Upload before photo';
+  document.getElementById('afterLbl').textContent='Upload after photo';
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(){document.getElementById('modalBg').classList.remove('open')}
+function labelFile(inp,lbl){document.getElementById(lbl).textContent=inp.files[0]?'✓ '+inp.files[0].name:'Upload photo'}
+
+function saveSession(){
+  const shade=document.getElementById('s_shade').value.trim();
+  if(!shade){alert('Please enter a desired shade.');return}
+  const tlvl=parseInt(document.getElementById('s_tlvl').value)||7;
+  const lc=LC[Math.max(1,Math.min(10,tlvl))];
+  const sess={
+    client:document.getElementById('s_client').value||'No client',
+    date:document.getElementById('s_date').value,
+    shade,
+    slvl:document.getElementById('s_slvl').value,
+    tlvl:document.getElementById('s_tlvl').value,
+    dev:document.getElementById('s_dev').value,
+    time:document.getElementById('s_time').value,
+    formula:document.getElementById('s_formula').value.trim(),
+    outcome:document.getElementById('s_outcome').value,
+    notes:document.getElementById('s_notes').value.trim(),
+    stars:selectedStars,
+    lc,ts:Date.now()
+  };
+  sessions.unshift(sess);
+  localStorage.setItem('cc_sessions',JSON.stringify(sessions));
+  closeModal();render();
+}
+function delSession(i){
+  if(!confirm('Delete this session?'))return;
+  sessions.splice(i,1);
+  localStorage.setItem('cc_sessions',JSON.stringify(sessions));
+  render();
+}
+document.getElementById('modalBg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+</script>
+</body>
+</html>
