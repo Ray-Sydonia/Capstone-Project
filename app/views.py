@@ -120,7 +120,7 @@ def signup():
         return jsonify({"error": "Email already exists"}), 400
 
     new_user = User(
-        user_name=data['username'],
+        username=data['username'],
         email=data['email']
     )
 
