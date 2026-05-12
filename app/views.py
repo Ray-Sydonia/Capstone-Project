@@ -450,11 +450,19 @@ def delete_session(id):
 def create_formula():
     data = request.json
     formula = FormulaArchive(
-        session_id=data.get('session_id'),
-        formula_name=data.get('formula_name'),
-        dye_brand=data.get('dye_brand'),
-        developer_vol=data.get('developer_vol'),
-        process_time=data.get('process_time')
+        session_id    = data.get('session_id'),
+        formula_name  = data.get('formula_name'),
+        dye_brand     = data.get('dye_brand'),
+        developer_vol = data.get('developer_vol'),
+        process_time  = data.get('process_time'),
+        mode          = data.get('mode'),
+        current_level = data.get('current_level'),
+        target_level  = data.get('target_level'),
+        shade         = data.get('shade'),
+        texture       = data.get('texture'),
+        porosity      = data.get('porosity'),
+        damage_score  = data.get('damage_score'),
+        notes         = data.get('notes'),
     )
     db.session.add(formula)
     db.session.commit()
@@ -463,9 +471,24 @@ def create_formula():
 
 @main.route('/formulas', methods=['GET'])
 def get_formulas():
-    formulas = FormulaArchive.query.all()
+    formulas = FormulaArchive.query.order_by(FormulaArchive.saved_at.desc()).all()
     return jsonify([
-        {"id": f.formulaID, "name": f.formula_name}
+        {
+            "id":            f.formulaID,
+            "name":          f.formula_name,
+            "dye_brand":     f.dye_brand,
+            "developer_vol": f.developer_vol,
+            "process_time":  f.process_time,
+            "mode":          f.mode,
+            "current_level": f.current_level,
+            "target_level":  f.target_level,
+            "shade":         f.shade,
+            "texture":       f.texture,
+            "porosity":      f.porosity,
+            "damage_score":  f.damage_score,
+            "notes":         f.notes,
+            "saved_at":      f.saved_at.strftime('%Y-%m-%d') if f.saved_at else None,
+        }
         for f in formulas
     ])
 

@@ -81,19 +81,25 @@ class DyeSession(db.Model):
     predictions = db.relationship('StrandPredictions', backref='session', cascade='all, delete')
     
 class FormulaArchive(db.Model):
-    __tablename__ = 'FormulaArchive'
+    __tablename__ = "formulaarchive"
 
-    formulaID = db.Column(db.Integer, primary_key=True)
+    formulaID    = db.Column(db.Integer, primary_key=True)
+    session_id   = db.Column(db.Integer, db.ForeignKey('DyeSession.session_id', ondelete='CASCADE'))
 
-    session_id = db.Column(
-        db.Integer,
-        db.ForeignKey('DyeSession.session_id', ondelete='CASCADE')
-    )
-
-    formula_name = db.Column(db.String(100))
-    dye_brand = db.Column(db.String(100))
+    formula_name  = db.Column(db.String(100))
+    dye_brand     = db.Column(db.String(100))
     developer_vol = db.Column(db.Integer)
-    process_time = db.Column(db.Integer)
+    process_time  = db.Column(db.Integer)
+
+    # New fields
+    mode          = db.Column(db.String(20))   # 'natural' or 'fashion'
+    current_level = db.Column(db.Integer)
+    target_level  = db.Column(db.Integer)
+    shade         = db.Column(db.String(50))
+    texture       = db.Column(db.String(50))
+    porosity      = db.Column(db.String(50))
+    damage_score  = db.Column(db.Integer)
+    notes         = db.Column(db.Text)         # packed detail string for fashion
 
     saved_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     
