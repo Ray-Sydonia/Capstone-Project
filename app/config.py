@@ -11,7 +11,7 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = SA_URL.create(
         drivername="mysql+pymysql",
         username="root",
-        password=os.environ.get("DB_PASSWORD", "K@ija1342"),
+        password=os.environ.get("DB_PASSWORD"),
         host="localhost",
         database="colour_chem_db"
     )
