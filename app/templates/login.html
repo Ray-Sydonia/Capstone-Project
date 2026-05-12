@@ -110,8 +110,8 @@ input{font-family:inherit;border:none;outline:none}
     <div class="brand-name">ColourChem</div>
     <div class="brand-tag">Professional Hair Color Chemistry</div>
     <div class="brand-features">
-      <div class="bf"><span class="bf-ic">🎨</span><span>AI-Powered Color Mixing</span></div>
-      <div class="bf"><span class="bf-ic">🧪</span><span>Strand Damage Prediction</span></div>
+      <div class="bf"><span class="bf-ic">🎨</span><span>Strand Test</span></div>
+      <div class="bf"><span class="bf-ic">🧪</span><span>AI-Powered Damage Prediction</span></div>
       <div class="bf"><span class="bf-ic">👥</span><span>Multi-Client Management</span></div>
       <div class="bf"><span class="bf-ic">💾</span><span>Formula Archive</span></div>
     </div>
@@ -144,21 +144,66 @@ input{font-family:inherit;border:none;outline:none}
 </div>
 
 <script>
-if(JSON.parse(localStorage.getItem('cc_user')||'null')?.loggedIn) location.href='dashboard.html';
-function doLogin(){
-  const email=document.getElementById('email').value.trim();
-  const pw=document.getElementById('password').value;
-  const err=document.getElementById('errMsg');
-  const btn=document.getElementById('loginBtn');
-  err.style.display='none';
-  if(!email||!pw){err.textContent='Please fill in all fields.';err.style.display='block';return}
-  btn.innerHTML='<span>Signing in…</span>';btn.disabled=true;
-  setTimeout(()=>{
-    localStorage.setItem('cc_user',JSON.stringify({email,name:email.split('@')[0],loggedIn:true,ts:Date.now()}));
-    location.href='dashboard.html';
-  },850);
+// Redirect if already logged in
+fetch('/api/health').then(r => {
+  if(r.ok) {
+    const user = JSON.parse(localStorage.getItem('cc_user') || 'null');
+    if(user?.loggedIn) location.href = '/dashboard';
+  }
+});
+
+async function doLogin(){
+  const email = document.getElementById('email').value.trim();
+  const pw    = document.getElementById('password').value;
+  const err   = document.getElementById('errMsg');
+  const btn   = document.getElementById('loginBtn');
+
+  err.style.display = 'none';
+
+  if(!email || !pw){
+    err.textContent = 'Please fill in all fields.';
+    err.style.display = 'block';
+    return;
+  }
+
+  btn.innerHTML = '<span>Signing in…</span>';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email, password: pw })
+    });
+
+    const data = await res.json();
+
+    if(res.ok){
+      localStorage.setItem('cc_user', JSON.stringify({
+        id:      data.user.id,
+        email:   data.user.email,
+        name:    data.user.name,
+        loggedIn: true,
+        ts:      Date.now()
+      }));
+      location.href = '/dashboard';
+    } else {
+      err.textContent = data.error || 'Invalid email or password.';
+      err.style.display = 'block';
+      btn.innerHTML = '<span>Sign In</span><svg class="arrow" width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      btn.disabled = false;
+    }
+  } catch(e) {
+    err.textContent = 'Network error. Is the server running?';
+    err.style.display = 'block';
+    btn.disabled = false;
+  }
 }
-document.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+
+// Also fix the signup link to point to Flask route
+document.querySelector('a[href="signup.html"]').href = '/signup-page';
+
+document.addEventListener('keydown', e => { if(e.key === 'Enter') doLogin() });
 </script>
 </body>
 </html>

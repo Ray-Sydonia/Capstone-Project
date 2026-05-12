@@ -86,10 +86,14 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 <body>
 <script>
 (function(){
-  const u=JSON.parse(localStorage.getItem('cc_user')||'null');
-  if(!u||!u.loggedIn){location.href='login.html';return}
-  window.CC_USER=u;
-  window.logout=function(){localStorage.removeItem('cc_user');location.href='login.html'};
+  const u = JSON.parse(localStorage.getItem('cc_user') || 'null');
+  if(!u || !u.loggedIn){ location.href = '/login-page'; return; }
+  window.CC_USER = u;
+  window.logout = async function(){
+    await fetch('/logout', { method: 'POST' });
+    localStorage.removeItem('cc_user');
+    location.href = '/login-page';
+  };
 })();
 </script>
 <div class="app">
@@ -101,16 +105,16 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
   <div class="nav-section">
     <span class="nav-lbl">Main</span>
     <ul class="nav-list">
-      <li class="nav-item"><a href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
-      <li class="nav-item active"><a href="clients.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
-      <li class="nav-item"><a href="strand_test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Color Mixer</span></a></li>
-      <li class="nav-item"><a href="damage_assessment.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
-      <li class="nav-item"><a href="archive.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
-      <li class="nav-item"><a href="sessions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
+      <li class="nav-item"><a href="/dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
+      <li class="nav-item active"><a href="/clients-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
+      <li class="nav-item"><a href="/strand-test-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="/damage-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="/archive-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
+      <li class="nav-item"><a href="/sessions-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
     </ul>
     <span class="nav-lbl" style="margin-top:.5rem">Account</span>
     <ul class="nav-list">
-      <li class="nav-item"><a href="profile.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
+      <li class="nav-item"><a href="/profile-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
       <li class="nav-item"><a href="#" onclick="logout();return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Logout</span></a></li>
     </ul>
   </div>
@@ -119,7 +123,7 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 
 <main class="main">
   <header class="topbar">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>My Clients</span></div>
+    <div class="breadcrumb"><a href="/dashboard">Dashboard</a><span>/</span><span>My Clients</span></div>
     <div class="topbar-r"><div class="tb-av" id="tbAv">S</div></div>
   </header>
   <div class="content">
@@ -169,9 +173,43 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
       <div class="fg"><label>Natural Colour</label>
         <select id="cf_nat"><option value="">Select level</option><option>Level 1 – Black</option><option>Level 2 – Very Dark Brown</option><option>Level 3 – Dark Brown</option><option>Level 4 – Medium Brown</option><option>Level 5 – Light Brown</option><option>Level 6 – Dark Blonde</option><option>Level 7 – Medium Blonde</option><option>Level 8 – Light Blonde</option><option>Level 9 – Very Light Blonde</option><option>Level 10 – Lightest Blonde</option></select>
       </div>
-      <div class="fg"><label>Current Colour</label>
-        <select id="cf_cur"><option value="">Select level</option><option>Level 1 – Black</option><option>Level 2 – Very Dark Brown</option><option>Level 3 – Dark Brown</option><option>Level 4 – Medium Brown</option><option>Level 5 – Light Brown</option><option>Level 6 – Dark Blonde</option><option>Level 7 – Medium Blonde</option><option>Level 8 – Light Blonde</option><option>Level 9 – Very Light Blonde</option><option>Level 10 – Lightest Blonde</option></select>
-      </div>
+      <div class="fg">
+  <label>Current Colour</label>
+  <div style="display:flex;gap:.6rem;align-items:center;margin-bottom:.5rem">
+    <select id="cf_cur_type" onchange="toggleColourInput()" style="width:160px;padding:.7rem .9rem;background:var(--s2);border:2px solid transparent;border-radius:var(--r);font-size:.875rem;color:var(--text)">
+      <option value="natural">Natural Level</option>
+      <option value="fashion">Fashion Colour</option>
+    </select>
+  </div>
+
+  <!-- Natural level dropdown -->
+  <select id="cf_cur_natural">
+    <option value="">Select level</option>
+    <option>Level 1 – Black</option>
+    <option>Level 2 – Very Dark Brown</option>
+    <option>Level 3 – Dark Brown</option>
+    <option>Level 4 – Medium Brown</option>
+    <option>Level 5 – Light Brown</option>
+    <option>Level 6 – Dark Blonde</option>
+    <option>Level 7 – Medium Blonde</option>
+    <option>Level 8 – Light Blonde</option>
+    <option>Level 9 – Very Light Blonde</option>
+    <option>Level 10 – Lightest Blonde</option>
+  </select>
+
+  <!-- Fashion colour picker (hidden by default) -->
+  <div id="cf_cur_fashion" style="display:none;margin-top:.5rem">
+    <div style="display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;background:var(--s2);border:2px solid transparent;border-radius:var(--r);transition:var(--t)" id="colourPickerWrap">
+      <input type="color" id="cf_cur_picker" value="#b07fd4"
+        style="width:36px;height:36px;border:none;border-radius:6px;cursor:pointer;background:none;padding:0"
+        oninput="syncColourName()">
+      <input type="text" id="cf_cur_name" placeholder="Describe colour (e.g. Lavender Purple)"
+        style="flex:1;background:none;font-size:.875rem;color:var(--text)"
+        oninput="syncColourHex()">
+      <div id="cf_cur_swatch" style="width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:#b07fd4;flex-shrink:0"></div>
+    </div>
+  </div>
+</div>
     </div>
     <div class="form-row">
       <div class="fg"><label>Hair Texture</label><select id="cf_tx"><option value="">Select</option><option>Fine</option><option>Medium</option><option>Coarse</option></select></div>
@@ -188,75 +226,191 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded',()=>{
-  const u=CC_USER;
-  const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
-  const init=s=>(s||'S')[0].toUpperCase();
-  const n=u.name||'Stylist';
-  document.getElementById('sbName').textContent=cap(n);
-  document.getElementById('sbEmail').textContent=u.email||'';
-  document.getElementById('sbAv').textContent=init(n);
-  document.getElementById('tbAv').textContent=init(n);
-  render('');
+let clients = [];
+let editId  = -1;
+const COLORS = [
+  'linear-gradient(135deg,#7c5cbf,#b07fd4)',
+  'linear-gradient(135deg,#c0392b,#e91e8c)',
+  'linear-gradient(135deg,#219a52,#81c784)',
+  'linear-gradient(135deg,#1565c0,#64b5f6)',
+  'linear-gradient(135deg,#e67e22,#f9a825)',
+  'linear-gradient(135deg,#607d8b,#90a4ae)'
+];
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const u   = CC_USER;
+  const cap  = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+  const init = s => (s || 'S')[0].toUpperCase();
+  const n   = u.name || 'Stylist';
+
+  document.getElementById('sbName').textContent  = cap(n);
+  document.getElementById('sbEmail').textContent = u.email || '';
+  document.getElementById('sbAv').textContent    = init(n);
+  document.getElementById('tbAv').textContent    = init(n);
+
+  await loadClients();
 });
 
-let clients=JSON.parse(localStorage.getItem('cc_clients')||'[]');
-let editIdx=-1;
-const COLORS=['linear-gradient(135deg,#7c5cbf,#b07fd4)','linear-gradient(135deg,#c0392b,#e91e8c)','linear-gradient(135deg,#219a52,#81c784)','linear-gradient(135deg,#1565c0,#64b5f6)','linear-gradient(135deg,#e67e22,#f9a825)','linear-gradient(135deg,#607d8b,#90a4ae)'];
+async function loadClients(){
+  try {
+    const res = await fetch('/clients');
+    clients   = await res.json();
+    render('');
+  } catch(e) {
+    console.warn('Could not load clients:', e);
+    render('');
+  }
+}
 
-function render(q=''){
-  const grid=document.getElementById('grid');
-  const empty=document.getElementById('emptyState');
-  const filtered=clients.filter(c=>(c.fn+' '+c.ln).toLowerCase().includes(q.toLowerCase()));
-  if(!filtered.length){grid.innerHTML='';empty.style.display='flex';return}
-  empty.style.display='none';
-  grid.innerHTML=filtered.map((c,i)=>{
-    const idx=clients.indexOf(c);
-    const col=COLORS[i%COLORS.length];
-    const init=(c.fn[0]||'')+(c.ln[0]||'');
-    const tags=[c.tx,c.po,c.nat].filter(Boolean);
+function render(q = ''){
+  const grid  = document.getElementById('grid');
+  const empty = document.getElementById('emptyState');
+  const filtered = clients.filter(c =>
+    (c.name || '').toLowerCase().includes(q.toLowerCase())
+  );
+  if(!filtered.length){ grid.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = filtered.map((c, i) => {
+    const col  = COLORS[i % COLORS.length];
+    const name = c.name || '—';
+    const initials = name.split(' ').map(w => w[0] || '').join('').toUpperCase().slice(0, 2);
     return `<div class="cc">
       <div class="cc-hdr">
-        <div class="cc-av" style="background:${col}">${init.toUpperCase()}</div>
-        <div><div class="cc-name">${c.fn} ${c.ln}</div><div class="cc-since">${c.em||'No email'}</div></div>
+        <div class="cc-av" style="background:${col}">${initials}</div>
+        <div>
+          <div class="cc-name">${name}</div>
+          <div class="cc-since">Client #${c.id}</div>
+        </div>
       </div>
-      <div class="cc-tags">${tags.map(t=>`<span class="tag">${t}</span>`).join('')}${c.ch?'<span class="tag">Has history</span>':''}</div>
+      <div class="cc-tags"></div>
       <div class="cc-actions">
-        <button class="btn btn-outline btn-sm" onclick="edit(${idx})">Edit</button>
-        <a href="strand_test.html" class="btn btn-primary btn-sm">New Session</a>
+        <button class="btn btn-outline btn-sm" onclick="edit(${c.id}, '${name}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="del(${c.id})">Delete</button>
+        <a href="/strand-test-page" class="btn btn-primary btn-sm">New Session</a>
       </div>
     </div>`;
   }).join('');
 }
 
 function openModal(){
-  editIdx=-1;
-  document.getElementById('modalTitle').textContent='Add New Client';
-  ['cf_fn','cf_ln','cf_em','cf_ph','cf_nat','cf_cur','cf_tx','cf_po','cf_ch','cf_al','cf_no'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+  editId = -1;
+  document.getElementById('modalTitle').textContent = 'Add New Client';
+  ['cf_fn','cf_ln','cf_em','cf_ph','cf_nat','cf_cur','cf_tx','cf_po','cf_ch','cf_al','cf_no']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('modalBg').classList.add('open');
 }
-function edit(i){
-  editIdx=i;const c=clients[i];
-  document.getElementById('modalTitle').textContent='Edit Client';
-  document.getElementById('cf_fn').value=c.fn||'';document.getElementById('cf_ln').value=c.ln||'';
-  document.getElementById('cf_em').value=c.em||'';document.getElementById('cf_ph').value=c.ph||'';
-  document.getElementById('cf_nat').value=c.nat||'';document.getElementById('cf_cur').value=c.cur||'';
-  document.getElementById('cf_tx').value=c.tx||'';document.getElementById('cf_po').value=c.po||'';
-  document.getElementById('cf_ch').value=c.ch||'';document.getElementById('cf_al').value=c.al||'';
-  document.getElementById('cf_no').value=c.no||'';
+
+function edit(id, name){
+  editId = id;
+  document.getElementById('modalTitle').textContent = 'Edit Client';
+  const parts = name.split(' ');
+  document.getElementById('cf_fn').value = parts[0] || '';
+  document.getElementById('cf_ln').value = parts.slice(1).join(' ') || '';
   document.getElementById('modalBg').classList.add('open');
 }
-function closeModal(){document.getElementById('modalBg').classList.remove('open')}
-function save(){
-  const fn=document.getElementById('cf_fn').value.trim();
-  const ln=document.getElementById('cf_ln').value.trim();
-  if(!fn||!ln){alert('First and last name are required.');return}
-  const c={fn,ln,em:document.getElementById('cf_em').value.trim(),ph:document.getElementById('cf_ph').value.trim(),nat:document.getElementById('cf_nat').value,cur:document.getElementById('cf_cur').value,tx:document.getElementById('cf_tx').value,po:document.getElementById('cf_po').value,ch:document.getElementById('cf_ch').value.trim(),al:document.getElementById('cf_al').value.trim(),no:document.getElementById('cf_no').value.trim(),ts:Date.now()};
-  if(editIdx>=0)clients[editIdx]={...clients[editIdx],...c};else clients.push(c);
-  localStorage.setItem('cc_clients',JSON.stringify(clients));
-  closeModal();render('');
+
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+
+async function save(){
+  const fn = document.getElementById('cf_fn').value.trim();
+  const ln = document.getElementById('cf_ln').value.trim();
+  if(!fn || !ln){ alert('First and last name are required.'); return; }
+
+  const payload = {
+    client_name:    fn + ' ' + ln,
+    userID:         CC_USER.id,
+    natural_colour: document.getElementById('cf_nat').value,
+    current_colour: getCurrentColour(),   
+    texture:        document.getElementById('cf_tx').value,
+    porosity:       document.getElementById('cf_po').value,
+    chem_history:   document.getElementById('cf_ch').value.trim()
+  };
+
+  try {
+    if(editId >= 0){
+      // Update existing client
+      const res = await fetch(`/clients/${editId}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ client_name: payload.client_name })
+      });
+      if(!res.ok){ alert('Failed to update client.'); return; }
+    } else {
+      // Create new client + hair profile
+      const res = await fetch('/clients', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(!res.ok){ alert(data.error || 'Failed to create client.'); return; }
+
+      // Create hair profile linked to new client
+      await fetch('/profiles', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          clientID:       data.id,
+          natural_colour: payload.natural_colour,
+          current_colour: payload.current_colour,
+          texture:        payload.texture,
+          porosity:       payload.porosity,
+          chem_history:   payload.chem_history
+        })
+      });
+    }
+    closeModal();
+    await loadClients();
+  } catch(e){
+    alert('Network error saving client.');
+  }
 }
-document.getElementById('modalBg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+
+async function del(id){
+  if(!confirm('Delete this client and all their data?')) return;
+  try {
+    const res = await fetch(`/clients/${id}`, { method: 'DELETE' });
+    if(res.ok) await loadClients();
+    else alert('Failed to delete client.');
+  } catch(e){
+    alert('Network error.');
+  }
+}
+
+document.getElementById('modalBg').addEventListener('click', e => {
+  if(e.target === e.currentTarget) closeModal();
+});
+
+function toggleColourInput(){
+  const type = document.getElementById('cf_cur_type').value;
+  document.getElementById('cf_cur_natural').style.display = type === 'natural' ? 'block' : 'none';
+  document.getElementById('cf_cur_fashion').style.display = type === 'fashion' ? 'block' : 'none';
+}
+
+function syncColourName(){
+  const hex = document.getElementById('cf_cur_picker').value;
+  document.getElementById('cf_cur_swatch').style.background = hex;
+}
+
+function syncColourHex(){
+  // allows typing a hex code directly into the name field
+  const val = document.getElementById('cf_cur_name').value.trim();
+  if(/^#[0-9a-fA-F]{6}$/.test(val)){
+    document.getElementById('cf_cur_picker').value = val;
+    document.getElementById('cf_cur_swatch').style.background = val;
+  }
+}
+
+function getCurrentColour(){
+  const type = document.getElementById('cf_cur_type').value;
+  if(type === 'natural'){
+    return document.getElementById('cf_cur_natural').value;
+  } else {
+    const hex  = document.getElementById('cf_cur_picker').value;
+    const name = document.getElementById('cf_cur_name').value.trim();
+    return name ? `Fashion – ${name} (${hex})` : `Fashion – ${hex}`;
+  }
+}
 </script>
 </body>
 </html>

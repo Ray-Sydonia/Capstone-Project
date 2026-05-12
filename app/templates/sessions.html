@@ -105,10 +105,14 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 <body>
 <script>
 (function(){
-  const u=JSON.parse(localStorage.getItem('cc_user')||'null');
-  if(!u||!u.loggedIn){location.href='login.html';return}
-  window.CC_USER=u;
-  window.logout=function(){localStorage.removeItem('cc_user');location.href='login.html'};
+  const u = JSON.parse(localStorage.getItem('cc_user') || 'null');
+  if(!u || !u.loggedIn){ location.href = '/login-page'; return; }
+  window.CC_USER = u;
+  window.logout = async function(){
+    await fetch('/logout', { method: 'POST' });
+    localStorage.removeItem('cc_user');
+    location.href = '/login-page';
+  };
 })();
 </script>
 
@@ -119,16 +123,17 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
   <div class="nav-section">
     <span class="nav-lbl">Main</span>
     <ul class="nav-list">
-      <li class="nav-item"><a href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
-      <li class="nav-item"><a href="clients.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
-      <li class="nav-item"><a href="strand_test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand test</span></a></li>
-      <li class="nav-item"><a href="damage_assessment.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Damage Assessment</span></a></li>
-      <li class="nav-item"><a href="archive.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
-      <li class="nav-item active"><a href="sessions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
+      <li class="nav-item"><a href="/dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
+      <li class="nav-item"><a href="/clients-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
+      <li class="nav-item"><a href="/strand-test-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand test</span></a></li>
+      <li class="nav-item"><a href="/damage-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Damage Assessment</span></a></li>
+      <li class="nav-item"><a href="/archive-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
+      <li class="nav-item active"><a href="/sessions-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
     </ul>
+
     <span class="nav-lbl" style="margin-top:.5rem">Account</span>
     <ul class="nav-list">
-      <li class="nav-item"><a href="profile.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
+      <li class="nav-item"><a href="/profile-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
       <li class="nav-item"><a href="#" onclick="logout();return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Logout</span></a></li>
     </ul>
   </div>
@@ -137,7 +142,7 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 
 <main class="main">
   <header class="topbar">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>Sessions</span></div>
+    <div class="breadcrumb"><a href="/dashboard">Dashboard</a><span>/</span><span>Sessions</span></div>
     <div class="topbar-r">
       <button class="btn btn-primary btn-sm" onclick="openModal()">
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -238,88 +243,109 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 
 <script>
 const LC={1:['#1a1a1a','#2d2d2d'],2:['#2c1810','#4a2c1f'],3:['#4a3728','#6b5040'],4:['#6b4c3b','#8b6550'],5:['#8b6b4a','#a07850'],6:['#a07850','#c49a5a'],7:['#c49a5a','#d4ab6a'],8:['#d4ab6a','#e8c880'],9:['#e8c880','#f0d890'],10:['#f0d890','#f8f0dc']};
-const SAMPLES=[
-  {client:'Maria S.',date:'2025-05-08',shade:'Caramel Balayage',slvl:'7',tlvl:'9',dev:'20 vol',time:'35',formula:'Wella Koleston Perfect 7/43',outcome:'As predicted',stars:5,notes:'Lovely result, client very happy.',lc:['#c49a5a','#d4ab6a']},
-  {client:'Priya T.',date:'2025-05-07',shade:'Violet Vivid Mix',slvl:'10',tlvl:'10',dev:'10 vol',time:'25',formula:'Schwarzkopf Chroma ID 0-22',outcome:'Better than predicted',stars:4,notes:'Vivid tone lasted well. Recommend toner at 6 weeks.',lc:['#7b1fa2','#ab47bc']},
-  {client:'Aisha M.',date:'2025-05-04',shade:'Cherry Red Correction',slvl:'6',tlvl:'8',dev:'20 vol',time:'30',formula:'Redken Color Fusion 6R',outcome:'As predicted',stars:5,notes:'',lc:['#b71c1c','#e53935']},
-];
 
-let sessions=[];
-let selectedStars=0;
+let sessions = [];
+let selectedStars = 0;
 
-document.addEventListener('DOMContentLoaded',()=>{
-  const u=CC_USER;
-  const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
-  const init=s=>(s||'S')[0].toUpperCase();
-  const n=u.name||'Stylist';
-  document.getElementById('sbName').textContent=cap(n);
-  document.getElementById('sbEmail').textContent=u.email||'';
-  document.getElementById('sbAv').textContent=init(n);
-  document.getElementById('tbAv').textContent=init(n);
-  // Load clients
-  const cs=JSON.parse(localStorage.getItem('cc_clients')||'[]');
-  const sel=document.getElementById('s_client');
-  cs.forEach(c=>{const o=document.createElement('option');o.textContent=`${c.fn} ${c.ln}`;sel.appendChild(o)});
+document.addEventListener('DOMContentLoaded', async () => {
+  const u = CC_USER;
+  const cap  = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+  const init = s => (s || 'S')[0].toUpperCase();
+  const n = u.name || 'Stylist';
+
+  document.getElementById('sbName').textContent  = cap(n);
+  document.getElementById('sbEmail').textContent = u.email || '';
+  document.getElementById('sbAv').textContent    = init(n);
+  document.getElementById('tbAv').textContent    = init(n);
+
   // Set today's date
-  document.getElementById('s_date').valueAsDate=new Date();
-  // Load sessions
-  sessions=JSON.parse(localStorage.getItem('cc_sessions')||'[]');
-  if(!sessions.length)sessions=SAMPLES;
-  render();
+  document.getElementById('s_date').valueAsDate = new Date();
+
+  // Load clients from Flask for the dropdown
+  try {
+    const res = await fetch('/clients');
+    const clients = await res.json();
+    const sel = document.getElementById('s_client');
+    clients.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.id;
+      o.textContent = c.name;
+      sel.appendChild(o);
+    });
+  } catch(e) {
+    console.warn('Could not load clients:', e);
+  }
+
+  // Load sessions from Flask
+  await loadSessions();
   setupStars();
 });
 
+async function loadSessions(){
+  try {
+    const res = await fetch('/sessions');
+    sessions = await res.json();
+    render();
+  } catch(e) {
+    console.warn('Could not load sessions:', e);
+    render();
+  }
+}
+
 function setupStars(){
-  const si=document.getElementById('starInput');
-  si.querySelectorAll('span').forEach(s=>{
-    s.addEventListener('click',()=>{
-      selectedStars=parseInt(s.dataset.v);
+  const si = document.getElementById('starInput');
+  si.querySelectorAll('span').forEach(s => {
+    s.addEventListener('click', () => {
+      selectedStars = parseInt(s.dataset.v);
       updateStarUI(selectedStars);
     });
-    s.addEventListener('mouseenter',()=>updateStarUI(parseInt(s.dataset.v)));
+    s.addEventListener('mouseenter', () => updateStarUI(parseInt(s.dataset.v)));
   });
-  si.addEventListener('mouseleave',()=>updateStarUI(selectedStars));
+  si.addEventListener('mouseleave', () => updateStarUI(selectedStars));
 }
+
 function updateStarUI(v){
-  document.getElementById('starInput').querySelectorAll('span').forEach((s,i)=>{
-    s.textContent=i<v?'★':'☆';
-    s.className=i<v?'on':'';
+  document.getElementById('starInput').querySelectorAll('span').forEach((s, i) => {
+    s.textContent = i < v ? '★' : '☆';
+    s.className   = i < v ? 'on' : '';
   });
 }
 
 function render(){
-  const list=document.getElementById('sessionsList');
-  const empty=document.getElementById('sessEmpty');
-  if(!sessions.length){list.innerHTML='';empty.style.display='flex';return}
-  empty.style.display='none';
-  list.innerHTML=sessions.map((s,i)=>{
-    const [c1,c2]=s.lc||LC[Math.max(1,Math.min(10,parseInt(s.tlvl)||7))];
-    const stars='★'.repeat(s.stars||0)+'☆'.repeat(5-(s.stars||0));
-    const outcomeClass=s.outcome&&s.outcome.startsWith('Better')?'b-low':s.outcome&&s.outcome.startsWith('As')?'b-purple':s.outcome&&s.outcome.includes('Slightly')?'b-med':'b-high';
-    const dt=s.date?new Date(s.date+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'—';
+  const list  = document.getElementById('sessionsList');
+  const empty = document.getElementById('sessEmpty');
+  if(!sessions.length){ list.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = sessions.map((s, i) => {
+    const lc = LC[Math.max(1, Math.min(10, parseInt(s.tlvl) || 7))];
+    const [c1, c2] = lc;
+    const stars = (s.stars || 0);
+    const outcomeClass = !s.outcome ? 'b-purple'
+      : s.outcome.startsWith('Better') ? 'b-low'
+      : s.outcome.startsWith('As')     ? 'b-purple'
+      : s.outcome.includes('Slightly') ? 'b-med' : 'b-high';
+    const dt = s.date ? new Date(s.date + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '—';
     return `<div class="sess-card">
       <div class="sess-inner">
         <div class="sess-dot" style="background:linear-gradient(135deg,${c1},${c2})"></div>
         <div class="sess-body">
           <div class="sess-top">
             <div>
-              <div class="sess-name">${s.shade}</div>
-              <div class="sess-meta">${s.client||'No client'} &nbsp;·&nbsp; ${dt}</div>
+              <div class="sess-name">${s.desired_shade || s.shade || '—'}</div>
+              <div class="sess-meta">${s.profileID ? 'Profile #' + s.profileID : 'No client'} &nbsp;·&nbsp; ${dt}</div>
             </div>
             <div class="sess-actions">
-              <span class="badge ${outcomeClass}">${s.outcome||'As predicted'}</span>
-              <button class="btn btn-danger btn-sm" onclick="delSession(${i})">Delete</button>
+              <span class="badge ${outcomeClass}">${s.outcome || 'Logged'}</span>
+              <button class="btn btn-danger btn-sm" onclick="delSession(${s.id})">Delete</button>
             </div>
           </div>
           <div class="sess-chips">
-            ${s.slvl?`<span class="tag">Lv ${s.slvl} → ${s.tlvl}</span>`:''}
-            ${s.dev?`<span class="tag">${s.dev}</span>`:''}
-            ${s.time?`<span class="tag">${s.time} min</span>`:''}
-            ${s.formula?`<span class="tag" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.formula}</span>`:''}
+            ${s.developer_vol ? `<span class="tag">${s.developer_vol} vol</span>` : ''}
           </div>
-          ${s.notes?`<div class="sess-note">"${s.notes}"</div>`:''}
+          ${s.notes ? `<div class="sess-note">"${s.notes}"</div>` : ''}
           <div class="stars" style="margin-top:.45rem">
-            <span class="star-on">${'★'.repeat(s.stars||0)}</span><span class="star-off">${'☆'.repeat(5-(s.stars||0))}</span>
+            <span class="star-on">${'★'.repeat(stars)}</span>
+            <span class="star-off">${'☆'.repeat(5 - stars)}</span>
             <span style="font-size:.72rem;color:var(--muted);margin-left:.25rem">client satisfaction</span>
           </div>
         </div>
@@ -329,50 +355,69 @@ function render(){
 }
 
 function openModal(){
-  selectedStars=0;
+  selectedStars = 0;
   updateStarUI(0);
-  ['s_client','s_shade','s_slvl','s_tlvl','s_dev','s_time','s_formula','s_outcome','s_notes'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el.tagName==='SELECT')el.selectedIndex=0;else el.value='';
+  ['s_shade','s_slvl','s_tlvl','s_time','s_formula','s_notes'].forEach(id => {
+    document.getElementById(id).value = '';
   });
-  document.getElementById('s_date').valueAsDate=new Date();
-  document.getElementById('beforeLbl').textContent='Upload before photo';
-  document.getElementById('afterLbl').textContent='Upload after photo';
+  document.getElementById('s_client').selectedIndex = 0;
+  document.getElementById('s_dev').selectedIndex    = 1;
+  document.getElementById('s_outcome').selectedIndex = 1;
+  document.getElementById('s_date').valueAsDate = new Date();
+  document.getElementById('beforeLbl').textContent = 'Upload before photo';
+  document.getElementById('afterLbl').textContent  = 'Upload after photo';
   document.getElementById('modalBg').classList.add('open');
 }
-function closeModal(){document.getElementById('modalBg').classList.remove('open')}
-function labelFile(inp,lbl){document.getElementById(lbl).textContent=inp.files[0]?'✓ '+inp.files[0].name:'Upload photo'}
 
-function saveSession(){
-  const shade=document.getElementById('s_shade').value.trim();
-  if(!shade){alert('Please enter a desired shade.');return}
-  const tlvl=parseInt(document.getElementById('s_tlvl').value)||7;
-  const lc=LC[Math.max(1,Math.min(10,tlvl))];
-  const sess={
-    client:document.getElementById('s_client').value||'No client',
-    date:document.getElementById('s_date').value,
-    shade,
-    slvl:document.getElementById('s_slvl').value,
-    tlvl:document.getElementById('s_tlvl').value,
-    dev:document.getElementById('s_dev').value,
-    time:document.getElementById('s_time').value,
-    formula:document.getElementById('s_formula').value.trim(),
-    outcome:document.getElementById('s_outcome').value,
-    notes:document.getElementById('s_notes').value.trim(),
-    stars:selectedStars,
-    lc,ts:Date.now()
-  };
-  sessions.unshift(sess);
-  localStorage.setItem('cc_sessions',JSON.stringify(sessions));
-  closeModal();render();
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
+function labelFile(inp, lbl){ document.getElementById(lbl).textContent = inp.files[0] ? '✓ ' + inp.files[0].name : 'Upload photo'; }
+
+async function saveSession(){
+  const shade    = document.getElementById('s_shade').value.trim();
+  const profileID = document.getElementById('s_client').value;
+
+  if(!shade)    { alert('Please enter a desired shade.'); return; }
+  if(!profileID){ alert('Please select a client.'); return; }
+
+  const formData = new FormData();
+  formData.append('profileID',    profileID);
+  formData.append('desired_shade', shade);
+  formData.append('developer_vol', document.getElementById('s_dev').value.replace(' vol',''));
+  formData.append('outcome',       document.getElementById('s_outcome').value);
+  formData.append('notes',         document.getElementById('s_notes').value.trim());
+  formData.append('stars',         selectedStars);
+
+  const beforeFile = document.getElementById('s_before').files[0];
+  if(beforeFile) formData.append('hair_image', beforeFile);
+
+  try {
+    const res  = await fetch('/sessions', { method: 'POST', body: formData });
+    const data = await res.json();
+    if(res.ok){
+      closeModal();
+      await loadSessions();
+    } else {
+      alert(data.error || 'Failed to save session.');
+    }
+  } catch(e){
+    alert('Network error saving session.');
+  }
 }
-function delSession(i){
-  if(!confirm('Delete this session?'))return;
-  sessions.splice(i,1);
-  localStorage.setItem('cc_sessions',JSON.stringify(sessions));
-  render();
+
+async function delSession(id){
+  if(!confirm('Delete this session?')) return;
+  try {
+    const res = await fetch(`/sessions/${id}`, { method: 'DELETE' });
+    if(res.ok) await loadSessions();
+    else alert('Failed to delete session.');
+  } catch(e){
+    alert('Network error.');
+  }
 }
-document.getElementById('modalBg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal()});
+
+document.getElementById('modalBg').addEventListener('click', e => {
+  if(e.target === e.currentTarget) closeModal();
+});
 </script>
 </body>
 </html>

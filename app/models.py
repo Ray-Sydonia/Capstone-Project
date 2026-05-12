@@ -11,18 +11,22 @@ class User(UserMixin, db.Model):
     __tablename__ = 'User'
 
     userID = db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
 
     clients = db.relationship('Client', backref='user', passive_deletes=True)
     
+    @property
+    def id(self):
+        return self.userID
+    
     def set_password(self, password):
         self.password= generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.password, password)
     
 class Client(db.Model):
     __tablename__ = 'Client'
@@ -92,3 +96,21 @@ class FormulaArchive(db.Model):
     process_time = db.Column(db.Integer)
 
     saved_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    
+class StrandPredictions(db.Model):
+    __tablename__ = 'StrandPredictions'
+
+    predictionID = db.Column(db.Integer, primary_key=True)
+
+    session_id = db.Column(
+        db.Integer,
+        db.ForeignKey('DyeSession.session_id', ondelete='CASCADE')
+    )
+
+    predicted_colour = db.Column(db.String(50))
+    damage_risk = db.Column(db.String(50))
+    damage_score = db.Column(db.Float)
+    process_time = db.Column(db.Integer)
+    success_rate = db.Column(db.Float)
+    test_date = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    output_hair_pic_url = db.Column(db.Text)

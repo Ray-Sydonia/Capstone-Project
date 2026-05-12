@@ -1,10 +1,10 @@
 import numpy as np
 from PIL import Image
-from tensorflow.keras.applications.resnet50 import preprocess_input
 
 try:
     import tensorflow as tf
     from tensorflow.keras.models import load_model
+    from tensorflow.keras.applications.resnet50 import preprocess_input
     import os
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     model_path = os.path.join(BASE_DIR, "..", "hair_damage_resnet50_model.keras")

@@ -13,7 +13,7 @@ from datetime import datetime
 from flask import render_template, request, jsonify, redirect, url_for, current_app
 from .db import db
 from ai.damage_model import predict_damage
-from .models import User, Client, HairProfiles, DyeSession, FormulaArchive  # fixed: was .model
+from .models import User, Client, HairProfiles, DyeSession, FormulaArchive, StrandPredictions
 from .forms import SignupForm, LoginForm, PhotoUploadForm, ClientForm, HairProfileForm
 from .utils.s3 import upload_to_s3
 
@@ -48,6 +48,49 @@ class_names = ["black", "brown", "blonde", "red"]  # match your training classes
 @main.route('/test')
 def test_page():
     return render_template('test.html')
+
+@main.route('/signup-page')
+def signup_page():
+    return render_template('signup.html')
+
+@main.route('/login-page')
+def login_page():
+    return render_template('login.html')
+
+@main.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html')
+
+@main.route('/clients-page')
+@login_required
+def clients_page():
+    return render_template('clients.html')
+
+@main.route('/strand-test-page')
+@login_required
+def strand_test_page():
+    return render_template('strand_test.html')
+
+@main.route('/damage-page')
+@login_required
+def damage_page():
+    return render_template('damage_assessment.html')
+
+@main.route('/archive-page')
+@login_required
+def archive_page():
+    return render_template('archive.html')
+
+@main.route('/sessions-page')
+@login_required
+def sessions_page():
+    return render_template('sessions.html')
+
+@main.route('/profile-page')
+@login_required
+def profile_page():
+    return render_template('profile.html')
 
 @main.route('/')
 def home():
@@ -123,17 +166,25 @@ def signup():
         username=data['username'],
         email=data['email']
     )
-
     new_user.set_password(data['password'])
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "User created successfully"})
+    # Log the user in immediately after signup
+    login_user(new_user)
+
+    return jsonify({
+        "message": "User created successfully",
+        "user": {
+            "id":    new_user.userID,
+            "name":  new_user.username,
+            "email": new_user.email
+        }
+    })
 
 @main.route('/login', methods=['POST'])
 def login():
     data = request.json
-
     user = User.query.filter_by(email=data['email']).first()
 
     if not user or not check_password_hash(user.password, data['password']):
@@ -144,8 +195,8 @@ def login():
     return jsonify({
         "message": "Login successful",
         "user": {
-            "id": user.id,
-            "name": user.username,
+            "id":    user.userID,
+            "name":  user.username,
             "email": user.email
         }
     })
@@ -174,6 +225,16 @@ def get_clients():
         {"id": c.clientID, "name": c.client_name, "userID": c.userID}
         for c in clients
     ])
+    
+@main.route('/change-password', methods=['POST'])
+@login_required
+def change_password():
+    data = request.json
+    if not check_password_hash(current_user.password, data['current_password']):
+        return jsonify({"error": "Current password is incorrect"}), 400
+    current_user.set_password(data['new_password'])
+    db.session.commit()
+    return jsonify({"message": "Password updated successfully"})
     
 @main.route('/clients/<int:id>', methods=['PUT'])
 def update_client(id):

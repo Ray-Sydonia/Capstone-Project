@@ -103,26 +103,73 @@ function checkPw(v){
   const w=['33%','66%','100%'][score-1];
   s.style.background=c;s.style.width=w;
 }
-function doSignup(){
-  const fname=document.getElementById('fname').value.trim();
-  const lname=document.getElementById('lname').value.trim();
-  const uname=document.getElementById('uname').value.trim();
-  const email=document.getElementById('email').value.trim();
-  const pw=document.getElementById('password').value;
-  const conf=document.getElementById('confirm').value;
-  const terms=document.getElementById('terms').checked;
-  const err=document.getElementById('errMsg');
-  const btn=document.getElementById('signupBtn');
-  err.style.display='none';
-  if(!fname||!lname||!uname||!email||!pw||!conf){err.textContent='Please fill in all fields.';err.style.display='block';return}
-  if(pw.length<6){err.textContent='Password must be at least 6 characters.';err.style.display='block';return}
-  if(pw!==conf){err.textContent='Passwords do not match.';err.style.display='block';return}
-  if(!terms){err.textContent='Please accept the Terms of Service.';err.style.display='block';return}
-  btn.innerHTML='<span>Creating account…</span>';btn.disabled=true;
-  setTimeout(()=>{
-    localStorage.setItem('cc_user',JSON.stringify({email,name:uname,fname,lname,loggedIn:true,ts:Date.now()}));
-    location.href='dashboard.html';
-  },950);
+
+async function doSignup(){
+  const fname = document.getElementById('fname').value.trim();
+  const lname = document.getElementById('lname').value.trim();
+  const uname = document.getElementById('uname').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const pw    = document.getElementById('password').value;
+  const conf  = document.getElementById('confirm').value;
+  const terms = document.getElementById('terms').checked;
+  const err   = document.getElementById('errMsg');
+  const btn   = document.getElementById('signupBtn');
+
+  err.style.display = 'none';
+
+  if(!fname||!lname||!uname||!email||!pw||!conf){
+    err.textContent='Please fill in all fields.';err.style.display='block';return;
+  }
+  if(pw.length<6){
+    err.textContent='Password must be at least 6 characters.';err.style.display='block';return;
+  }
+  if(pw!==conf){
+    err.textContent='Passwords do not match.';err.style.display='block';return;
+  }
+  if(!terms){
+    err.textContent='Please accept the Terms of Service.';err.style.display='block';return;
+  }
+
+  btn.innerHTML='<span>Creating account…</span>';
+  btn.disabled=true;
+
+  try {
+    const res = await fetch('/signup', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        username: uname,
+        email:    email,
+        password: pw,
+        fname:    fname,
+        lname:    lname
+      })
+    });
+
+    const data = await res.json();
+
+    if(res.ok){
+      localStorage.setItem('cc_user', JSON.stringify({
+        id:       data.user.id,
+        email:    data.user.email,
+        name:     data.user.name,
+        fname:    fname,
+        lname:    lname,
+        loggedIn: true,
+        ts:       Date.now()
+      }));
+      location.href = '/dashboard';
+    } else {
+      err.textContent = data.error || 'Signup failed. Please try again.';
+      err.style.display = 'block';
+      btn.innerHTML='<span>Create Account</span><svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M3 9h12M15 9l-4.5-4.5M15 9l-4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      btn.disabled=false;
+    }
+  } catch(e) {
+    err.textContent = 'Network error. Is the server running?';
+    err.style.display = 'block';
+    btn.disabled=false;
+  }
 }
 </script>
 </body>

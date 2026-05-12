@@ -62,10 +62,14 @@ input{font-family:inherit;border:none;outline:none;background:none}
 <body>
 <script>
 (function(){
-  const u=JSON.parse(localStorage.getItem('cc_user')||'null');
-  if(!u||!u.loggedIn){location.href='login.html';return}
-  window.CC_USER=u;
-  window.logout=function(){localStorage.removeItem('cc_user');location.href='login.html'};
+  const u = JSON.parse(localStorage.getItem('cc_user') || 'null');
+  if(!u || !u.loggedIn){ location.href = '/login-page'; return; }
+  window.CC_USER = u;
+  window.logout = async function(){
+    await fetch('/logout', { method: 'POST' });
+    localStorage.removeItem('cc_user');
+    location.href = '/login-page';
+  };
 })();
 </script>
 <div class="app">
@@ -74,16 +78,16 @@ input{font-family:inherit;border:none;outline:none;background:none}
   <div class="nav-section">
     <span class="nav-lbl">Main</span>
     <ul class="nav-list">
-      <li class="nav-item"><a href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
-      <li class="nav-item"><a href="clients.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
-      <li class="nav-item"><a href="strand_test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Color Mixer</span></a></li>
-      <li class="nav-item"><a href="damage_assessment.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
-      <li class="nav-item active"><a href="archive.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
-      <li class="nav-item"><a href="sessions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
+      <li class="nav-item"><a href="/dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
+      <li class="nav-item"><a href="/clients-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
+      <li class="nav-item"><a href="s/strand-test-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="/damage-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item active"><a href="/archive-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
+      <li class="nav-item"><a href="/sessions-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
     </ul>
     <span class="nav-lbl" style="margin-top:.5rem">Account</span>
     <ul class="nav-list">
-      <li class="nav-item"><a href="profile.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
+      <li class="nav-item"><a href="/profile-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
       <li class="nav-item"><a href="#" onclick="logout();return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Logout</span></a></li>
     </ul>
   </div>
@@ -92,8 +96,8 @@ input{font-family:inherit;border:none;outline:none;background:none}
 
 <main class="main">
   <header class="topbar">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>Formula Archive</span></div>
-    <div class="topbar-r"><a href="strand_test.html" class="btn btn-primary btn-sm"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>New Formula</a><div class="tb-av" id="tbAv">S</div></div>
+    <div class="breadcrumb"><a href="/dashboard">Dashboard</a><span>/</span><span>Formula Archive</span></div>
+    <div class="topbar-r"><a href="/strand-test-page" class="btn btn-primary btn-sm"><svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>New Formula</a><div class="tb-av" id="tbAv">S</div></div>
   </header>
   <div class="content">
     <div class="page-hdr">
@@ -117,7 +121,7 @@ input{font-family:inherit;border:none;outline:none;background:none}
         <svg width="60" height="60" viewBox="0 0 60 60" fill="none"><path d="M30 10l7.5 15 16.5 2.5-12 11.5 2.5 16.5L30 48l-14.5 7.5 2.5-16.5L6 27.5 22.5 25z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <p style="font-size:1rem;font-weight:500">No formulas saved yet</p>
         <p>Use the Strand Test to predict and save formulas.</p>
-        <a href="strand_test.html" class="btn btn-primary btn-sm">Go to Color Mixer</a>
+        <a href="/strand-test-page" class="btn btn-primary btn-sm">Go to Strand Test</a>
       </div>
     </div>
   </div>
@@ -126,66 +130,84 @@ input{font-family:inherit;border:none;outline:none;background:none}
 
 <script>
 const LC={1:['#1a1a1a','#2d2d2d'],2:['#2c1810','#4a2c1f'],3:['#4a3728','#6b5040'],4:['#6b4c3b','#8b6550'],5:['#8b6b4a','#a07850'],6:['#a07850','#c49a5a'],7:['#c49a5a','#d4ab6a'],8:['#d4ab6a','#e8c880'],9:['#e8c880','#f0d890'],10:['#f0d890','#f8f0dc']};
-const SAMPLES=[
-  {name:'Golden Blonde',curLv:7,tgtLv:8,dev:20,shade:'warm',brand:'Wella Professionals',succ:87,savedAt:'2026-05-01T10:00:00Z'},
-  {name:'Rich Caramel',curLv:6,tgtLv:7,dev:20,shade:'warm',brand:'Redken',succ:92,savedAt:'2026-04-28T14:00:00Z'},
-  {name:'Auburn Red',curLv:5,tgtLv:6,dev:20,shade:'red',brand:'Matrix',succ:89,savedAt:'2026-04-20T09:00:00Z'},
-  {name:'Espresso Brown',curLv:3,tgtLv:4,dev:10,shade:'natural',brand:"L'Oréal Professionnel",succ:95,savedAt:'2026-04-10T11:00:00Z'},
-  {name:'Lavender Dream',curLv:10,tgtLv:10,dev:10,shade:'vivid',brand:'Schwarzkopf',succ:84,savedAt:'2026-03-15T16:00:00Z'},
-  {name:'Ash Platinum',curLv:8,tgtLv:10,dev:40,shade:'cool',brand:'Wella Professionals',succ:78,savedAt:'2026-03-01T08:00:00Z'},
-];
-let allFormulas=[];let activeFilter='all';
 
-document.addEventListener('DOMContentLoaded',()=>{
-  const u=CC_USER;
-  const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
-  const init=s=>(s||'S')[0].toUpperCase();
-  const n=u.name||'Stylist';
-  document.getElementById('sbName').textContent=cap(n);
-  document.getElementById('sbEmail').textContent=u.email||'';
-  document.getElementById('sbAv').textContent=init(n);
-  document.getElementById('tbAv').textContent=init(n);
-  allFormulas=JSON.parse(localStorage.getItem('cc_formulas')||'[]');
-  if(!allFormulas.length)allFormulas=SAMPLES;
-  render();
+let allFormulas  = [];
+let activeFilter = 'all';
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const u    = CC_USER;
+  const cap  = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+  const init = s => (s || 'S')[0].toUpperCase();
+  const n    = u.name || 'Stylist';
+
+  document.getElementById('sbName').textContent  = cap(n);
+  document.getElementById('sbEmail').textContent = u.email || '';
+  document.getElementById('sbAv').textContent    = init(n);
+  document.getElementById('tbAv').textContent    = init(n);
+
+  await loadFormulas();
 });
 
-function setFilter(f,btn){
-  activeFilter=f;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');render();
+async function loadFormulas(){
+  try {
+    const res   = await fetch('/formulas');
+    allFormulas = await res.json();
+    render();
+  } catch(e){
+    console.warn('Could not load formulas:', e);
+    render();
+  }
 }
+
+function setFilter(f, btn){
+  activeFilter = f;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
 function render(){
-  const body=document.getElementById('archiveBody');
-  const empty=document.getElementById('archiveEmpty');
-  const tw=document.getElementById('tableWrap');
-  const filtered=activeFilter==='all'?allFormulas:allFormulas.filter(f=>f.shade===activeFilter);
-  if(!filtered.length){body.innerHTML='';empty.style.display='flex';return}
-  empty.style.display='none';
-  body.innerHTML=filtered.map((f,i)=>{
-    const tl=Math.max(1,Math.min(10,f.tgtLv||7));
-    const [c1,c2]=LC[tl];
-    const dt=new Date(f.savedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-    const sr=f.succ||f.successRate;
-    const src=!sr?'':sr>=85?'b-low':sr>=70?'b-med':'b-high';
-    const realIdx=allFormulas.indexOf(f);
+  const body  = document.getElementById('archiveBody');
+  const empty = document.getElementById('archiveEmpty');
+
+  const filtered = activeFilter === 'all'
+    ? allFormulas
+    : allFormulas.filter(f => (f.formula_name || '').toLowerCase().includes(activeFilter));
+
+  if(!filtered.length){ body.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+
+  body.innerHTML = filtered.map(f => {
+    const tl  = Math.max(1, Math.min(10, 7)); // default level 7 since DB doesn't store levels yet
+    const [c1, c2] = LC[tl];
+    const dt  = f.saved_at
+      ? new Date(f.saved_at).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})
+      : '—';
+
     return `<tr>
       <td><div class="color-dot" style="background:linear-gradient(135deg,${c1},${c2})"></div></td>
-      <td><strong style="font-size:.88rem">${f.name}</strong><br><span style="font-size:.74rem;color:var(--muted)">${f.shade||'natural'}</span></td>
-      <td style="font-size:.82rem">Lv ${f.curLv||f.currentLevel||'?'} → ${f.tgtLv||f.targetLevel||'?'}</td>
-      <td style="font-size:.82rem">${f.dev||f.developer_vol||'—'} vol</td>
-      <td style="font-size:.78rem;color:var(--muted)">${f.brand||'—'}</td>
-      <td>${sr?`<span class="badge ${src}">${sr}%</span>`:'—'}</td>
+      <td>
+        <strong style="font-size:.88rem">${f.name || f.formula_name || '—'}</strong>
+      </td>
+      <td style="font-size:.82rem">—</td>
+      <td style="font-size:.82rem">${f.developer_vol || '—'} vol</td>
+      <td style="font-size:.78rem;color:var(--muted)">${f.dye_brand || '—'}</td>
+      <td>—</td>
       <td style="font-size:.76rem;color:var(--muted)">${dt}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="del(${realIdx})">Delete</button></td>
+      <td><button class="btn btn-danger btn-sm" onclick="del(${f.id})">Delete</button></td>
     </tr>`;
   }).join('');
 }
-function del(i){
-  if(!confirm('Delete this formula?'))return;
-  allFormulas.splice(i,1);
-  localStorage.setItem('cc_formulas',JSON.stringify(allFormulas));
-  render();
+
+async function del(id){
+  if(!confirm('Delete this formula?')) return;
+  try {
+    const res = await fetch(`/formulas/${id}`, { method: 'DELETE' });
+    if(res.ok) await loadFormulas();
+    else alert('Failed to delete formula.');
+  } catch(e){
+    alert('Network error.');
+  }
 }
 </script>
 </body>
