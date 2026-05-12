@@ -166,10 +166,14 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 <body>
 <script>
 (function(){
-  const u=JSON.parse(localStorage.getItem('cc_user')||'null');
-  iif(!u||!u.loggedIn){window.location.href = "/login";return;}
-  window.CC_USER=u;
-  window.logout=function(){localStorage.removeItem('cc_user');location.href='login.html'};
+  const u = JSON.parse(localStorage.getItem('cc_user') || 'null');
+  if(!u || !u.loggedIn){ location.href = '/login-page'; return; }
+  window.CC_USER = u;
+  window.logout = async function(){
+    await fetch('/logout', { method: 'POST' });
+    localStorage.removeItem('cc_user');
+    location.href = '/login-page';
+  };
 })();
 </script>
 <div class="app">
@@ -183,15 +187,15 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
     <span class="nav-lbl">Main</span>
     <ul class="nav-list">
       <li class="nav-item"><a href="/dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
-      <li class="nav-item"><a href="clients.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
-      <li class="nav-item active"><a href="strand_test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
-      <li class="nav-item"><a href="damage_assessment.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Damage Assessment</span></a></li>
-      <li class="nav-item"><a href="archive.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
-      <li class="nav-item"><a href="sessions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
+      <li class="nav-item"><a href="/clients-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
+      <li class="nav-item active"><a href="/strand-test-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="/damage-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Damage Assessment</span></a></li>
+      <li class="nav-item"><a href="/archive-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
+      <li class="nav-item"><a href="/sessions-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
     </ul>
     <span class="nav-lbl" style="margin-top:.5rem">Account</span>
     <ul class="nav-list">
-      <li class="nav-item"><a href="profile.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
+      <li class="nav-item"><a href="/profile-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Profile</span></a></li>
       <li class="nav-item"><a href="#" onclick="logout();return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Logout</span></a></li>
     </ul>
   </div>
@@ -200,7 +204,7 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 
 <main class="main">
   <header class="topbar" id="topbar">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>Strand Test</span></div>
+    <div class="breadcrumb"><a href="/dashboard">Dashboard</a><span>/</span><span>Strand Test</span></div>
     <div class="topbar-r">
       <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveFormula()" style="display:none">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 21v-8H7v8M7 3v5h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -563,12 +567,22 @@ function drawWheel(){
 }
 
 // ── CLIENTS ──
-function loadClients(){
-  const cs=JSON.parse(localStorage.getItem('cc_clients')||'[]');
-  ['linkedClient','fLinkedClient'].forEach(id=>{
-    const sel=document.getElementById(id);
-    cs.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${c.fn} ${c.ln}`;sel.appendChild(o)});
-  });
+async function loadClients(){
+  try {
+    const res = await fetch('/clients');
+    const clients = await res.json();
+    ['linkedClient','fLinkedClient'].forEach(id => {
+      const sel = document.getElementById(id);
+      clients.forEach(c => {
+        const o = document.createElement('option');
+        o.value = c.id;
+        o.textContent = c.name;
+        sel.appendChild(o);
+      });
+    });
+  } catch(e){
+    console.warn('Could not load clients:', e);
+  }
 }
 
 // ── CHEMICAL HISTORY HELPERS ──
@@ -768,16 +782,37 @@ function predictFashion(){
 }
 
 // ── SAVE FORMULA ──
-function saveFormula(){
-  if(!window._pred)return;
-  const formulas=JSON.parse(localStorage.getItem('cc_formulas')||'[]');
-  const p=window._pred;
-  const defName=p.mode==='fashion'?`${guessColorName(p.fromHex)} → ${guessColorName(p.toHex)}`:`Lv ${p.curLv}→${p.tgtLv} ${p.shade}`;
-  const name=prompt('Name this formula:',defName);
-  if(!name)return;
-  formulas.push({...p,name,savedAt:new Date().toISOString()});
-  localStorage.setItem('cc_formulas',JSON.stringify(formulas));
-  alert('✅ Formula saved to archive!');
+async function saveFormula(){
+  if(!window._pred) return;
+  const p = window._pred;
+  const defName = p.mode === 'fashion'
+    ? `${guessColorName(p.fromHex)} → ${guessColorName(p.toHex)}`
+    : `Lv ${p.curLv}→${p.tgtLv} ${p.shade}`;
+  const name = prompt('Name this formula:', defName);
+  if(!name) return;
+
+  try {
+    const res = await fetch('/formulas', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        formula_name:  name,
+        dye_brand:     p.brand || '—',
+        developer_vol: p.dev,
+        process_time:  p.time,
+        session_id:    null
+      })
+    });
+    const data = await res.json();
+    if(res.ok){
+      alert('✅ Formula saved to archive!');
+      document.getElementById('saveBtn').style.display = 'none';
+    } else {
+      alert(data.error || 'Failed to save formula.');
+    }
+  } catch(e){
+    alert('Network error saving formula.');
+  }
 }
 </script>
 </body>
