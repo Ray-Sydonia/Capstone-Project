@@ -707,7 +707,19 @@ function predict(){
   document.getElementById('tipsList').innerHTML=tips.map(t=>`<div class="tip"><span>${t.i}</span><span>${t.t}</span></div>`).join('');
   document.getElementById('tipsCard').style.display='block';
   document.getElementById('saveBtn').style.display='inline-flex';
-  window._pred={curLv,tgtLv:achieved,dev,time,dmg,shade:document.getElementById('targetShade').value,brand:document.getElementById('dyeBrand').value,mode:'natural'};
+  window._pred = {
+  mode: 'natural',
+  curLv, tgtLv: achieved,
+  dev, time, dmg,
+  shade: document.getElementById('targetShade').value,
+  brand: document.getElementById('dyeBrand').value,
+  texture: document.getElementById('hairTex').value,
+  porosity: document.getElementById('porosity').value,
+  bleached: document.getElementById('chk_bl').checked,
+  relaxed: document.getElementById('chk_rl').checked,
+  boxDye: document.getElementById('chk_bd').checked,
+  client: document.getElementById('linkedClient').value || null
+};
   // Scroll to top
   const resultsEl = document.getElementById('resultsArea');
   if(resultsEl){
@@ -776,7 +788,21 @@ function predictFashion(){
   document.getElementById('tipsList').innerHTML=tips.map(t=>`<div class="tip"><span>${t.i}</span><span>${t.t}</span></div>`).join('');
   document.getElementById('tipsCard').style.display='block';
   document.getElementById('saveBtn').style.display='inline-flex';
-  window._pred={fromHex,toHex,fromLv,baseLvNeeded,dev,time,dmg,mode:'fashion',brand:document.getElementById('fDyeBrand').value};
+  window._pred = {
+  mode: 'fashion',
+  fromHex, toHex,
+  fromColorName: guessColorName(fromHex),
+  toColorName: guessColorName(toHex),
+  fromLv, baseLvNeeded,
+  dev, time, dmg,
+  brand: document.getElementById('fDyeBrand').value,
+  texture: document.getElementById('fTex').value,
+  porosity: document.getElementById('fPorosity').value,
+  bleached: document.getElementById('fchk_bl').checked,
+  relaxed: document.getElementById('fchk_rl').checked,
+  boxDye: document.getElementById('fchk_bd').checked,
+  client: document.getElementById('fLinkedClient').value || null
+};
   // Scroll to top
   document.getElementById('topbar').scrollIntoView({behavior:'smooth'});
 }
@@ -785,11 +811,26 @@ function predictFashion(){
 async function saveFormula(){
   if(!window._pred) return;
   const p = window._pred;
+
   const defName = p.mode === 'fashion'
-    ? `${guessColorName(p.fromHex)} → ${guessColorName(p.toHex)}`
+    ? `${p.fromColorName} → ${p.toColorName}`
     : `Lv ${p.curLv}→${p.tgtLv} ${p.shade}`;
   const name = prompt('Name this formula:', defName);
   if(!name) return;
+
+  // Build notes string so nothing is lost
+  let notes = '';
+  if(p.mode === 'natural'){
+    notes = `Current: Lv${p.curLv} → Target: Lv${p.tgtLv} | Shade: ${p.shade} | Texture: ${p.texture} | Porosity: ${p.porosity} | Damage: ${p.dmg}%`;
+    if(p.bleached) notes += ' | Previously bleached';
+    if(p.relaxed)  notes += ' | Relaxed/permed';
+    if(p.boxDye)   notes += ' | Box dye history';
+  } else {
+    notes = `From: ${p.fromColorName} (${p.fromHex}, Lv${p.fromLv}) → To: ${p.toColorName} (${p.toHex}, Lv${p.baseLvNeeded} base) | Texture: ${p.texture} | Porosity: ${p.porosity} | Damage: ${p.dmg}%`;
+    if(p.bleached) notes += ' | Previously bleached';
+    if(p.relaxed)  notes += ' | Relaxed/permed';
+    if(p.boxDye)   notes += ' | Box dye history';
+  }
 
   try {
     const res = await fetch('/formulas', {
@@ -797,11 +838,19 @@ async function saveFormula(){
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         formula_name:  name,
-        dye_brand:     p.brand || '—',
+        dye_brand:     p.brand   || '—',
         developer_vol: p.dev,
         process_time:  p.time,
-        session_id:    null
-      })
+        mode:          p.mode,
+        current_level: p.curLv        || null,
+        target_level:  p.tgtLv        || null,
+        shade:         p.shade         || null,
+        texture:       p.texture       || null,
+        porosity:      p.porosity      || null,
+        damage_score:  p.dmg           || null,
+        notes:         p.notes         || null,
+        session_id:    p.client        || null,
+})
     });
     const data = await res.json();
     if(res.ok){
