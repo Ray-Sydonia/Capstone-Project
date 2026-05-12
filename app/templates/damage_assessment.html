@@ -2,20 +2,35 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Damage Assessment — ColourChem</title>
+<title>Strand Test — ColourChem</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#7c5cbf;--pl:#b07fd4;--pd:#5a3fa0;--bg:#f8f5ff;--surface:#fff;--s2:#f2ecff;--s3:#ede6ff;--text:#1c1830;--muted:#7a7490;--border:#e0d6f5;--success:#219a52;--warn:#e67e22;--error:#c0392b;--shadow:0 2px 12px rgba(100,70,180,.08);--shadow-md:0 4px 20px rgba(100,70,180,.13);--shadow-lg:0 8px 40px rgba(100,70,180,.18);--font-d:'Cormorant Garamond',serif;--font-b:'Outfit',sans-serif;--r:10px;--r-lg:18px;--r-full:9999px;--t:.22s ease;--sidebar:260px}
+:root{
+  --primary:#7c5cbf;--pl:#b07fd4;--pd:#5a3fa0;--accent:#e8a0c0;
+  --bg:#f8f5ff;--surface:#fff;--s2:#f2ecff;--s3:#ede6ff;
+  --text:#1c1830;--muted:#7a7490;--border:#e0d6f5;
+  --success:#219a52;--warn:#e67e22;--error:#c0392b;
+  --shadow:0 2px 12px rgba(100,70,180,.08);
+  --shadow-md:0 4px 20px rgba(100,70,180,.13);
+  --shadow-lg:0 8px 40px rgba(100,70,180,.18);
+  --font-d:'Cormorant Garamond',serif;--font-b:'Outfit',sans-serif;
+  --r:10px;--r-lg:18px;--r-full:9999px;--t:.22s ease;--sidebar:260px
+}
 body{font-family:var(--font-b);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
-a{text-decoration:none;color:inherit}button{border:none;background:none;cursor:pointer;font-family:inherit}
+a{text-decoration:none;color:inherit}
+button{border:none;background:none;cursor:pointer;font-family:inherit}
 input,select,textarea{font-family:inherit;border:none;outline:none;background:none}
+img{max-width:100%;display:block}
 .app{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ──────────────────────────────── */
 .sidebar{width:var(--sidebar);flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:100}
 .sb-hdr{padding:1.35rem 1.25rem 1rem;display:flex;align-items:center;gap:.7rem;border-bottom:1px solid var(--border)}
 .sb-logo{width:32px;height:32px;flex-shrink:0}
 .sb-brand{font-family:var(--font-d);font-size:1.45rem;font-weight:700;color:var(--pd)}
-.nav-section{padding:.9rem 0;flex:1}.nav-lbl{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.5rem 1.25rem .25rem;display:block}
+.nav-section{padding:.9rem 0;flex:1}
+.nav-lbl{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:.5rem 1.25rem .25rem;display:block}
 .nav-list{list-style:none}
 .nav-item a{display:flex;align-items:center;gap:.7rem;padding:.58rem 1.25rem;color:var(--muted);font-size:.85rem;font-weight:400;transition:var(--t);border-left:3px solid transparent}
 .nav-item a:hover{background:var(--s2);color:var(--primary)}
@@ -23,60 +38,140 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 .sb-footer{border-top:1px solid var(--border);padding:.5rem 0}
 .sb-user{display:flex;align-items:center;gap:.7rem;padding:.85rem 1.25rem}
 .sb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--pl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;flex-shrink:0}
-.sb-un{font-size:.82rem;font-weight:600}.sb-ue{font-size:.72rem;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-un{font-size:.82rem;font-weight:600}
+.sb-ue{font-size:.72rem;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── MAIN ─────────────────────────────────── */
 .main{flex:1;display:flex;flex-direction:column;min-width:0}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:.9rem 2rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
 .breadcrumb{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--muted)}
 .breadcrumb a{color:var(--primary);font-weight:500}
 .topbar-r{display:flex;align-items:center;gap:.55rem}
-.tb-av{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);background:linear-gradient(135deg,var(--primary),var(--pl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:#fff}
+.tb-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--pl));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:#fff}
 .content{padding:2rem;flex:1}
 .page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
 .page-title{font-family:var(--font-d);font-size:2.2rem;font-weight:700;line-height:1.1}
 .page-sub{color:var(--muted);font-size:.875rem;margin-top:.2rem}
+
+/* ── BUTTONS ──────────────────────────────── */
 .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.68rem 1.3rem;border-radius:var(--r);font-size:.875rem;font-weight:500;cursor:pointer;border:none;transition:var(--t)}
 .btn-primary{background:linear-gradient(135deg,var(--pd),var(--primary),var(--pl));color:#fff;box-shadow:0 4px 14px rgba(124,92,191,.3)}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,92,191,.42)}
+.btn-primary:active{transform:translateY(0)}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none!important;box-shadow:none}
 .btn-outline{background:var(--surface);border:1.5px solid var(--border);color:var(--text)}
 .btn-outline:hover{border-color:var(--primary);background:var(--s2);color:var(--primary)}
 .btn-sm{padding:.42rem .85rem;font-size:.8rem}
 .btn-full{width:100%;justify-content:center}
+
+/* ── CARDS ────────────────────────────────── */
 .card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.4rem;box-shadow:var(--shadow);margin-bottom:1.1rem}
 .card-title{font-family:var(--font-d);font-size:1.2rem;font-weight:600;margin-bottom:1rem}
+
+/* ── FORMS ────────────────────────────────── */
 .fg{margin-bottom:1rem}
 .fg label{display:block;font-size:.8rem;font-weight:500;margin-bottom:.35rem;color:var(--text)}
-.fg input,.fg select,.fg textarea{width:100%;padding:.7rem .9rem;background:var(--s2);border:2px solid transparent;border-radius:var(--r);font-size:.875rem;color:var(--text);transition:var(--t)}
-.fg input:focus,.fg select:focus,.fg textarea:focus{background:var(--surface);border-color:var(--primary);box-shadow:0 0 0 4px rgba(124,92,191,.1)}
+.fg label .req{color:var(--error);margin-left:2px}
+.fg select,.fg textarea{width:100%;padding:.72rem .9rem;background:var(--s2);border:2px solid transparent;border-radius:var(--r);font-size:.875rem;color:var(--text);transition:var(--t)}
+.fg select{cursor:pointer}
+.fg select:focus,.fg textarea:focus{background:var(--surface);border-color:var(--primary);box-shadow:0 0 0 4px rgba(124,92,191,.1)}
 .fg textarea{resize:vertical;min-height:80px}
-.fg select{cursor:pointer}.fg input::placeholder,.fg textarea::placeholder{color:#ccc}
-.range-row{display:flex;align-items:center;gap:.8rem}
-.range-row input[type=range]{flex:1;height:4px;background:var(--border);border-radius:3px;appearance:none;outline:none;cursor:pointer}
-.range-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--primary);border-radius:50%;cursor:pointer}
-.range-val{font-weight:600;color:var(--primary);min-width:52px;text-align:right;font-size:.85rem}
-.strand-grid{display:grid;grid-template-columns:330px 1fr;gap:1.2rem;align-items:start}
-.upload-zone{border:2px dashed var(--border);border-radius:var(--r-lg);padding:2.2rem 1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.55rem;background:var(--s2);cursor:pointer;transition:var(--t);text-align:center;color:var(--muted);min-height:180px}
+.fg textarea::placeholder{color:#ccc}
+.fg select.error-border{border-color:var(--error)!important}
+
+/* ── INFO BOX ─────────────────────────────── */
+.info-box{background:#ede7f6;border:1px solid var(--pl);border-radius:var(--r-lg);padding:.9rem 1.1rem;display:flex;gap:.7rem;align-items:flex-start;margin-bottom:1.5rem}
+.info-box strong{font-size:.875rem;color:var(--pd);display:block;margin-bottom:.15rem}
+.info-box p{font-size:.8rem;color:var(--muted);line-height:1.55}
+
+/* ── LAYOUT ───────────────────────────────── */
+.strand-layout{display:grid;grid-template-columns:340px 1fr;gap:1.3rem;align-items:start}
+
+/* ── UPLOAD ZONE ──────────────────────────── */
+.upload-zone{border:2.5px dashed var(--border);border-radius:var(--r-lg);padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;background:var(--s2);cursor:pointer;transition:var(--t);text-align:center;color:var(--muted);min-height:190px}
 .upload-zone:hover,.upload-zone.drag-over{border-color:var(--primary);background:rgba(124,92,191,.05)}
-.upload-zone strong{font-size:.875rem;color:var(--text)}
+.upload-zone.has-image{padding:0;overflow:hidden;background:transparent;border-style:solid;border-color:var(--primary)}
+.upload-zone.has-image img{width:100%;height:220px;object-fit:cover;border-radius:calc(var(--r-lg) - 2px);display:block}
+.upload-zone strong{font-size:.9rem;color:var(--text)}
 .upload-zone small{font-size:.76rem}
-.info-box{background:#ede7f6;border:1px solid var(--pl);border-radius:var(--r-lg);padding:.9rem 1.1rem;display:flex;gap:.7rem;align-items:flex-start;margin-bottom:1.25rem}
-.info-box strong{font-size:.875rem;color:var(--pd);display:block;margin-bottom:.1rem}
-.info-box p{font-size:.8rem;color:var(--muted)}
-.pred-score{font-family:var(--font-d);font-size:3.8rem;font-weight:700;line-height:1;text-align:center}
-.sc-low{color:var(--success)}.sc-med{color:var(--warn)}.sc-high{color:var(--error)}
-.dmg-meter{height:9px;background:var(--s3);border-radius:var(--r-full);overflow:hidden;margin:.45rem 0}
-.dmg-fill{height:100%;border-radius:var(--r-full);background:linear-gradient(90deg,#27ae60,#e67e22,#e74c3c);transition:width .8s ease}
+
+/* ── CLIENT CARD PREVIEW ──────────────────── */
+.client-preview{background:var(--s2);border-radius:var(--r);padding:.85rem 1rem;display:none;margin-top:.75rem;border:1px solid var(--border)}
+.cp-name{font-weight:600;font-size:.9rem;color:var(--text)}
+.cp-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem}
+.tag{display:inline-block;padding:.17rem .58rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-full);font-size:.72rem;color:var(--muted)}
+.cp-history{font-size:.78rem;color:var(--muted);margin-top:.5rem;font-style:italic;line-height:1.5}
+
+/* ── RESULTS SECTION ──────────────────────── */
+.results-section{animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── DIAGNOSIS CATEGORIES ─────────────────── */
+.diag-grid{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.25rem}
+.diag-badge{
+  display:inline-flex;align-items:center;gap:.45rem;
+  padding:.45rem 1rem;border-radius:var(--r-full);font-size:.82rem;font-weight:600;
+  border:2px solid transparent;
+}
+.diag-healthy{background:#e8f8ee;color:#219a52;border-color:#b2dfce}
+.diag-breakage{background:#feecec;color:#c0392b;border-color:#f5c6c6}
+.diag-chemical{background:#fff3e0;color:#c87a00;border-color:#ffd699}
+.diag-dry{background:#e3f2fd;color:#1565c0;border-color:#b3d4f5}
+.diag-heat{background:#fce4ec;color:#c2185b;border-color:#f8bbd0}
+.diag-split{background:#f3e5f5;color:#7b1fa2;border-color:#e1bee7}
+
+/* ── CONDITION TABLE ──────────────────────── */
+.cond-table{width:100%;border-collapse:collapse;margin-bottom:1rem}
+.cond-table th{text-align:left;padding:.6rem .85rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:2px solid var(--border);background:var(--s2)}
+.cond-table td{padding:.72rem .85rem;border-bottom:1px solid var(--border);font-size:.85rem;vertical-align:middle}
+.cond-table tbody tr:hover td{background:var(--s2)}
+.cond-table tbody tr:last-child td{border-bottom:none}
+.cond-val{font-weight:500;color:var(--text)}
 .badge{display:inline-block;padding:.18rem .65rem;border-radius:var(--r-full);font-size:.72rem;font-weight:600}
-.badge{  display:inline-block;padding:.35rem .9rem;border-radius:var(--r-full);font-size:.95rem;font-weight:700;letter-spacing:.02em;}
-.b-low{background:#e8f8ee;color:#219a52}.b-med{background:#fff3e0;color:#c87a00}.b-high{background:#feecec;color:var(--error)}
-.rb{padding:.85rem 1rem;background:var(--s2);border-radius:var(--r);margin-bottom:.7rem}
-.rb-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
-.rb-title{font-weight:600;font-size:.85rem}
-.tip{display:flex;gap:.55rem;padding:.58rem .72rem;background:var(--s2);border-radius:var(--r);font-size:.8rem;color:var(--muted);margin-bottom:.42rem;align-items:flex-start}
-.tip strong{font-size:.82rem;color:var(--text);display:block;margin-bottom:.08rem}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2.5rem 1rem;color:var(--muted);text-align:center;gap:.6rem;font-size:.85rem}
-.empty-state svg{opacity:.3}
-@media(max-width:1100px){.strand-grid{grid-template-columns:1fr}}
-@media(max-width:768px){:root{--sidebar:68px}.sb-brand,.nav-item a span,.nav-lbl,.sb-un,.sb-ue{display:none}.nav-item a{justify-content:center;padding:.65rem}.sb-hdr{justify-content:center;padding:1rem .5rem}.content{padding:1rem}.topbar{padding:.7rem 1rem}}
+.b-good{background:#e8f8ee;color:#219a52}
+.b-fair{background:#fff3e0;color:#c87a00}
+.b-poor{background:#feecec;color:var(--error)}
+
+/* ── TREATMENT LIST ───────────────────────── */
+.treat-list{display:flex;flex-direction:column;gap:.6rem}
+.treat-item{display:flex;gap:.75rem;padding:.85rem 1rem;background:var(--s2);border-radius:var(--r);border:1px solid var(--border);align-items:flex-start;transition:var(--t)}
+.treat-item:hover{border-color:var(--pl);background:rgba(124,92,191,.04)}
+.treat-icon{font-size:1.35rem;flex-shrink:0;margin-top:.05rem}
+.treat-body{}
+.treat-name{font-weight:600;font-size:.88rem;color:var(--text);margin-bottom:.15rem}
+.treat-desc{font-size:.8rem;color:var(--muted);line-height:1.5}
+.treat-priority{display:inline-block;margin-top:.35rem;font-size:.7rem;font-weight:700;padding:.1rem .5rem;border-radius:var(--r-full);text-transform:uppercase;letter-spacing:.05em}
+.priority-high{background:#feecec;color:var(--error)}
+.priority-med{background:#fff3e0;color:#c87a00}
+.priority-low{background:#e8f8ee;color:#219a52}
+
+/* ── FEEDBACK ─────────────────────────────── */
+.section-divider{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+
+/* ── LOADING STATE ────────────────────────── */
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem;gap:1rem;color:var(--muted)}
+.spinner{width:40px;height:40px;border:3px solid var(--s3);border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── EMPTY STATE ──────────────────────────── */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1.5rem;color:var(--muted);text-align:center;gap:.65rem;font-size:.875rem}
+.empty-state svg{opacity:.28}
+.empty-state p{max-width:280px;line-height:1.6}
+
+/* ── AI MODEL NOTICE ──────────────────────── */
+.model-notice{display:inline-flex;align-items:center;gap:.4rem;font-size:.74rem;color:var(--muted);background:var(--s2);border:1px solid var(--border);border-radius:var(--r-full);padding:.25rem .75rem;margin-bottom:1rem}
+.model-dot{width:7px;height:7px;border-radius:50%;background:var(--success);flex-shrink:0;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+@media(max-width:1100px){.strand-layout{grid-template-columns:1fr}}
+@media(max-width:768px){
+  :root{--sidebar:68px}
+  .sb-brand,.nav-item a span,.nav-lbl,.sb-un,.sb-ue{display:none}
+  .nav-item a{justify-content:center;padding:.65rem}
+  .sb-hdr{justify-content:center;padding:1rem .5rem}
+  .content{padding:1rem}
+  .topbar{padding:.7rem 1rem}
+}
 </style>
 </head>
 <body>
@@ -88,16 +183,26 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
   window.logout=function(){localStorage.removeItem('cc_user');location.href='login.html'};
 })();
 </script>
+
 <div class="app">
+<!-- ── SIDEBAR ───────────────────────────── -->
 <nav class="sidebar">
-  <div class="sb-hdr"><svg class="sb-logo" viewBox="0 0 80 80" fill="none"><defs><linearGradient id="slg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#b07fd4"/><stop offset="100%" stop-color="#5a3fa0"/></linearGradient></defs><path d="M40 12Q52 17 56 34Q59 44 56 54Q53 64 44 71Q42 73 40 76" stroke="url(#slg)" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M40 12Q28 17 24 34Q21 44 24 54Q27 64 36 71Q38 73 40 76" stroke="url(#slg)" stroke-width="3.5" stroke-linecap="round" fill="none"/><circle cx="40" cy="9" r="5.5" fill="url(#slg)"/></svg><span class="sb-brand">ColourChem</span></div>
+  <div class="sb-hdr">
+    <svg class="sb-logo" viewBox="0 0 80 80" fill="none">
+      <defs><linearGradient id="slg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#b07fd4"/><stop offset="100%" stop-color="#5a3fa0"/></linearGradient></defs>
+      <path d="M40 12Q52 17 56 34Q59 44 56 54Q53 64 44 71Q42 73 40 76" stroke="url(#slg)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <path d="M40 12Q28 17 24 34Q21 44 24 54Q27 64 36 71Q38 73 40 76" stroke="url(#slg)" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+      <circle cx="40" cy="9" r="5.5" fill="url(#slg)"/>
+    </svg>
+    <span class="sb-brand">ColourChem</span>
+  </div>
   <div class="nav-section">
     <span class="nav-lbl">Main</span>
     <ul class="nav-list">
       <li class="nav-item"><a href="dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
       <li class="nav-item"><a href="clients.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
-      <li class="nav-item"><a href="strand_test.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand test</span></a></li>
-      <li class="nav-item active"><a href="damage_assessment.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Damage Assessment</span></a></li>
+      <li class="nav-item"><a href="color-mixer.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Color Mixer</span></a></li>
+      <li class="nav-item active"><a href="damage_assessment.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
       <li class="nav-item"><a href="archive.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
       <li class="nav-item"><a href="sessions.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
     </ul>
@@ -107,246 +212,689 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
       <li class="nav-item"><a href="#" onclick="logout();return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Logout</span></a></li>
     </ul>
   </div>
-  <div class="sb-footer"><div class="sb-user"><div class="sb-av" id="sbAv">S</div><div><div class="sb-un" id="sbName">Stylist</div><div class="sb-ue" id="sbEmail"></div></div></div></div>
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-av" id="sbAv">S</div>
+      <div><div class="sb-un" id="sbName">Stylist</div><div class="sb-ue" id="sbEmail"></div></div>
+    </div>
+  </div>
 </nav>
 
+<!-- ── MAIN ──────────────────────────────── -->
 <main class="main">
   <header class="topbar">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a><span>/</span><span>Damage Assessment</span></div>
+    <div class="breadcrumb">
+      <a href="dashboard.html">Dashboard</a><span>/</span><span>Strand Test</span>
+    </div>
     <div class="topbar-r"><div class="tb-av" id="tbAv">S</div></div>
   </header>
+
   <div class="content">
     <div class="page-hdr">
-      <div><h1 class="page-title">Damage Assessment</h1><p class="page-sub">Upload a strand photo and get AI-powered damage analysis</p></div>
-    </div>
-    <div class="info-box">
-      <span style="font-size:1.4rem">🤖</span>
-      <div><strong>AI Damage Prediction Module</strong><p>This module connects to your trained damage model — separate from the colour simulation engine. Upload a strand image, fill in the profile, and receive a damage score, condition assessment, and treatment recommendations. Submit feedback after each session to help retrain and improve the model.</p></div>
+      <div>
+        <h1 class="page-title">Strand Test &amp; Hair Analysis</h1>
+        <p class="page-sub">Upload a hair strand photo — the AI model classifies its condition and generates a personalised care report</p>
+      </div>
     </div>
 
-    <div class="strand-grid">
-      <!-- LEFT -->
+    <!-- Info box -->
+    <div class="info-box">
+      <span style="font-size:1.5rem;flex-shrink:0">🤖</span>
       <div>
+        <strong>AI Hair Condition Model — hair_damage_resnet50_multilabel.keras</strong>
+        <p>This module runs your trained ResNet-50 multilabel classifier. It analyses the uploaded strand image and identifies which conditions are present from the following categories: <strong>Healthy · Breakage · Chemical Damage · Dry · Heat Damage · Split Ends</strong>. A strand can belong to more than one category. The client's existing hair profile is automatically pulled in from their record — no need to re-enter it here.</p>
+      </div>
+    </div>
+
+    <div class="strand-layout">
+
+      <!-- ── LEFT: Input panel ─────────────── -->
+      <div>
+        <!-- Client selector -->
+        <div class="card">
+          <div class="card-title">Session Setup</div>
+
+          <div class="fg">
+            <label>Client <span class="req">*</span></label>
+            <select id="clientSel" onchange="onClientChange(this)">
+              <option value="">— Select a client (required) —</option>
+            </select>
+            <p id="clientErr" style="display:none;font-size:.78rem;color:var(--error);margin-top:.3rem">⚠ Please select a client before running the analysis.</p>
+          </div>
+
+          <!-- Auto-populated client profile preview -->
+          <div class="client-preview" id="clientPreview">
+            <div class="cp-name" id="cpName"></div>
+            <div class="cp-tags" id="cpTags"></div>
+            <div class="cp-history" id="cpHistory"></div>
+          </div>
+        </div>
+
+        <!-- Upload -->
         <div class="card">
           <div class="card-title">Upload Strand Photo</div>
           <div class="upload-zone" id="uploadZone" onclick="document.getElementById('strandFile').click()">
-            <svg width="44" height="44" viewBox="0 0 48 48" fill="none"><rect x="4" y="10" width="40" height="30" rx="3" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="20" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 32l10-10 6 6 10-10 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <strong>Click to upload strand photo</strong>
-            <small>JPG, PNG, WEBP · Max 10 MB · Or drag &amp; drop</small>
+            <svg width="46" height="46" viewBox="0 0 48 48" fill="none">
+              <rect x="4" y="10" width="40" height="30" rx="3" stroke="currentColor" stroke-width="2"/>
+              <circle cx="16" cy="21" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 33l10-10 6 6 10-11 14 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <strong>Click or drag &amp; drop to upload</strong>
+            <small>JPG · PNG · WEBP &nbsp;·&nbsp; Max 10 MB</small>
+            <small style="color:var(--pl);margin-top:.1rem">Clear, well-lit photos give the best results</small>
           </div>
           <input type="file" id="strandFile" accept="image/*" style="display:none" onchange="handleUpload(this)">
-          <div id="uploadPreview" style="display:none;margin-top:.9rem">
-            <img id="previewImg" style="width:100%;border-radius:var(--r);max-height:200px;object-fit:cover">
-            <button class="btn btn-outline btn-sm" style="margin-top:.5rem;width:100%" onclick="clearUpload()">Remove photo</button>
-          </div>
-        </div>
 
-        <div class="card">
-          <div class="card-title">Strand Profile</div>
-          <div class="fg"><label>Link to Client</label>
-            <select id="strandClient"><option value="">No client selected</option></select>
-          </div>
-          <div class="fg"><label>Hair Texture</label>
-            <select id="strandTex"><option>Fine</option><option selected>Medium</option><option>Coarse</option></select>
-          </div>
-          <div class="fg"><label>Porosity Level</label>
-            <select id="strandPor"><option>Low</option><option selected>Normal</option><option>High</option></select>
-          </div>
-          <div class="fg"><label>Days Since Last Chemical Service</label>
-            <div class="range-row">
-              <input type="range" min="0" max="365" value="60" id="daysSince" oninput="document.getElementById('daysVal').textContent=this.value+' days'">
-              <span class="range-val" id="daysVal">60 days</span>
-            </div>
-          </div>
-          <div class="fg"><label>Current Condition (self-assessed)</label>
-            <select id="selfAssess">
-              <option>Excellent – healthy, shiny</option>
-              <option selected>Good – minor dryness</option>
-              <option>Fair – noticeable dryness / frizz</option>
-              <option>Poor – breakage or significant damage</option>
-              <option>Severe – extreme breakage / elasticity loss</option>
-            </select>
-          </div>
-          <button class="btn btn-primary btn-full" onclick="runAnalysis()">
-            <span>Run Damage Analysis</span>
-            <svg width="17" height="17" viewBox="0 0 20 20" fill="none"><path d="M17 10H3M17 10L12 15M17 10L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <!-- Remove photo button — shown after upload -->
+          <button class="btn btn-outline btn-sm" id="removePhotoBtn" style="display:none;width:100%;margin-top:.6rem;justify-content:center" onclick="clearPhoto()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Remove photo
           </button>
         </div>
+
+        <!-- Run button -->
+        <button class="btn btn-primary btn-full" id="runBtn" onclick="runAnalysis()" style="font-size:.95rem;padding:.88rem">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M10 8l6 4-6 4V8z" fill="currentColor"/></svg>
+          Run AI Analysis
+        </button>
+        <p style="font-size:.74rem;color:var(--muted);text-align:center;margin-top:.5rem">
+          Both a client and a photo are required to run the analysis.
+        </p>
       </div>
 
-      <!-- RIGHT -->
-      <div>
-        <div class="card" id="resultCard">
-          <div class="card-title">Damage Assessment</div>
-          <div id="predEmpty" class="empty-state">
-            <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><path d="M28 8C28 8 36 14 36 28C36 42 28 48 28 48C28 48 20 42 20 28C20 14 28 8 28 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 28h32" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/></svg>
-            <p>Run analysis to see<br>damage prediction results</p>
-          </div>
-          <div id="predResults" style="display:none">
-            <div style="text-align:center;padding:1.25rem 0 1rem">
-              <p style="font-size:.8rem;color:var(--muted);margin-bottom:.6rem">Detected Damage Types</p>
-            <div id="damageTypes" style="display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center"></div>
-            </div>
-            <div id="condBlocks"></div>
+      <!-- ── RIGHT: Results panel ───────────── -->
+      <div id="resultsPanel">
+
+        <!-- Empty state (default) -->
+        <div class="card" id="emptyCard">
+          <div class="empty-state">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+              <path d="M32 8C32 8 44 16 44 32C44 48 32 56 32 56C32 56 20 48 20 32C20 16 32 8 32 8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 32h40" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 2"/>
+              <circle cx="32" cy="32" r="4" fill="currentColor" opacity=".25"/>
+            </svg>
+            <p>Select a client, upload a strand photo, and click <strong>Run AI Analysis</strong> to see the hair condition report.</p>
           </div>
         </div>
 
-        <div class="card" id="treatCard" style="display:none">
-          <div class="card-title">Recommended Treatments</div>
-          <div id="treatList"></div>
+        <!-- Loading state -->
+        <div class="card" id="loadingCard" style="display:none">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p style="font-weight:500">Analysing strand image…</p>
+            <p style="font-size:.8rem">Running ResNet-50 multilabel classifier</p>
+          </div>
         </div>
 
-        <div class="card" id="feedbackCard" style="display:none">
-          <div class="card-title">Submit Feedback to AI Model</div>
-          <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">Help improve the damage prediction model by submitting your actual outcome after the service. This data is used to retrain and improve accuracy.</p>
-          <div class="fg"><label>Actual Damage Outcome (post-service)</label>
-            <select id="fb_out">
-              <option>Better than predicted – no damage</option>
-              <option>As predicted – minor damage</option>
-              <option>Slight breakage occurred</option>
-              <option>Significant breakage occurred</option>
-              <option>Severe damage / hair loss</option>
-            </select>
-          </div>
-          <div class="fg"><label>Upload Post-Service Photo (optional)</label>
-            <div class="upload-zone" style="padding:1.2rem;min-height:80px" onclick="document.getElementById('fbPhoto').click()">
-              <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="3" y="7" width="26" height="19" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="14" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 22l7-7 4 4 7-7 7 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              <small id="fbPhotoLbl">Upload result photo</small>
+        <!-- Results (populated after analysis) -->
+        <div id="resultsContent" style="display:none">
+
+          <!-- 1. Diagnosis -->
+          <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+              <div class="card-title" style="margin-bottom:0">AI Diagnosis</div>
+              <span class="model-notice">
+                <span class="model-dot"></span>
+                ResNet-50 Multilabel
+              </span>
             </div>
-            <input type="file" id="fbPhoto" accept="image/*" style="display:none" onchange="document.getElementById('fbPhotoLbl').textContent=this.files[0]?'✓ '+this.files[0].name:'Upload result photo'">
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:.85rem">
+              The model identified the following condition(s) in the uploaded strand image. Multiple conditions can be present simultaneously.
+            </p>
+            <div class="diag-grid" id="diagGrid"></div>
+
+            <!-- Confidence bars (shown when connecting to real model) -->
+            <div id="confBars" style="display:none;margin-top:.75rem">
+              <p style="font-size:.76rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">Confidence Scores</p>
+              <div id="confBarsList"></div>
+            </div>
           </div>
-          <div class="fg"><label>Additional Notes</label><textarea id="fb_notes" placeholder="E.g., used Olaplex, client had previously bleached ends, processing stopped at 25 min…"></textarea></div>
-          <button class="btn btn-primary btn-full" onclick="submitFeedback()">Submit Feedback</button>
-        </div>
-      </div>
-    </div>
-  </div>
+
+          <!-- 2. Condition Profile -->
+          <div class="card">
+            <div class="card-title">Condition Profile</div>
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:.9rem">
+              Based on the AI diagnosis and this client's hair profile, here is their current hair condition across key indicators.
+            </p>
+            <table class="cond-table" id="condTable">
+              <thead>
+                <tr>
+                  <th>Indicator</th>
+                  <th>Assessment</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="condBody"></tbody>
+            </table>
+          </div>
+
+          <!-- 3. Recommended Treatments -->
+          <div class="card">
+            <div class="card-title">Recommended Treatments</div>
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:.9rem">
+              Personalised treatment recommendations based on identified conditions. Priority levels indicate urgency before the next colour service.
+            </p>
+            <div class="treat-list" id="treatList"></div>
+          </div>
+
+          <!-- 4. Feedback for AI retraining -->
+          <div class="card" style="border:1.5px dashed var(--border)">
+            <div class="card-title">Submit Feedback to AI Model</div>
+            <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">
+              Was the AI diagnosis accurate? Your feedback is stored and used to retrain and improve the model over time. This is one of the most valuable things you can do to improve future predictions.
+            </p>
+            <div class="fg">
+              <label>Was the diagnosis correct?</label>
+              <select id="fb_correct">
+                <option value="">Select…</option>
+                <option value="yes">Yes — fully accurate</option>
+                <option value="partial">Partially — some conditions were correct</option>
+                <option value="no">No — the diagnosis was incorrect</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label>What was the actual condition? (if different)</label>
+              <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.2rem">
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;color:var(--muted)"><input type="checkbox" value="healthy" style="accent-color:var(--primary);width:14px;height:14px"> Healthy</label>
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;color:var(--muted)"><input type="checkbox" value="breakage" style="accent-color:var(--primary);width:14px;height:14px"> Breakage</label>
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;color:var(--muted)"><input type="checkbox" value="chemical_damage" style="accent-color:var(--primary);width:14px;height:14px"> Chemical Damage</label>
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;color:var(--muted)"><input type="checkbox" value="dry" style="accent-color:var(--primary);width:14px;height:14px"> Dry</label>
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;color:var(--muted)"><input type="checkbox" value="heat_damage" style="accent-color:var(--primary);width:14px;height:14px"> Heat Damage</label>
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;cursor:pointer;color:var(--muted)"><input type="checkbox" value="split_ends" style="accent-color:var(--primary);width:14px;height:14px"> Split Ends</label>
+              </div>
+            </div>
+            <div class="fg">
+              <label>Additional notes</label>
+              <textarea id="fb_notes" placeholder="E.g., the model missed the heat damage on the mid-lengths, but correctly identified the dryness…"></textarea>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="submitFeedback()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Submit Feedback
+            </button>
+          </div>
+        </div><!-- /resultsContent -->
+      </div><!-- /resultsPanel -->
+    </div><!-- /strand-layout -->
+  </div><!-- /content -->
 </main>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded',()=>{
-  const u=CC_USER;
-  const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
-  const init=s=>(s||'S')[0].toUpperCase();
-  const n=u.name||'Stylist';
-  document.getElementById('sbName').textContent=cap(n);
-  document.getElementById('sbEmail').textContent=u.email||'';
-  document.getElementById('sbAv').textContent=init(n);
-  document.getElementById('tbAv').textContent=init(n);
-  const cs=JSON.parse(localStorage.getItem('cc_clients')||'[]');
-  const sel=document.getElementById('strandClient');
-  cs.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`${c.fn} ${c.ln}`;sel.appendChild(o)});
-  const zone=document.getElementById('uploadZone');
-  zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag-over')});
-  zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));
-  zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag-over');if(e.dataTransfer.files[0])previewFile(e.dataTransfer.files[0])});
-});
-function handleUpload(inp){if(inp.files[0])previewFile(inp.files[0])}
-function previewFile(file){
-  const r=new FileReader();
-  r.onload=e=>{document.getElementById('previewImg').src=e.target.result;document.getElementById('uploadPreview').style.display='block';document.getElementById('uploadZone').style.display='none'};
-  r.readAsDataURL(file);
-}
-function clearUpload(){document.getElementById('uploadPreview').style.display='none';document.getElementById('uploadZone').style.display='flex';document.getElementById('strandFile').value=''}
-function runAnalysis(){
-  const fileInput = document.getElementById('strandFile');
+/* ─── INIT ─────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  const u = CC_USER;
+  const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+  const init = s => (s || 'S')[0].toUpperCase();
+  const n = u.name || 'Stylist';
 
-  // 🚫 No image uploaded
-  if (!fileInput.files || !fileInput.files[0]) {
-    alert("⚠️ Please upload a photo before running analysis.");
+  document.getElementById('sbName').textContent = cap(n);
+  document.getElementById('sbEmail').textContent = u.email || '';
+  document.getElementById('sbAv').textContent = init(n);
+  document.getElementById('tbAv').textContent = init(n);
+
+  loadClients();
+
+  // Drag-and-drop
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over') });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) applyFile(e.dataTransfer.files[0]);
+  });
+});
+
+/* ─── CLIENTS ──────────────────────────────────── */
+let clients = [];
+function loadClients() {
+  clients = JSON.parse(localStorage.getItem('cc_clients') || '[]');
+  const sel = document.getElementById('clientSel');
+  clients.forEach((c, i) => {
+    const o = document.createElement('option');
+    o.value = i;
+    o.textContent = `${c.fn} ${c.ln}`;
+    sel.appendChild(o);
+  });
+}
+
+function onClientChange(sel) {
+  const prev = document.getElementById('clientPreview');
+  document.getElementById('clientErr').style.display = 'none';
+  if (!sel.value && sel.value !== 0) { prev.style.display = 'none'; return; }
+  const c = clients[parseInt(sel.value)];
+  if (!c) { prev.style.display = 'none'; return; }
+
+  document.getElementById('cpName').textContent = `${c.fn} ${c.ln}`;
+
+  const tags = [];
+  if (c.nat) tags.push(c.nat);
+  if (c.cur) tags.push(c.cur);
+  if (c.tx)  tags.push(c.tx);
+  if (c.po)  tags.push(c.po);
+  document.getElementById('cpTags').innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+  const histParts = [];
+  if (c.al)  histParts.push(`⚠ Allergies: ${c.al}`);
+  if (c.ch)  histParts.push(c.ch);
+  if (c.no)  histParts.push(c.no);
+  document.getElementById('cpHistory').textContent = histParts.join(' · ') || 'No additional history recorded.';
+
+  prev.style.display = 'block';
+}
+
+/* ─── PHOTO UPLOAD ─────────────────────────────── */
+let uploadedFile = null;
+
+function handleUpload(inp) {
+  if (inp.files[0]) applyFile(inp.files[0]);
+}
+
+function applyFile(file) {
+  if (file.size > 10 * 1024 * 1024) { alert('File is too large. Max 10 MB.'); return; }
+  uploadedFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const zone = document.getElementById('uploadZone');
+    zone.classList.add('has-image');
+    zone.innerHTML = `<img src="${e.target.result}" alt="Uploaded strand">`;
+    zone.onclick = null; // disable click-to-reopen while image is shown
+    document.getElementById('removePhotoBtn').style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearPhoto() {
+  uploadedFile = null;
+  const zone = document.getElementById('uploadZone');
+  zone.classList.remove('has-image');
+  zone.innerHTML = `
+    <svg width="46" height="46" viewBox="0 0 48 48" fill="none">
+      <rect x="4" y="10" width="40" height="30" rx="3" stroke="currentColor" stroke-width="2"/>
+      <circle cx="16" cy="21" r="4" stroke="currentColor" stroke-width="2"/>
+      <path d="M4 33l10-10 6 6 10-11 14 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <strong>Click or drag &amp; drop to upload</strong>
+    <small>JPG · PNG · WEBP &nbsp;·&nbsp; Max 10 MB</small>
+    <small style="color:var(--pl);margin-top:.1rem">Clear, well-lit photos give the best results</small>`;
+  zone.onclick = () => document.getElementById('strandFile').click();
+  document.getElementById('strandFile').value = '';
+  document.getElementById('removePhotoBtn').style.display = 'none';
+  // Reset results
+  document.getElementById('emptyCard').style.display = 'block';
+  document.getElementById('loadingCard').style.display = 'none';
+  document.getElementById('resultsContent').style.display = 'none';
+}
+
+/* ─── RUN ANALYSIS ─────────────────────────────── */
+async function runAnalysis() {
+  // Validate
+  const clientSel = document.getElementById('clientSel');
+  if (!clientSel.value && clientSel.value !== 0) {
+    document.getElementById('clientErr').style.display = 'block';
+    clientSel.focus();
+    return;
+  }
+  if (!uploadedFile) {
+    alert('Please upload a strand photo before running the analysis.');
     return;
   }
 
-  const tex = document.getElementById('strandTex').value;
-  const por = document.getElementById('strandPor').value;
-  const days = parseInt(document.getElementById('daysSince').value);
-  const sa = document.getElementById('selfAssess').value;
+  const client = clients[parseInt(clientSel.value)];
 
-  // --- TEMP LOGIC (replace with AI later) ---
-  let score = 10;
+  // Show loading
+  document.getElementById('emptyCard').style.display = 'none';
+  document.getElementById('loadingCard').style.display = 'block';
+  document.getElementById('resultsContent').style.display = 'none';
 
-  if(tex==='Fine') score+=15;
-  if(por==='High') score+=25; else if(por==='Low') score+=5;
-  if(days<30) score+=25; else if(days<60) score+=15; else if(days<90) score+=5;
-  if(sa.startsWith('Fair')) score+=20;
-  if(sa.startsWith('Poor')) score+=35;
-  if(sa.startsWith('Severe')) score+=50;
+  try {
+    /* ── REAL API CALL ──────────────────────────────────────────────────────
+       When your Flask backend is running, replace the simulation block below
+       with this fetch call:
 
-  score = Math.min(100, score);
+       const formData = new FormData();
+       formData.append('image', uploadedFile);
+       formData.append('client_id', clientSel.value);
 
-  // --- MULTI-CLASS DAMAGE OUTPUT ---
-  const types = [];
+       const res = await fetch('http://localhost:5000/api/predict/strand', {
+         method: 'POST',
+         body: formData,
+         credentials: 'include'
+       });
+       const data = await res.json();
+       // data should be: { categories: ['breakage','dry'], confidences: { breakage: 0.92, dry: 0.78, ... } }
+       const detectedCategories = data.categories;
+       const confidences = data.confidences || {};
+    ── END REAL API CALL ────────────────────────────────────────────────── */
 
-  if (por === 'High') types.push("Dry");
-  if (days < 30) types.push("Chemical Damage");
-  if (tex === 'Fine' && score > 40) types.push("Breakage");
-  if (score > 60) types.push("Split Ends");
-  if (score > 50 && sa.startsWith('Poor')) types.push("Heat Damage");
+    // ── SIMULATION (remove once Flask API is connected) ─────────────────
+    await new Promise(r => setTimeout(r, 1800)); // simulate network delay
+    const allCats = ['healthy','breakage','chemical_damage','dry','heat_damage','split_ends'];
+    // Simulate: pick 1-3 random conditions (replace with real API response)
+    const detectedCategories = simulateDetection();
+    const confidences = {};
+    allCats.forEach(c => { confidences[c] = detectedCategories.includes(c) ? (0.7 + Math.random() * 0.28) : (Math.random() * 0.35); });
+    // ── END SIMULATION ──────────────────────────────────────────────────
 
-  // If nothing detected
-  if (types.length === 0) types.push("Healthy");
+    renderResults(detectedCategories, confidences, client);
 
-  // --- SHOW RESULTS ---
-  document.getElementById('predEmpty').style.display = 'none';
-  document.getElementById('predResults').style.display = 'block';
+  } catch (err) {
+    document.getElementById('loadingCard').style.display = 'none';
+    document.getElementById('emptyCard').style.display = 'block';
+    alert('Analysis failed: ' + err.message + '\n\nMake sure your Flask API is running and the /api/predict/strand endpoint is available.');
+  }
+}
 
-  // Render damage type badges
-  const typeContainer = document.getElementById('damageTypes');
+function simulateDetection() {
+  // Simple simulation — weight toward more realistic combos
+  const scenarios = [
+    ['healthy'],
+    ['dry','split_ends'],
+    ['breakage','chemical_damage'],
+    ['heat_damage','dry'],
+    ['breakage','dry','split_ends'],
+    ['chemical_damage','breakage'],
+    ['heat_damage','split_ends','dry'],
+    ['dry'],
+  ];
+  return scenarios[Math.floor(Math.random() * scenarios.length)];
+}
 
-  typeContainer.innerHTML = types.map(t => {
-    let cls = 'b-low';
+/* ─── RENDER RESULTS ───────────────────────────── */
+function renderResults(categories, confidences, client) {
+  document.getElementById('loadingCard').style.display = 'none';
+  document.getElementById('resultsContent').style.display = 'block';
 
-    if (t === "Healthy") cls = 'b-low';
-    else if (t === "Dry" || t === "Split Ends") cls = 'b-med';
-    else cls = 'b-high';
+  renderDiagnosis(categories, confidences);
+  renderConditionProfile(categories, client);
+  renderTreatments(categories);
 
-    return `<span class="badge ${cls}">${t}</span>`;
+  // Scroll to results
+  document.getElementById('resultsContent').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ─── CATEGORY META ────────────────────────────── */
+const CAT_META = {
+  healthy: {
+    label: 'Healthy',
+    cls: 'diag-healthy',
+    icon: '✅',
+    desc: 'Hair strand shows good structural integrity with no significant damage detected.'
+  },
+  breakage: {
+    label: 'Breakage',
+    cls: 'diag-breakage',
+    icon: '⚡',
+    desc: 'Hair shaft is weakened and breaking along the length, not at the root.'
+  },
+  chemical_damage: {
+    label: 'Chemical Damage',
+    cls: 'diag-chemical',
+    icon: '🧪',
+    desc: 'Evidence of damage from bleach, colour, relaxer or other chemical services.'
+  },
+  dry: {
+    label: 'Dry',
+    cls: 'diag-dry',
+    icon: '💧',
+    desc: 'Insufficient moisture in the hair shaft, leading to brittleness and frizz.'
+  },
+  heat_damage: {
+    label: 'Heat Damage',
+    cls: 'diag-heat',
+    icon: '🔥',
+    desc: 'Cuticle damage from repeated or excessive heat tool exposure.'
+  },
+  split_ends: {
+    label: 'Split Ends',
+    cls: 'diag-split',
+    icon: '✂️',
+    desc: 'Hair tips have split into two or more strands due to wear and weakening.'
+  }
+};
+
+/* ─── DIAGNOSIS BADGES ─────────────────────────── */
+function renderDiagnosis(categories, confidences) {
+  const grid = document.getElementById('diagGrid');
+  grid.innerHTML = categories.map(c => {
+    const m = CAT_META[c] || { label: c, cls: 'diag-dry', icon: '•' };
+    return `<span class="diag-badge ${m.cls}">${m.icon} ${m.label}</span>`;
   }).join('');
 
-  // --- CONDITIONS (optional: still based on score) ---
-  const conds = [
-    {l:'Elasticity', v:score<40?'Good':score<70?'Reduced':'Poor', ok:score<40},
-    {l:'Moisture Level', v:por==='High'?'Low':por==='Normal'?'Adequate':'Good', ok:por!=='High'},
-    {l:'Structural Integrity', v:score<30?'Intact':score<60?'Minor Compromise':'Compromised', ok:score<30},
-    {l:'Porosity Rating', v:por, ok:por==='Normal'},
+  // Confidence bars
+  const confList = document.getElementById('confBarsList');
+  const allCats = ['healthy','breakage','chemical_damage','dry','heat_damage','split_ends'];
+  confList.innerHTML = allCats.map(c => {
+    const pct = Math.round((confidences[c] || 0) * 100);
+    const m = CAT_META[c] || { label: c };
+    const barColor = categories.includes(c) ? 'var(--primary)' : 'var(--border)';
+    return `<div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.45rem">
+      <span style="width:110px;font-size:.76rem;color:var(--muted);flex-shrink:0">${m.label}</span>
+      <div style="flex:1;background:var(--s3);border-radius:3px;height:6px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:${barColor};border-radius:3px;transition:width .6s ease"></div>
+      </div>
+      <span style="width:36px;text-align:right;font-size:.76rem;font-weight:600;color:var(--text)">${pct}%</span>
+    </div>`;
+  }).join('');
+  document.getElementById('confBars').style.display = 'block';
+}
+
+/* ─── CONDITION PROFILE TABLE ──────────────────── */
+function renderConditionProfile(categories, client) {
+  const isHealthy    = categories.includes('healthy');
+  const hasBreakage  = categories.includes('breakage');
+  const hasChem      = categories.includes('chemical_damage');
+  const hasDry       = categories.includes('dry');
+  const hasHeat      = categories.includes('heat_damage');
+  const hasSplit     = categories.includes('split_ends');
+  const hasAnyDamage = hasBreakage || hasChem || hasDry || hasHeat || hasSplit;
+
+  // Pull from client record if available
+  const clientPorosity  = client?.po || null;
+  const clientTexture   = client?.tx || null;
+  const clientChemHist  = client?.ch || '';
+
+  // Derive indicators
+  const rows = [
+    {
+      indicator: 'Elasticity',
+      assessment: hasBreakage || hasChem
+        ? 'Reduced — hair snaps rather than stretches and springs back'
+        : hasDry || hasHeat
+          ? 'Slightly reduced — some loss of spring noted'
+          : 'Good — hair stretches and returns without snapping',
+      status: hasBreakage || hasChem ? 'poor' : hasDry || hasHeat ? 'fair' : 'good'
+    },
+    {
+      indicator: 'Moisture Level',
+      assessment: hasDry
+        ? 'Low — hair is dehydrated; cuticle unable to retain moisture effectively'
+        : hasChem || hasHeat
+          ? 'Below optimal — lipid layer compromised by chemical or heat exposure'
+          : 'Adequate — moisture balance is within a healthy range',
+      status: hasDry ? 'poor' : hasChem || hasHeat ? 'fair' : 'good'
+    },
+    {
+      indicator: 'Structural Integrity',
+      assessment: hasChem || hasBreakage
+        ? 'Compromised — cortex damage detected; internal protein bonds weakened'
+        : hasSplit
+          ? 'Mild compromise — cuticle separation at tips; cortex intact'
+          : isHealthy
+            ? 'Intact — no significant structural compromise detected'
+            : 'Minor compromise — monitoring recommended',
+      status: hasChem || hasBreakage ? 'poor' : hasSplit || hasHeat ? 'fair' : 'good'
+    },
+    {
+      indicator: 'Porosity',
+      assessment: (() => {
+        // Use client record if available, otherwise infer from AI result
+        if (clientPorosity) return `${clientPorosity} porosity (from client profile)`;
+        if (hasChem || hasBreakage) return 'High — cuticle is raised; absorbs product quickly, colour may fade fast';
+        if (isHealthy) return 'Normal — cuticle is smooth; absorbs and retains moisture well';
+        return 'Elevated — some cuticle lifting detected; monitor colour retention';
+      })(),
+      status: (() => {
+        if (clientPorosity === 'High' || (!clientPorosity && (hasChem || hasBreakage))) return 'fair';
+        if (isHealthy) return 'good';
+        return 'fair';
+      })()
+    },
+    {
+      indicator: 'Cuticle Condition',
+      assessment: hasHeat
+        ? 'Damaged — heat has caused cuticle scales to lift or fuse; surface rough to touch'
+        : hasSplit
+          ? 'Worn — cuticle has eroded at the tips allowing the cortex to split'
+          : isHealthy
+            ? 'Smooth — cuticle layers lying flat; reflects light well'
+            : 'Mildly raised — some roughness present',
+      status: hasHeat ? 'poor' : hasSplit ? 'fair' : 'good'
+    },
+    {
+      indicator: 'Colour Readiness',
+      assessment: (() => {
+        if (hasChem && hasBreakage) return 'Not recommended — hair is too compromised for chemical services at this time';
+        if (hasChem || hasBreakage) return 'Proceed with caution — pre-treatment required before any colour service';
+        if (hasDry || hasHeat) return 'Conditional — deep conditioning recommended first; avoid high-lift services';
+        if (isHealthy) return 'Ready — hair is in good condition for colour services';
+        return 'Use caution — assess after recommended treatments';
+      })(),
+      status: (hasChem && hasBreakage) ? 'poor' : (hasChem || hasBreakage || hasDry) ? 'fair' : 'good'
+    }
   ];
 
-  document.getElementById('condBlocks').innerHTML = conds.map(c => `
-    <div class="rb">
-      <div class="rb-hdr">
-        <span style="font-weight:600;font-size:.85rem">${c.l}</span>
-        <span class="badge ${c.ok?'b-low':'b-med'}">${c.v}</span>
+  // Add texture note from client if available
+  if (clientTexture) {
+    rows.push({
+      indicator: 'Hair Texture',
+      assessment: `${clientTexture} (from client profile) — ${
+        clientTexture === 'Fine' ? 'absorbs colour quickly; use lower developer volumes'
+        : clientTexture === 'Coarse' ? 'may require longer processing time; resistant to colour uptake'
+        : 'standard processing applies'
+      }`,
+      status: 'good'
+    });
+  }
+
+  const statusLabel = { good: 'Good', fair: 'Fair', poor: 'Poor' };
+  const statusCls   = { good: 'b-good', fair: 'b-fair', poor: 'b-poor' };
+
+  document.getElementById('condBody').innerHTML = rows.map(r => `
+    <tr>
+      <td style="font-weight:500;color:var(--text)">${r.indicator}</td>
+      <td style="color:var(--muted);font-size:.82rem;line-height:1.5">${r.assessment}</td>
+      <td><span class="badge ${statusCls[r.status]}">${statusLabel[r.status]}</span></td>
+    </tr>
+  `).join('');
+}
+
+/* ─── TREATMENTS ───────────────────────────────── */
+const TREATMENTS = {
+  breakage: [
+    { icon:'💊', name:'Bond Rebuilder (Olaplex No.1 / K18 Leave-In)', priority:'high',
+      desc:'Reconnects broken disulphide bonds within the cortex. Apply as a pre-treatment before any colour service and as a maintenance mask weekly.' },
+    { icon:'🥚', name:'Keratin / Protein Treatment', priority:'high',
+      desc:'Replenishes lost protein in the hair shaft, restoring tensile strength. Use a balanced treatment — over-proteinising can cause further brittleness.' },
+    { icon:'✂️', name:'Trim Breakage Points', priority:'med',
+      desc:'Removing the weakest sections stops breakage from travelling further up the shaft. Recommend at least 1–2 cm off affected lengths.' }
+  ],
+  chemical_damage: [
+    { icon:'💊', name:'Bond Multiplier Pre-Treatment', priority:'high',
+      desc:'Mandatory before any further chemical service. Olaplex No.1 added to colour mix or K18 applied beforehand protects remaining healthy bonds.' },
+    { icon:'🧖', name:'Ceramide Deep Conditioning Mask', priority:'high',
+      desc:'Ceramides fill gaps in the cuticle caused by chemical processing, restoring the lipid barrier. Apply for 20–30 min under heat, weekly until condition improves.' },
+    { icon:'🚫', name:'Avoid Overlapping Chemical Services', priority:'high',
+      desc:'Do not apply bleach, colour or relaxer to already chemically-treated sections. Extend root-to-tip timing to allow recovery.' }
+  ],
+  dry: [
+    { icon:'💧', name:'Hydrating Leave-In Treatment', priority:'high',
+      desc:'Humectant-rich leave-ins (glycerin, hyaluronic acid, aloe) draw moisture into the cortex. Apply to damp hair and do not rinse.' },
+    { icon:'🛢️', name:'Sealing Oil (Argan / Jojoba)', priority:'med',
+      desc:'Lock in applied moisture with a lightweight oil. Apply over leave-in to prevent water evaporation from the hair shaft.' },
+    { icon:'🌊', name:'Sulphate-Free Shampoo Switch', priority:'med',
+      desc:'Sulphates strip the natural lipid barrier. Switching immediately preserves existing moisture and prevents further dehydration.' }
+  ],
+  heat_damage: [
+    { icon:'🔥', name:'Cease Heat Tool Use Temporarily', priority:'high',
+      desc:'Heat-damaged hair cannot be repaired while further heat is applied. Recommend a minimum 4–6 week break from all heat styling tools.' },
+    { icon:'💊', name:'Heat-Specific Bond Treatment', priority:'high',
+      desc:'K18 Molecular Repair Mask is particularly effective for heat damage as it penetrates to the cortex and repairs broken alpha-keratin chains.' },
+    { icon:'✂️', name:'Trim Fused / Melted Sections', priority:'med',
+      desc:'Severely heat-damaged sections where the cuticle has fused cannot be repaired. These should be removed to prevent further breakage.' }
+  ],
+  split_ends: [
+    { icon:'✂️', name:'Trim Split Ends', priority:'high',
+      desc:'The only way to fully remove split ends. Once a hair splits, the separation travels up the shaft if left untreated. Even a 1 cm trim removes active splits.' },
+    { icon:'💧', name:'Tip-Focused Moisture Treatment', priority:'med',
+      desc:'Apply hydrating masks specifically from mid-length to ends where the oldest, most worn hair lives. Seal with oil after.' },
+    { icon:'🛡️', name:'Protective Styling', priority:'low',
+      desc:'Reduce friction on ends by avoiding tight elastics, rough fabrics, and excessive brushing. Silk pillowcases and protective styles help retain length.' }
+  ],
+  healthy: [
+    { icon:'✅', name:'Maintenance Conditioning', priority:'low',
+      desc:'Hair is in good condition. Maintain with a weekly deep conditioning treatment and sulphate-free shampoo to preserve the healthy cuticle.' },
+    { icon:'🛡️', name:'Pre-Colour Bond Protection', priority:'low',
+      desc:'Even on healthy hair, adding a bond protector (Olaplex No.1) to the colour mix is best practice to preserve integrity through the service.' }
+  ]
+};
+
+function renderTreatments(categories) {
+  const seen = new Set();
+  const items = [];
+
+  // Order: high damage categories first
+  const order = ['breakage','chemical_damage','heat_damage','dry','split_ends','healthy'];
+  order.filter(c => categories.includes(c)).forEach(cat => {
+    (TREATMENTS[cat] || []).forEach(t => {
+      if (!seen.has(t.name)) {
+        seen.add(t.name);
+        items.push(t);
+      }
+    });
+  });
+
+  // Sort by priority
+  const pOrder = { high:0, med:1, low:2 };
+  items.sort((a,b) => pOrder[a.priority] - pOrder[b.priority]);
+
+  const pLabel = { high:'High Priority', med:'Recommended', low:'Maintenance' };
+  const pCls   = { high:'priority-high', med:'priority-med', low:'priority-low' };
+
+  document.getElementById('treatList').innerHTML = items.map(t => `
+    <div class="treat-item">
+      <span class="treat-icon">${t.icon}</span>
+      <div class="treat-body">
+        <div class="treat-name">${t.name}</div>
+        <div class="treat-desc">${t.desc}</div>
+        <span class="treat-priority ${pCls[t.priority]}">${pLabel[t.priority]}</span>
       </div>
     </div>
   `).join('');
-
-  // --- TREATMENTS (still based on severity proxy score) ---
-  const treats = [];
-
-  if(score>20) treats.push({i:'💊',n:'Bond Multiplier',d:'Olaplex No.1 or K18 — rebuilds internal hair structure pre-service.'});
-  if(por==='High') treats.push({i:'🥚',n:'Protein Treatment',d:'Strengthen cortex with a protein filler before colouring.'});
-  if(score>50) treats.push({i:'🧖',n:'Deep Conditioning',d:'Apply a ceramide-rich mask for 20–30 min to restore lipid barrier.'});
-  if(score>70) treats.push({i:'✂️',n:'Trim Damaged Ends',d:'Consider trimming 1–2 cm before proceeding with colour.'});
-
-  treats.push({i:'🌊',n:'Sulphate-Free Maintenance',d:'Switch to sulphate-free shampoo and colour-safe conditioner post-service.'});
-
-  document.getElementById('treatList').innerHTML = treats.map(t => `
-    <div class="tip">
-      <span style="font-size:1.1rem;flex-shrink:0">${t.i}</span>
-      <div><strong>${t.n}</strong>${t.d}</div>
-    </div>
-  `).join('');
-
-  document.getElementById('treatCard').style.display = 'block';
-  document.getElementById('feedbackCard').style.display = 'block';
 }
-function submitFeedback(){
-  const fb=JSON.parse(localStorage.getItem('cc_feedback')||'[]');
-  fb.push({outcome:document.getElementById('fb_out').value,notes:document.getElementById('fb_notes').value,ts:Date.now()});
-  localStorage.setItem('cc_feedback',JSON.stringify(fb));
-  document.getElementById('fb_notes').value='';
-  alert('✅ Feedback submitted! In production this goes to your model training pipeline via the Flask API.');
+
+/* ─── FEEDBACK ─────────────────────────────────── */
+function submitFeedback() {
+  const correct = document.getElementById('fb_correct').value;
+  const notes   = document.getElementById('fb_notes').value.trim();
+  const actual  = [...document.querySelectorAll('#resultsContent input[type=checkbox]:checked')].map(el => el.value);
+
+  if (!correct) { alert('Please indicate whether the diagnosis was correct.'); return; }
+
+  const fb = JSON.parse(localStorage.getItem('cc_feedback') || '[]');
+  fb.push({
+    correct, actual, notes,
+    client: document.getElementById('clientSel').value,
+    ts: Date.now()
+  });
+  localStorage.setItem('cc_feedback', JSON.stringify(fb));
+
+  // In production → POST to /api/feedback
+  alert('✅ Feedback submitted! In production this is sent to your Flask API at POST /api/feedback for model retraining.');
+
+  document.getElementById('fb_correct').value = '';
+  document.getElementById('fb_notes').value = '';
+  document.querySelectorAll('#resultsContent input[type=checkbox]').forEach(el => el.checked = false);
 }
 </script>
 </body>
