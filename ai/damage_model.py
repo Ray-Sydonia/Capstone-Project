@@ -11,7 +11,7 @@ try:
     from tensorflow.keras.applications.resnet50 import preprocess_input
     import os
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    model_path = os.path.join(BASE_DIR, "..", "hair_damage_resnet50_model.keras")
+    model_path = os.path.join(BASE_DIR, "..", "hair_damage_resnet50_multilabel.keras")
     model = load_model(model_path)
     TENSORFLOW_AVAILABLE = True
     print("TensorFlow loaded successfully!")
@@ -19,7 +19,9 @@ try:
 except Exception as e:
     TENSORFLOW_AVAILABLE = False
     model = None
-    print(f"TensorFlow error: {type(e).__name__}: {e}")
+    print("🔥 MODEL LOAD FAILED")
+    print("TYPE:", type(e).__name__)
+    print("ERROR:", str(e))
 
 # ── Constants ──────────────────────────────────────────────────────────────
 CLASS_NAMES = [
@@ -87,3 +89,6 @@ def predict_damage(image_file):
         "confidences": confidences,
         "error":       None,
     }
+
+print("TF AVAILABLE:", TENSORFLOW_AVAILABLE)
+print("MODEL LOADED:", model is not None)

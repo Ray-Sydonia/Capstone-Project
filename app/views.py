@@ -15,9 +15,12 @@ from ai.damage_model import predict_damage
 from .models import User, Client, HairProfiles, DyeSession, FormulaArchive, StrandPredictions
 from .forms import SignupForm, LoginForm, PhotoUploadForm, ClientForm, HairProfileForm
 from .utils.s3 import upload_to_s3
+from tensorflow.keras.models import load_model
 
 import numpy as np
 import os
+from flask import flash
+
 
 main = Blueprint('main', __name__)
 
@@ -27,14 +30,24 @@ try:
     from tensorflow.keras.utils import load_img, img_to_array
     from tensorflow.keras.applications.resnet50 import preprocess_input
     IMG_SIZE = 224
-    class_names = ["black", "brown", "blonde", "red"]
+    class_names = ["breakage",
+    "chemical_damage",
+    "dry",
+    "healthy",
+    "heat_damage",
+    "split_ends",]
     TENSORFLOW_AVAILABLE = True
 except Exception:
     TENSORFLOW_AVAILABLE = False
     print("WARNING: TensorFlow not available. /predict route will be disabled.")
 
 IMG_SIZE = 224
-class_names = ["black", "brown", "blonde", "red"]
+class_names = ["breakage",
+    "chemical_damage",
+    "dry",
+    "healthy",
+    "heat_damage",
+    "split_ends",]
 
 
 ###
@@ -92,6 +105,13 @@ def profile_page():
 def home():
     return render_template("index.html")
 
+@main.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('main.login_page'))
+
 
 # ============================================
 # HEALTH CHECK  ← NEW: lets profile.html test the connection
@@ -108,32 +128,13 @@ def health():
 
 @main.route("/predict", methods=["POST"])
 def predict():
-    if not TENSORFLOW_AVAILABLE:
-        return jsonify({"error": "TensorFlow model not available"}), 503
-
     file = request.files.get("image")
+
     if not file:
         return jsonify({"error": "No image provided"}), 400
 
-    s3_url = upload_to_s3(file)
-
-    import requests as http_requests
-    from io import BytesIO
-
-    img_data = http_requests.get(s3_url).content
-    img = load_img(BytesIO(img_data), target_size=(IMG_SIZE, IMG_SIZE))
-
-    img_array = preprocess_input(np.expand_dims(img_to_array(img), axis=0))
-    predictions = model.predict(img_array)
-    predicted_class = class_names[np.argmax(predictions)]
-    confidence = float(np.max(predictions) * 100)
-
-    return jsonify({
-        "prediction": predicted_class,
-        "confidence": f"{confidence:.2f}%",
-        "image_url": s3_url
-    })
-
+    result = predict_damage(file)
+    return jsonify(result)
 
 # ============================================
 # STRAND ANALYSIS — called by strand-test.html
@@ -175,12 +176,13 @@ def _run_strand_analysis():
     # If TF unavailable, result already has 'error' key — still return it
     # with a 503 so the frontend can show a helpful message
     if result.get('error'):
-        return jsonify({
-            "categories":  result.get('categories', []),
-            "confidences": result.get('confidences', {}),
-            "image_url":   image_url,
-            "error":       result['error']
-        }), 503
+        print("MODEL ERROR:", result)
+    return jsonify({
+        "categories": result.get("categories", []),
+        "confidences": result.get("confidences", {}),
+        "image_url": image_url,
+        "error": result["error"]
+    }), 503
 
     return jsonify({
         "categories":  result['categories'],
@@ -196,11 +198,11 @@ def analyze_damage():
     return _run_strand_analysis()
 
 
-@main.route('/api/predict/strand', methods=['POST'])
-@login_required
-def predict_strand():
-    """New route — called by strand-test.html."""
-    return _run_strand_analysis()
+#@main.route('/api/predict/strand', methods=['POST'])
+#@login_required
+#def predict_strand():
+    #"""New route — called by strand-test.html."""
+    #return _run_strand_analysis()*\
 
 
 # ============================================
@@ -255,16 +257,38 @@ def login():
     })
 
 
-@main.route('/logout', methods=['POST'])
-@login_required
-def logout():
-    logout_user()
-    return jsonify({"message": "Logged out successfully"})
 
 
 # ============================================
 # CLIENTS
 # ============================================
+
+@main.route('/profiles/client/<int:client_id>', methods=['GET'])
+def get_profile_by_client(client_id):
+    profile = HairProfiles.query.filter_by(clientID=client_id).first()
+    if not profile:
+        return jsonify({"error": "Profile not found"}), 404
+    return jsonify({
+        "id": profile.profileID,
+        "clientID": profile.clientID,
+        "natural_colour": profile.natural_colour,
+        "current_colour": profile.current_colour,
+        "texture": profile.texture,
+        "porosity": profile.porosity,
+        "chem_history": profile.chem_history
+    })
+
+@main.route('/profiles/<int:id>', methods=['PUT'])
+def update_profile(id):
+    profile = HairProfiles.query.get_or_404(id)
+    data = request.json
+    profile.natural_colour = data.get('natural_colour', profile.natural_colour)
+    profile.current_colour = data.get('current_colour', profile.current_colour)
+    profile.texture = data.get('texture', profile.texture)
+    profile.porosity = data.get('porosity', profile.porosity)
+    profile.chem_history = data.get('chem_history', profile.chem_history)
+    db.session.commit()
+    return jsonify({"message": "Profile updated successfully"})
 
 @main.route('/clients', methods=['POST'])
 def create_client():

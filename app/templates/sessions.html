@@ -373,32 +373,37 @@ function closeModal(){ document.getElementById('modalBg').classList.remove('open
 function labelFile(inp, lbl){ document.getElementById(lbl).textContent = inp.files[0] ? '✓ ' + inp.files[0].name : 'Upload photo'; }
 
 async function saveSession(){
-  const shade    = document.getElementById('s_shade').value.trim();
+  const shade = document.getElementById('s_shade').value.trim();
   const profileID = document.getElementById('s_client').value;
 
-  if(!shade)    { alert('Please enter a desired shade.'); return; }
+  if(!shade) { alert('Please enter a desired shade.'); return; }
   if(!profileID){ alert('Please select a client.'); return; }
 
   const formData = new FormData();
-  formData.append('profileID',    profileID);
+  formData.append('profileID', profileID);
   formData.append('desired_shade', shade);
   formData.append('developer_vol', document.getElementById('s_dev').value.replace(' vol',''));
-  formData.append('outcome',       document.getElementById('s_outcome').value);
-  formData.append('notes',         document.getElementById('s_notes').value.trim());
-  formData.append('stars',         selectedStars);
 
   const beforeFile = document.getElementById('s_before').files[0];
   if(beforeFile) formData.append('hair_image', beforeFile);
 
   try {
-    const res  = await fetch('/sessions', { method: 'POST', body: formData });
+    const res = await fetch('/sessions', { method: 'POST', body: formData });
     const data = await res.json();
-    if(res.ok){
-      closeModal();
-      await loadSessions();
-    } else {
+
+    if(!res.ok){
       alert(data.error || 'Failed to save session.');
+      return;
     }
+
+    //  IMPORTANT FIX
+    window.lastSessionId = data.session_id;
+
+    console.log("Session created:", data.session_id);
+
+    closeModal();
+    await loadSessions();
+
   } catch(e){
     alert('Network error saving session.');
   }

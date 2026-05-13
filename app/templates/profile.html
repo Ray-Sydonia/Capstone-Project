@@ -101,8 +101,8 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
     <ul class="nav-list">
       <li class="nav-item"><a href="/dashboard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="1" stroke="currentColor" stroke-width="2"/></svg><span>Dashboard</span></a></li>
       <li class="nav-item"><a href="/clients-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/><path d="M2 21c0-4 3.5-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2"/><path d="M14 17h6M17 14v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>My Clients</span></a></li>
-      <li class="nav-item"><a href="s/strand-test-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
-      <li class="nav-item"><a href="/damage-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="/strand-test-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Strand Test</span></a></li>
+      <li class="nav-item"><a href="/damage-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 11l3 3L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Damage Assessment</span></a></li>
       <li class="nav-item"><a href="/archive-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7L2 9l7-1z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Formula Archive</span></a></li>
       <li class="nav-item"><a href="/sessions-page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Sessions</span></a></li>
     </ul>
@@ -147,15 +147,7 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
           <div class="stat-row"><span>Feedback Submitted</span><strong id="stFeedback">0</strong></div>
         </div>
 
-        <!-- Danger zone -->
-        <div class="danger-card">
-          <div class="card-title" style="color:var(--error)">Danger Zone</div>
-          <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">These actions are destructive and cannot be undone.</p>
-          <div style="display:flex;flex-direction:column;gap:.5rem">
-            <button class="btn btn-outline btn-sm btn-full" onclick="clearData()">Clear All Local Data</button>
-            <button class="btn btn-danger btn-sm btn-full" onclick="logout()">Sign Out</button>
-          </div>
-        </div>
+        
       </div>
 
       <!-- RIGHT COLUMN -->
@@ -200,25 +192,14 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
               <select id="pref_brand"><option>Wella Professionals</option><option>Redken</option><option>L'Oréal Professionnel</option><option>Schwarzkopf</option><option>Matrix</option><option>Other</option></select>
             </div>
           </div>
-          <div class="fg">
-            <label class="check-lbl"><input type="checkbox" id="pref_notify"><span>Email me session summaries</span></label>
-          </div>
+        
           <div style="display:flex;justify-content:flex-end">
             <button class="btn btn-primary btn-sm" onclick="savePrefs()">Save Preferences</button>
           </div>
         </div>
 
         <!-- Backend connection -->
-        <div class="card" style="border:2px dashed var(--border)">
-          <div class="card-title">Backend Connection</div>
-          <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem">Enter your Flask API URL. Once connected, all data will sync with your MySQL database instead of browser localStorage.</p>
-          <div class="fg"><label>Flask API Base URL</label><input type="text" id="p_api" placeholder="http://localhost:5000  or  https://your-app.onrender.com"></div>
-          <div style="display:flex;align-items:center;gap:.75rem">
-            <button class="btn btn-outline btn-sm" onclick="testConn()">Test Connection</button>
-            <span id="connStatus" style="font-size:.8rem;color:var(--muted)"></span>
-          </div>
-          <p style="font-size:.75rem;color:var(--muted);margin-top:.6rem">The test pings <code style="background:var(--s2);padding:.1rem .3rem;border-radius:4px">/api/health</code> on your Flask server.</p>
-        </div>
+        
       </div>
     </div>
   </div>

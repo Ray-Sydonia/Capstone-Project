@@ -300,12 +300,60 @@ function openModal(){
   document.getElementById('modalBg').classList.add('open');
 }
 
-function edit(id, name){
+async function edit(id, name){
   editId = id;
   document.getElementById('modalTitle').textContent = 'Edit Client';
   const parts = name.split(' ');
   document.getElementById('cf_fn').value = parts[0] || '';
   document.getElementById('cf_ln').value = parts.slice(1).join(' ') || '';
+  
+  // NEW: Load hair profile data for this client
+  try {
+    // First get all hair profiles and find the one for this client
+    const profilesRes = await fetch('/profiles');
+    const profiles = await profilesRes.json();
+    
+    // Find profile for this client
+    const profile = await fetch(`/profiles/client/${id}`).then(res => res.json());
+    
+    if (profile) {
+      // Populate hair profile fields
+      document.getElementById('cf_nat').value = profile.natural_colour || '';
+      
+      // Handle current colour (could be natural or fashion)
+      const currentColour = profile.current_colour || '';
+      if (currentColour.startsWith('Fashion')) {
+        document.getElementById('cf_cur_type').value = 'fashion';
+        toggleColourInput();
+        
+        // Extract hex code if present
+        const hexMatch = currentColour.match(/\(([^)]+)\)/);
+        if (hexMatch) {
+          document.getElementById('cf_cur_picker').value = hexMatch[1];
+          document.getElementById('cf_cur_swatch').style.background = hexMatch[1];
+        }
+        
+        // Extract name
+        const nameMatch = currentColour.match(/Fashion – ([^\(]+)/);
+        if (nameMatch) {
+          document.getElementById('cf_cur_name').value = nameMatch[1].trim();
+        }
+      } else {
+        document.getElementById('cf_cur_type').value = 'natural';
+        toggleColourInput();
+        document.getElementById('cf_cur_natural').value = currentColour;
+      }
+      
+      document.getElementById('cf_tx').value = profile.texture || '';
+      document.getElementById('cf_po').value = profile.porosity || '';
+      document.getElementById('cf_ch').value = profile.chem_history || '';
+      document.getElementById('cf_al').value = profile.allergies || '';
+      document.getElementById('cf_no').value = profile.notes || '';
+    }
+  } catch(e) {
+    console.warn('Could not load hair profile:', e);
+  }
+  
   document.getElementById('modalBg').classList.add('open');
 }
 
@@ -323,20 +371,57 @@ async function save(){
     current_colour: getCurrentColour(),   
     texture:        document.getElementById('cf_tx').value,
     porosity:       document.getElementById('cf_po').value,
-    chem_history:   document.getElementById('cf_ch').value.trim()
+    chem_history:   document.getElementById('cf_ch').value.trim(),
+    allergies:      document.getElementById('cf_al').value.trim(),
+    notes:          document.getElementById('cf_no').value.trim()
   };
 
   try {
     if(editId >= 0){
-      // Update existing client
+      // Update existing client name
       const res = await fetch(`/clients/${editId}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ client_name: payload.client_name })
       });
       if(!res.ok){ alert('Failed to update client.'); return; }
+      
+      // NEW: Update hair profile
+      // First find the profile ID for this client
+      const profilesRes = await fetch('/profiles');
+      const profiles = await profilesRes.json();
+      const profile = profiles.find(p => p.clientID === editId);
+      
+      if (profile) {
+        // Update existing profile
+        await fetch(`/profiles/${profile.id}`, {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            natural_colour: payload.natural_colour,
+            current_colour: payload.current_colour,
+            texture: payload.texture,
+            porosity: payload.porosity,
+            chem_history: payload.chem_history
+          })
+        });
+      } else {
+        // Create new profile if none exists
+        await fetch('/profiles', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            clientID: editId,
+            natural_colour: payload.natural_colour,
+            current_colour: payload.current_colour,
+            texture: payload.texture,
+            porosity: payload.porosity,
+            chem_history: payload.chem_history
+          })
+        });
+      }
     } else {
-      // Create new client + hair profile
+      // Create new client + hair profile (existing code)
       const res = await fetch('/clients', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -345,17 +430,16 @@ async function save(){
       const data = await res.json();
       if(!res.ok){ alert(data.error || 'Failed to create client.'); return; }
 
-      // Create hair profile linked to new client
       await fetch('/profiles', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
-          clientID:       data.id,
+          clientID: data.id,
           natural_colour: payload.natural_colour,
           current_colour: payload.current_colour,
-          texture:        payload.texture,
-          porosity:       payload.porosity,
-          chem_history:   payload.chem_history
+          texture: payload.texture,
+          porosity: payload.porosity,
+          chem_history: payload.chem_history
         })
       });
     }
@@ -363,6 +447,7 @@ async function save(){
     await loadClients();
   } catch(e){
     alert('Network error saving client.');
+    console.error(e);
   }
 }
 
