@@ -131,13 +131,7 @@ input{font-family:inherit;border:none;outline:none}
 </div>
 
 <script>
-// Redirect if already logged in
-fetch('/api/health').then(r => {
-  if(r.ok) {
-    const user = JSON.parse(localStorage.getItem('cc_user') || 'null');
-    if(user?.loggedIn) location.href = '/dashboard';
-  }
-});
+
 
 async function doLogin(){
   const email = document.getElementById('email').value.trim();
@@ -159,6 +153,7 @@ async function doLogin(){
   try {
     const res = await fetch('/login', {
       method: 'POST',
+      credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({ email, password: pw })
     });
