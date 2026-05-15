@@ -35,6 +35,11 @@ class Client(db.Model):
     clientID = db.Column(db.Integer, primary_key=True)
     client_name = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    email = db.Column(db.String(150), nullable=True)
+    phone = db.Column(db.String(30), nullable=True)
+    allergies = db.Column(db.String(255), nullable=True)
+    notes = db.Column(db.Text,        nullable=True)
+
 
     userID = db.Column(
         db.Integer,

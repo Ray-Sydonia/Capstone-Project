@@ -296,7 +296,11 @@ def create_client():
     data = request.json
     client = Client(
         client_name=data['client_name'],
-        userID=data.get('userID')
+        userID=data.get('userID'),
+        email = data.get('email'),
+        phone = data.get('phone'),
+        allergies = data.get('allergies'),
+        notes = data.get('notes')
     )
     db.session.add(client)
     db.session.commit()
@@ -307,7 +311,15 @@ def create_client():
 def get_clients():
     clients = Client.query.all()
     return jsonify([
-        {"id": c.clientID, "name": c.client_name, "userID": c.userID}
+        {
+            "id":        c.clientID, 
+            "name":      c.client_name, 
+            "userID":    c.userID,
+            "email":     c.email     or "",
+            "phone":     c.phone     or "",
+            "allergies": c.allergies or "",
+            "notes":     c.notes     or ""
+        }
         for c in clients
     ])
     
@@ -326,6 +338,10 @@ def update_client(id):
     client = Client.query.get_or_404(id)
     data = request.json
     client.client_name = data.get('client_name', client.client_name)
+    client.email = data.get('email',       client.email)
+    client.phone = data.get('phone',       client.phone)
+    client.allergies = data.get('allergies',   client.allergies)
+    client.notes = data.get('notes',       client.notes)
     db.session.commit()
     return jsonify({"message": "Updated"})
 
@@ -471,9 +487,15 @@ def create_profile():
 @main.route('/profiles', methods=['GET'])
 def get_profiles():
     profiles = HairProfiles.query.all()
-    return jsonify([
-        {"id": p.profileID, "clientID": p.clientID}
-        for p in profiles
+    return jsonify([{
+        "id": p.profileID,
+        "clientID": p.clientID,
+        "natural_colour": p.natural_colour,
+        "current_colour": p.current_colour,
+        "texture": p.texture,
+        "porosity": p.porosity,
+        "chem_history": p.chem_history
+    } for p in profiles
     ])
 
 

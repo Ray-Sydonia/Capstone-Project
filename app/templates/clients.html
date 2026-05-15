@@ -264,8 +264,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function loadClients(){
   try {
-    const res = await fetch('/clients');
-    clients   = await res.json();
+    const [clientsRes, profilesRes] = await Promise.all([
+      fetch('/clients'),
+      fetch('/profiles')
+    ]);
+    clients   = await clientsRes.json();
+    const profiles = await profilesRes.json();
+
+    // attach profile to each client
+    clients = clients.map(c => ({
+      ...c,
+      profile: profiles.find(p => p.clientID === c.id) || null
+    }));
+
     render('');
   } catch(e) {
     console.warn('Could not load clients:', e);
@@ -282,25 +293,35 @@ function render(q = ''){
   if(!filtered.length){ grid.innerHTML = ''; empty.style.display = 'flex'; return; }
   empty.style.display = 'none';
   grid.innerHTML = filtered.map((c, i) => {
-    const col  = COLORS[i % COLORS.length];
-    const name = c.name || '—';
-    const initials = name.split(' ').map(w => w[0] || '').join('').toUpperCase().slice(0, 2);
-    return `<div class="cc">
-      <div class="cc-hdr">
-        <div class="cc-av" style="background:${col}">${initials}</div>
-        <div>
-          <div class="cc-name">${name}</div>
-          <div class="cc-since">Client #${c.id}</div>
-        </div>
+  const col      = COLORS[i % COLORS.length];
+  const name     = c.name || '—';
+  const initials = name.split(' ').map(w => w[0] || '').join('').toUpperCase().slice(0, 2);
+  const p        = c.profile;
+
+  const tags = [];
+  if (p?.texture)         tags.push(p.texture);
+  if (p?.porosity)        tags.push(p.porosity);
+  if (p?.natural_colour)  tags.push(p.natural_colour.replace('Level ', 'Lvl '));
+  if (p?.chem_history)    tags.push('Has history');
+
+  const tagsHtml = tags.map(t => `<span class="tag">${t}</span>`).join('');
+  const subLine  = `<div class="cc-since">Client #${c.id}${c.email ? ' · ' + c.email : ''}</div>`;
+
+  return `<div class="cc">
+    <div class="cc-hdr">
+      <div class="cc-av" style="background:${col}">${initials}</div>
+      <div>
+        <div class="cc-name">${name}</div>
+        ${subLine}
       </div>
-      <div class="cc-tags"></div>
-      <div class="cc-actions">
-        <button class="btn btn-outline btn-sm" onclick="edit(${c.id}, '${name}')">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="del(${c.id})">Delete</button>
-        <a href="/strand-test-page" class="btn btn-primary btn-sm">New Session</a>
-      </div>
-    </div>`;
-  }).join('');
+    </div>
+    <div class="cc-tags">${tagsHtml}</div>
+    <div class="cc-actions">
+      <button class="btn btn-outline btn-sm" onclick="edit(${c.id})">Edit</button>
+      <a href="/strand-test-page" class="btn btn-primary btn-sm">New Session</a>
+    </div>
+  </div>`;
+}).join('');
 }
 
 function openModal(){
@@ -311,12 +332,20 @@ function openModal(){
   document.getElementById('modalBg').classList.add('open');
 }
 
-async function edit(id, name){
+async function edit(id){
   editId = id;
+  const c = clients.find(cl => cl.id === id);
+  if(!c){ alert('Client not found.'); return; }
+
   document.getElementById('modalTitle').textContent = 'Edit Client';
-  const parts = name.split(' ');
+  const parts = (c.name || '').split(' ');
   document.getElementById('cf_fn').value = parts[0] || '';
   document.getElementById('cf_ln').value = parts.slice(1).join(' ') || '';
+  document.getElementById('cf_em').value = c?.email     || '';  
+  document.getElementById('cf_ph').value = c?.phone     || ''; 
+  document.getElementById('cf_al').value = c.allergies || '';
+  document.getElementById('cf_no').value = c.notes     || ''; 
+  
   
   // NEW: Load hair profile data for this client
   try {
@@ -358,8 +387,7 @@ async function edit(id, name){
       document.getElementById('cf_tx').value = profile.texture || '';
       document.getElementById('cf_po').value = profile.porosity || '';
       document.getElementById('cf_ch').value = profile.chem_history || '';
-      document.getElementById('cf_al').value = profile.allergies || '';
-      document.getElementById('cf_no').value = profile.notes || '';
+      
     }
   } catch(e) {
     console.warn('Could not load hair profile:', e);
@@ -378,6 +406,8 @@ async function save(){
   const payload = {
     client_name:    fn + ' ' + ln,
     userID:         CC_USER.id,
+    email:          document.getElementById('cf_em').value.trim(),  
+    phone:          document.getElementById('cf_ph').value.trim(),
     natural_colour: document.getElementById('cf_nat').value,
     current_colour: getCurrentColour(),   
     texture:        document.getElementById('cf_tx').value,
@@ -393,7 +423,13 @@ async function save(){
       const res = await fetch(`/clients/${editId}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ client_name: payload.client_name })
+        body: JSON.stringify({ 
+          client_name: payload.client_name,
+          email:       payload.email,
+          phone:       payload.phone,
+          allergies:   payload.allergies,
+          notes:       payload.notes 
+        })
       });
       if(!res.ok){ alert('Failed to update client.'); return; }
       
