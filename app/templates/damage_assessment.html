@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="/static/js/avatar.js"></script>
 <title>Strand Test — ColourChem</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -223,7 +224,10 @@ img{max-width:100%;display:block}
   </div>
   <div class="sb-footer">
     <div class="sb-user">
-      <div class="sb-av" id="sbAv">S</div>
+      <div class="sb-av" id="sbAv">
+        <span id="sbAvInitial">S</span>
+        <img id="sbAvImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+      </div>
       <div><div class="sb-un" id="sbName">Stylist</div><div class="sb-ue" id="sbEmail"></div></div>
     </div>
   </div>
@@ -235,7 +239,12 @@ img{max-width:100%;display:block}
     <div class="breadcrumb">
       <a href="dashboard.html">Dashboard</a><span>/</span><span>Strand Test</span>
     </div>
-    <div class="topbar-r"><div class="tb-av" id="tbAv">S</div></div>
+    <div class="topbar-r">
+      <div class="tb-av" id="tbAv">
+        <span id="tbAvInitial">S</span>
+        <img id="tbAvImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+      </div>
+    </div>
   </header>
 
   <div class="content">
@@ -438,8 +447,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('sbName').textContent = cap(n);
   document.getElementById('sbEmail').textContent = u.email || '';
-  document.getElementById('sbAv').textContent = init(n);
-  document.getElementById('tbAv').textContent = init(n);
+  document.getElementById('sbAvInitial').textContent = init(n);
+  document.getElementById('tbAvInitial').textContent = init(n);
 
   loadClients();
 

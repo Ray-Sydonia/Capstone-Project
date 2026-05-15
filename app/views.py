@@ -14,7 +14,8 @@ from .db import db
 from ai.damage_model import predict_damage
 from .models import User, Client, HairProfiles, DyeSession, FormulaArchive, StrandPredictions
 from .forms import SignupForm, LoginForm, PhotoUploadForm, ClientForm, HairProfileForm
-from .utils.s3 import upload_to_s3
+from .utils.s3 import upload_to_s3, get_s3_client
+import uuid
 from tensorflow.keras.models import load_model
 
 import numpy as np
@@ -379,6 +380,72 @@ def edit_hair_profile(profile_id):
         return redirect(url_for('main.dashboard'))
 
     return render_template('edit_profile.html', form=form)
+
+@main.route('/upload-avatar', methods=['POST'])
+def upload_avatar():
+    file = request.files.get('avatar')
+    if not file:
+        return jsonify({'error': 'No image uploaded'}), 400
+
+    try:
+        s3 = get_s3_client()
+        bucket = current_app.config['AWS_S3_BUCKET']
+        filename = f"avatars/{uuid.uuid4()}_{file.filename}"
+
+        s3.upload_fileobj(
+            file, bucket, filename,
+            ExtraArgs={"ContentType": file.content_type}
+            # no ACL — stays private
+        )
+
+        # Save just the key to DB, not the full URL
+        current_user.avatar_key = filename
+        db.session.commit()
+
+        # Generate a fresh pre-signed URL to return right now
+        url = s3.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': bucket, 'Key': filename},
+            ExpiresIn=604800  # 7 days
+        )
+
+        return jsonify({'image_url': url})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+    
+@main.route('/avatar-url', methods=['GET'])
+def get_avatar_url():
+    if not current_user.avatar_key:
+        return jsonify({'image_url': None})
+
+    s3 = get_s3_client()
+    url = s3.generate_presigned_url(
+        'get_object',
+        Params={
+            'Bucket': current_app.config['AWS_S3_BUCKET'],
+            'Key': current_user.avatar_key
+        },
+        ExpiresIn=604800  # fresh 7 days every login
+    )
+    return jsonify({'image_url': url})
+
+@main.route('/remove-avatar', methods=['POST'])
+def remove_avatar():
+    try:
+        # Optional: delete from S3 too
+        if current_user.avatar_key:
+            s3 = get_s3_client()
+            s3.delete_object(
+                Bucket=current_app.config['AWS_S3_BUCKET'],
+                Key=current_user.avatar_key
+            )
+        current_user.avatar_key = None
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # ============================================

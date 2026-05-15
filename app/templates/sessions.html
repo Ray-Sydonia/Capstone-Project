@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="/static/js/avatar.js"></script>
 <title>Sessions — ColourChem</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -137,7 +138,12 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
       <li class="nav-item"><a href="#" onclick="logout();return false;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Logout</span></a></li>
     </ul>
   </div>
-  <div class="sb-footer"><div class="sb-user"><div class="sb-av" id="sbAv">S</div><div><div class="sb-un" id="sbName">Stylist</div><div class="sb-ue" id="sbEmail"></div></div></div></div>
+  <div class="sb-footer"><div class="sb-user">
+    <div class="sb-av" id="sbAv">
+      <span id="sbAvInitial">S</span>
+      <img id="sbAvImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+    </div>
+    <div><div class="sb-un" id="sbName">Stylist</div><div class="sb-ue" id="sbEmail"></div></div></div></div>
 </nav>
 
 <main class="main">
@@ -148,7 +154,10 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         Log Session
       </button>
-      <div class="tb-av" id="tbAv">S</div>
+      <div class="tb-av" id="tbAv">
+        <span id="tbAvInitial">S</span>
+        <img id="tbAvImg" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+      </div>
     </div>
   </header>
 
@@ -255,8 +264,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.getElementById('sbName').textContent  = cap(n);
   document.getElementById('sbEmail').textContent = u.email || '';
-  document.getElementById('sbAv').textContent    = init(n);
-  document.getElementById('tbAv').textContent    = init(n);
+  document.getElementById('sbAvInitial').textContent    = init(n);
+  document.getElementById('tbAvInitial').textContent    = init(n);
 
   // Set today's date
   document.getElementById('s_date').valueAsDate = new Date();
