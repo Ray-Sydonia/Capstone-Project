@@ -8,7 +8,7 @@ from sqlalchemy import Enum
 from .db import db
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'User'
+    __tablename__ = 'user'
 
     userID = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(100), nullable=False)
@@ -30,7 +30,7 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password, password)
     
 class Client(db.Model):
-    __tablename__ = 'Client'
+    __tablename__ = 'client'
 
     clientID = db.Column(db.Integer, primary_key=True)
     client_name = db.Column(db.String(100), nullable=False)
@@ -38,19 +38,19 @@ class Client(db.Model):
 
     userID = db.Column(
         db.Integer,
-        db.ForeignKey('User.userID', ondelete='SET NULL')
+        db.ForeignKey('user.userID', ondelete='SET NULL')
     )
 
     hair_profiles = db.relationship('HairProfiles', backref='client', cascade='all, delete')
     
 class HairProfiles(db.Model):
-    __tablename__ = 'HairProfiles'
+    __tablename__ = 'hairprofiles'
 
     profileID = db.Column(db.Integer, primary_key=True)
 
     clientID = db.Column(
         db.Integer,
-        db.ForeignKey('Client.clientID', ondelete='CASCADE'),
+        db.ForeignKey('client.clientID', ondelete='CASCADE'),
         nullable=False
     )
 
@@ -63,13 +63,13 @@ class HairProfiles(db.Model):
     dye_sessions = db.relationship('DyeSession', backref='profile', cascade='all, delete')
     
 class DyeSession(db.Model):
-    __tablename__ = 'DyeSession'
+    __tablename__ = 'dyesession'
 
     session_id = db.Column(db.Integer, primary_key=True)
 
     profileID = db.Column(
         db.Integer,
-        db.ForeignKey('HairProfiles.profileID', ondelete='CASCADE'),
+        db.ForeignKey('hairprofiles.profileID', ondelete='CASCADE'),
         nullable=False
     )
 
@@ -77,6 +77,12 @@ class DyeSession(db.Model):
     desired_shade = db.Column(db.String(50))
     developer_vol = db.Column(db.Integer)
     input_hair_pic_url = db.Column(db.Text)
+    after_hair_pic_url = db.Column(db.Text)          
+    slvl = db.Column(db.Integer)        # starting level
+    tlvl = db.Column(db.Integer)        # target level
+    outcome = db.Column(db.String(100))    # AI feedback outcome
+    notes = db.Column(db.Text)           # feedback notes
+    stars = db.Column(db.Integer, default=0)  # client satisfaction
 
     formulas = db.relationship('FormulaArchive', backref='session', cascade='all, delete')
     predictions = db.relationship('StrandPredictions', backref='session', cascade='all, delete')
@@ -85,7 +91,7 @@ class FormulaArchive(db.Model):
     __tablename__ = "formulaarchive"
 
     formulaID    = db.Column(db.Integer, primary_key=True)
-    session_id   = db.Column(db.Integer, db.ForeignKey('DyeSession.session_id', ondelete='CASCADE'))
+    session_id   = db.Column(db.Integer, db.ForeignKey('dyesession.session_id', ondelete='CASCADE'))
 
     formula_name  = db.Column(db.String(100))
     dye_brand     = db.Column(db.String(100))
@@ -105,13 +111,13 @@ class FormulaArchive(db.Model):
     saved_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
     
 class StrandPredictions(db.Model):
-    __tablename__ = 'StrandPredictions'
+    __tablename__ = 'strandpredictions'
 
     predictionID = db.Column(db.Integer, primary_key=True)
 
     session_id = db.Column(
         db.Integer,
-        db.ForeignKey('DyeSession.session_id', ondelete='CASCADE')
+        db.ForeignKey('dyesession.session_id', ondelete='CASCADE')
     )
 
     predicted_colour = db.Column(db.String(50))

@@ -325,23 +325,25 @@ function render(){
   const empty = document.getElementById('sessEmpty');
   if(!sessions.length){ list.innerHTML = ''; empty.style.display = 'flex'; return; }
   empty.style.display = 'none';
-  list.innerHTML = sessions.map((s, i) => {
-    const lc = LC[Math.max(1, Math.min(10, parseInt(s.tlvl) || 7))];
+  list.innerHTML = sessions.map(s => {
+    const lc  = LC[Math.max(1, Math.min(10, parseInt(s.tlvl) || 6))];
     const [c1, c2] = lc;
-    const stars = (s.stars || 0);
+    const stars = s.stars || 0;
     const outcomeClass = !s.outcome ? 'b-purple'
-      : s.outcome.startsWith('Better') ? 'b-low'
-      : s.outcome.startsWith('As')     ? 'b-purple'
-      : s.outcome.includes('Slightly') ? 'b-med' : 'b-high';
-    const dt = s.date ? new Date(s.date + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '—';
+      : s.outcome.startsWith('Better')  ? 'b-low'
+      : s.outcome.startsWith('As')      ? 'b-purple'
+      : s.outcome.includes('Slightly')  ? 'b-med' : 'b-high';
+    const dt = s.date
+      ? new Date(s.date + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'})
+      : '—';
     return `<div class="sess-card">
       <div class="sess-inner">
         <div class="sess-dot" style="background:linear-gradient(135deg,${c1},${c2})"></div>
         <div class="sess-body">
           <div class="sess-top">
             <div>
-              <div class="sess-name">${s.desired_shade || s.shade || '—'}</div>
-              <div class="sess-meta">${s.profileID ? 'Profile #' + s.profileID : 'No client'} &nbsp;·&nbsp; ${dt}</div>
+              <div class="sess-name">${s.desired_shade || '—'}</div>
+              <div class="sess-meta">${s.client_name} &nbsp;·&nbsp; ${dt}</div>
             </div>
             <div class="sess-actions">
               <span class="badge ${outcomeClass}">${s.outcome || 'Logged'}</span>
@@ -350,6 +352,7 @@ function render(){
           </div>
           <div class="sess-chips">
             ${s.developer_vol ? `<span class="tag">${s.developer_vol} vol</span>` : ''}
+            ${s.slvl          ? `<span class="tag">Level ${s.slvl} → ${s.tlvl || '?'}</span>` : ''}
           </div>
           ${s.notes ? `<div class="sess-note">"${s.notes}"</div>` : ''}
           <div class="stars" style="margin-top:.45rem">
@@ -391,10 +394,18 @@ async function saveSession(){
   const formData = new FormData();
   formData.append('profileID', profileID);
   formData.append('desired_shade', shade);
+  formData.append('session_date',  document.getElementById('s_date').value);
   formData.append('developer_vol', document.getElementById('s_dev').value.replace(' vol',''));
+  formData.append('slvl',          document.getElementById('s_slvl').value);
+  formData.append('tlvl',          document.getElementById('s_tlvl').value);
+  formData.append('outcome',       document.getElementById('s_outcome').value);
+  formData.append('notes',         document.getElementById('s_notes').value);
+  formData.append('stars',         selectedStars);
 
   const beforeFile = document.getElementById('s_before').files[0];
+  const afterFile  = document.getElementById('s_after').files[0];
   if(beforeFile) formData.append('hair_image', beforeFile);
+  if(afterFile)  formData.append('after_image', afterFile);
 
   try {
     const res = await fetch('/sessions', { method: 'POST', body: formData });

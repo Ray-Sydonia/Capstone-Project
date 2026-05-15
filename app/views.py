@@ -492,6 +492,7 @@ def delete_profile(id):
 @main.route('/sessions', methods=['POST'])
 def create_session():
     file = request.files.get('hair_image')
+    after_file = request.files.get('after_image')
     data = request.form
 
     if not file:
@@ -499,12 +500,24 @@ def create_session():
 
     prediction = predict_damage(file)
     image_url = upload_to_s3(file)
+    after_image_url = upload_to_s3(after_file) if after_file else None
+
+    # Parse session date
+    raw_date     = data.get('session_date')
+    session_date = datetime.strptime(raw_date, '%Y-%m-%d') if raw_date else datetime.utcnow()
 
     session = DyeSession(
-        profileID=data['profileID'],
-        desired_shade=data.get('desired_shade'),
-        developer_vol=data.get('developer_vol'),
-        input_hair_pic_url=image_url
+        profileID = data['profileID'],
+        session_date = session_date,
+        desired_shade = data.get('desired_shade'),
+        developer_vol = data.get('developer_vol'),
+        input_hair_pic_url = image_url,
+        after_hair_pic_url = after_image_url,
+        slvl = data.get('slvl') or None,
+        tlvl = data.get('tlvl') or None,
+        outcome = data.get('outcome'),
+        notes = data.get('notes'),
+        stars = int(data.get('stars', 0)),
     )
     db.session.add(session)
     db.session.commit()
@@ -513,17 +526,35 @@ def create_session():
         "session_id": session.session_id,
         "image_url": image_url,
         "prediction": prediction
-    })
+    }), 201
 
 
 @main.route('/sessions', methods=['GET'])
 def get_sessions():
     sessions = DyeSession.query.all()
-    return jsonify([
-        {"id": s.session_id, "profileID": s.profileID}
-        for s in sessions
-    ])
+    result = []
+    for s in sessions:
+        # Walk up: DyeSession → HairProfiles → Client
+        profile     = HairProfiles.query.get(s.profileID)
+        client      = Client.query.get(profile.clientID) if profile else None
+        client_name = client.client_name if client else 'Unknown Client'
 
+        result.append({
+            "id":                 s.session_id,
+            "profileID":          s.profileID,
+            "client_name":        client_name,
+            "desired_shade":      s.desired_shade,
+            "developer_vol":      s.developer_vol,
+            "date":               s.session_date.strftime('%Y-%m-%d') if s.session_date else None,
+            "slvl":               s.slvl,
+            "tlvl":               s.tlvl,
+            "outcome":            s.outcome,
+            "notes":              s.notes,
+            "stars":              s.stars or 0,
+            "input_hair_pic_url": s.input_hair_pic_url,
+            "after_hair_pic_url": s.after_hair_pic_url,
+        })
+    return jsonify(result)
 
 @main.route('/sessions/<int:id>', methods=['DELETE'])
 def delete_session(id):
