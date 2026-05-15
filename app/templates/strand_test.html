@@ -830,12 +830,12 @@ async function saveFormula(){
   // Build notes string so nothing is lost
   let notes = '';
   if(p.mode === 'natural'){
-    notes = `Current: Lv${p.curLv} → Target: Lv${p.tgtLv} | Shade: ${p.shade} | Texture: ${p.texture} | Porosity: ${p.porosity} | Damage: ${p.dmg}%`;
+    notes = `Current: Lv${p.curLv} -> Target: Lv${p.tgtLv} | Shade: ${p.shade} | Texture: ${p.texture} | Porosity: ${p.porosity} | Damage: ${p.dmg}%`;
     if(p.bleached) notes += ' | Previously bleached';
     if(p.relaxed)  notes += ' | Relaxed/permed';
     if(p.boxDye)   notes += ' | Box dye history';
   } else {
-    notes = `From: ${p.fromColorName} (${p.fromHex}, Lv${p.fromLv}) → To: ${p.toColorName} (${p.toHex}, Lv${p.baseLvNeeded} base) | Texture: ${p.texture} | Porosity: ${p.porosity} | Damage: ${p.dmg}%`;
+    notes = `From: ${p.fromColorName} (${p.fromHex}, Lv${p.fromLv}) -> To: ${p.toColorName} (${p.toHex}, Lv${p.baseLvNeeded} base) | Texture: ${p.texture} | Porosity: ${p.porosity} | Damage: ${p.dmg}%`;
     if(p.bleached) notes += ' | Previously bleached';
     if(p.relaxed)  notes += ' | Relaxed/permed';
     if(p.boxDye)   notes += ' | Box dye history';
@@ -857,8 +857,8 @@ async function saveFormula(){
         texture:       p.texture       || null,
         porosity:      p.porosity      || null,
         damage_score:  p.dmg           || null,
-        notes:         p.notes         || null,
-        session_id:    p.client        || null,
+        notes:         notes,         
+        session_id:    null,
 })
     });
     const data = await res.json();

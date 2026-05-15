@@ -196,11 +196,21 @@ function formulaFilter(f){
 // Pick the colour dot colour:
 // - natural mode: use target_level from DB
 // - fashion mode: parse the hex out of the notes string, fall back to level
-function dotStyle(f){
-  if(f.mode === 'fashion' && f.notes){
-    // notes format: "From: Dark Brown (#4a3728, Lv3) → To: Hot Pink (#e76fa3, Lv8 base) | ..."
-    const toMatch = f.notes.match(/To:.*?\(([#][0-9a-fA-F]{6})/);
-    if(toMatch) return `background:${toMatch[1]}`;
+// Replace dotStyle() with these two functions:
+function currentDotStyle(f) {
+  if (f.mode === 'fashion' && f.notes) {
+    const fromMatch = f.notes.match(/From:.*?\(([#][0-9a-fA-F]{6})/);
+    if (fromMatch) return `background:${fromMatch[1]}`;
+  }
+  const lv = Math.max(1, Math.min(10, f.current_level || 7));
+  const [c1, c2] = LC[lv];
+  return `background:linear-gradient(135deg,${c1},${c2})`;
+}
+
+function targetDotStyle(f) {
+  if (f.mode === 'fashion' && f.notes) {
+    const toMatch = f.notes.match(/-> To:.*?\(([#][0-9a-fA-F]{6})/);
+    if (toMatch) return `background:${toMatch[1]}`;
   }
   const lv = Math.max(1, Math.min(10, f.target_level || f.current_level || 7));
   const [c1, c2] = LC[lv];
@@ -258,7 +268,15 @@ function render(){
       : '';
 
     return `<tr>
-      <td><div class="color-dot" style="${dotStyle(f)}"></div></td>
+      <td>
+        <div style="display:flex;gap:4px;align-items:center">
+          <div class="color-dot" style="${currentDotStyle(f)}" title="Current"></div>
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="opacity:.4;flex-shrink:0">
+            <path d="M2 5h6M6 3l2 2-2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="color-dot" style="${targetDotStyle(f)}" title="Target"></div>
+        </div>
+      </td>
       <td>
         <strong style="font-size:.88rem">${f.name || f.formula_name || '—'}</strong>${modePill}
         ${f.shade ? `<div style="font-size:.72rem;color:var(--muted);margin-top:.1rem;text-transform:capitalize">${f.shade}</div>` : ''}

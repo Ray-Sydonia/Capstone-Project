@@ -593,6 +593,15 @@ def delete_session(id):
 @main.route('/formulas', methods=['POST'])
 def create_formula():
     data = request.json
+
+    # Validate session_id — only use it if it actually exists in dyesession
+    session_id = data.get('session_id')
+    if session_id:
+        from .models import DyeSession
+        session = DyeSession.query.get(session_id)
+        if not session:
+            session_id = None   # ignore invalid/client IDs
+            
     formula = FormulaArchive(
         session_id    = data.get('session_id'),
         formula_name  = data.get('formula_name'),
