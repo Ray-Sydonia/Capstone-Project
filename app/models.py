@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.current_timestamp())
+    avatar_key = db.Column(db.String(255), nullable=True)
 
     clients = db.relationship('Client', backref='user', passive_deletes=True)
     
