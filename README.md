@@ -1,40 +1,114 @@
-# INFO3180 VueJS and Flask Starter
+# ColourChem  
+**AI-Powered Hair Analysis and Colour Prediction System**
 
-This template should help get you started developing with Vue 3 on the frontend and Flask as an API on the backend.
+---
 
-## Recommended IDE Setup
+## Overview  
+ColourChem is a web-based application designed to assist professional hair stylists in predicting hair dye outcomes and assessing hair damage. The system integrates artificial intelligence with modern web technologies to reduce uncertainty in hair colouring processes while prioritising hair integrity.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+The application provides tools for damage assessment, strand test prediction, formula tracking, and client management within a centralized platform.
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Features  
 
-## Project Setup
+### AI Damage Assessment  
+- Uses a convolutional neural network (CNN) model to analyse uploaded hair images  
+- Predicts hair condition and potential damage levels  
+- Assists stylists in making safer treatment decisions  
 
-```sh
-npm install
-```
+### Strand Test Prediction  
+- Simulates possible outcomes of hair dye applications  
+- Reduces the need for repeated physical strand testing  
 
-### Compile and Hot-Reload for Development
+### Client Management  
+- Store and manage client profiles  
+- Track session history and treatments   
 
-```sh
-npm run dev
-```
+### Formula Archive  
+- Save and retrieve hair dye formulas  
+- Reuse successful treatments  
+- Improve consistency across sessions  
 
-### Compile and Minify for Production
+### Developer Volume Calculator  
+- Calculates appropriate developer strength  
+- Supports accurate chemical mixing decisions  
 
-```sh
-npm run build
-```
+### Cloud Image Storage  
+- Uses AWS S3 for storing uploaded images  
+- Ensures scalability and reliable file management  
 
-## Start Flask API
+---
 
-Remember to always create a virtual environment and install the packages in your requirements file
+## Technology Stack  
 
+### Frontend  
+- HTML, CSS, JavaScript    
+
+### Backend  
+- Python  
+- Flask  
+
+### Database  
+- MySQL  
+- SQLAlchemy ORM  
+
+### Artificial Intelligence  
+- TensorFlow / Keras  
+- Convolutional Neural Networks (CNN)  
+- ResNet-based architecture  
+
+### Cloud Services  
+- Amazon Web Services (AWS S3)  
+
+---
+
+## System Architecture  
+
+The application follows a modular architecture consisting of:
+
+- Frontend Layer – User interface and interaction  
+- Backend Layer – API routes and business logic  
+- AI Module – Image preprocessing and prediction  
+- Database Layer – Structured data storage  
+- Cloud Storage – External image hosting  
+
+---
+
+## Installation  
+
+### Prerequisites  
+- Python 3.8+  
+- MySQL  
+- Virtual environment tool  
+
+---
+
+### Setup Instructions  
+
+1. Clone the repository:
 ```bash
-$ python -m venv venv (you may need to use python3 instead)
+git clone https://github.com/Ray-Sydonia/Capstone-Project.git
+cd Capstone-Project
+
+2. Create and activate virtual environment:
+```bash
+$ python -m venv venv 
 $ source venv/bin/activate (or .\venv\Scripts\activate on Windows)
 $ pip install -r requirements.txt
-$ flask --app app --debug run
-```
+
+3. Create a .env file:
+```bash
+SECRET_KEY=your_secret_key
+DATABASE_URI=your_database_uri
+AWS_ACCESS_KEY=your_access_key
+AWS_SECRET_KEY=your_secret_key
+S3_BUCKET_NAME=your_bucket
+
+4. Run the application:
+```bash
+python run.py
+
+5. Open in browser:
+```bash
+http://127.0.0.1:5000
