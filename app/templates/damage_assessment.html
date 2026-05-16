@@ -491,22 +491,35 @@ function onClientChange(sel) {
   const c = clients[parseInt(sel.value)];
   if (!c) { prev.style.display = 'none'; return; }
 
-  document.getElementById('cpName').textContent = `${c.fn} ${c.ln}`;
-
-  const tags = [];
-  if (c.nat) tags.push(c.nat);
-  if (c.cur) tags.push(c.cur);
-  if (c.tx)  tags.push(c.tx);
-  if (c.po)  tags.push(c.po);
-  document.getElementById('cpTags').innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join('');
-
-  const histParts = [];
-  if (c.al)  histParts.push(`⚠ Allergies: ${c.al}`);
-  if (c.ch)  histParts.push(c.ch);
-  if (c.no)  histParts.push(c.no);
-  document.getElementById('cpHistory').textContent = histParts.join(' · ') || 'No additional history recorded.';
-
+  // Show name immediately from client record
+  document.getElementById('cpName').textContent = c.name;
+  document.getElementById('cpTags').innerHTML = '';
+  document.getElementById('cpHistory').textContent = 'Loading profile…';
   prev.style.display = 'block';
+
+  // Fetch the hair profile separately
+  fetch(`/profiles/client/${c.id}`)
+    .then(res => res.ok ? res.json() : null)
+    .then(profile => {
+      const cleanColour = (val) => val ? val.replace(/\s*\(#[0-9a-fA-F]+\)/g, '').trim() : '';
+      const tags = [];
+      if (profile?.natural_colour) tags.push(cleanColour(profile.natural_colour));
+      if (profile?.current_colour) tags.push(cleanColour(profile.current_colour));
+      if (profile?.texture)        tags.push(profile.texture);
+      if (profile?.porosity)       tags.push(profile.porosity);
+      document.getElementById('cpTags').innerHTML = tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+      const hist = profile?.chem_history || '';
+      document.getElementById('cpHistory').textContent = hist
+        ? `History: ${hist}`
+        : 'No chemical history recorded.';
+
+      // Attach profile to client object so runAnalysis can use it
+      clients[parseInt(sel.value)]._profile = profile;
+    })
+    .catch(() => {
+      document.getElementById('cpHistory').textContent = 'Could not load hair profile.';
+    });
 }
 
 /* ─── PHOTO UPLOAD ─────────────────────────────── */
@@ -707,9 +720,9 @@ function renderConditionProfile(categories, client) {
   const hasAnyDamage = hasBreakage || hasChem || hasDry || hasHeat || hasSplit;
 
   // Pull from client record if available
-  const clientPorosity  = client?.po || null;
-  const clientTexture   = client?.tx || null;
-  const clientChemHist  = client?.ch || '';
+  const clientPorosity  = client?._profile?.porosity      || null;
+  const clientTexture   = client?._profile?.texture       || null;
+  const clientChemHist  = client?._profile?.chem_history  || '';
 
   // Derive indicators
   const rows = [
