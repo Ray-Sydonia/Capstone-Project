@@ -27,7 +27,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-*.keras
+
 
 # Python
 __pycache__

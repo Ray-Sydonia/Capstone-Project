@@ -513,53 +513,83 @@ def delete_profile(id):
 
 @main.route('/sessions', methods=['POST'])
 def create_session():
-    file = request.files.get('hair_image')
+    file       = request.files.get('hair_image')
     after_file = request.files.get('after_image')
-    data = request.form
+    data       = request.form
 
     if not file:
         return jsonify({"error": "Image required"}), 400
 
-    prediction = predict_damage(file)
-    image_url = upload_to_s3(file)
-    after_image_url = upload_to_s3(after_file) if after_file else None
+    try:
+        s3     = get_s3_client()
+        bucket = current_app.config['AWS_S3_BUCKET']
 
-    # Parse session date
-    raw_date     = data.get('session_date')
-    session_date = datetime.strptime(raw_date, '%Y-%m-%d') if raw_date else datetime.utcnow()
+        # Upload before photo — store just the key
+        image_filename = f"{uuid.uuid4()}_{file.filename}"
+        s3.upload_fileobj(file, bucket, image_filename, ExtraArgs={"ContentType": file.content_type})
 
-    session = DyeSession(
-        profileID = data['profileID'],
-        session_date = session_date,
-        desired_shade = data.get('desired_shade'),
-        developer_vol = data.get('developer_vol'),
-        input_hair_pic_url = image_url,
-        after_hair_pic_url = after_image_url,
-        slvl = data.get('slvl') or None,
-        tlvl = data.get('tlvl') or None,
-        outcome = data.get('outcome'),
-        notes = data.get('notes'),
-        stars = int(data.get('stars', 0)),
-    )
-    db.session.add(session)
-    db.session.commit()
+        # Upload after photo — store just the key
+        after_filename = None
+        if after_file:
+            after_filename = f"{uuid.uuid4()}_{after_file.filename}"
+            s3.upload_fileobj(after_file, bucket, after_filename, ExtraArgs={"ContentType": after_file.content_type})
 
-    return jsonify({
-        "session_id": session.session_id,
-        "image_url": image_url,
-        "prediction": prediction
-    }), 201
+        # Run damage prediction
+        prediction = predict_damage(file)
+
+        # Parse session date
+        raw_date     = data.get('session_date')
+        session_date = datetime.strptime(raw_date, '%Y-%m-%d') if raw_date else datetime.utcnow()
+
+        session = DyeSession(
+            profileID          = data['profileID'],
+            session_date       = session_date,
+            desired_shade      = data.get('desired_shade'),
+            developer_vol      = data.get('developer_vol'),
+            input_hair_pic_url = image_filename,
+            after_hair_pic_url = after_filename,
+            slvl               = data.get('slvl') or None,
+            tlvl               = data.get('tlvl') or None,
+            outcome            = data.get('outcome'),
+            notes              = data.get('notes'),
+            stars              = int(data.get('stars', 0)),
+        )
+        db.session.add(session)
+        db.session.commit()
+
+        return jsonify({
+            "session_id": session.session_id,
+            "prediction": prediction
+        }), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @main.route('/sessions', methods=['GET'])
 def get_sessions():
     sessions = DyeSession.query.all()
+    s3     = get_s3_client()
+    bucket = current_app.config['AWS_S3_BUCKET']
     result = []
+
     for s in sessions:
-        # Walk up: DyeSession → HairProfiles → Client
         profile     = HairProfiles.query.get(s.profileID)
         client      = Client.query.get(profile.clientID) if profile else None
         client_name = client.client_name if client else 'Unknown Client'
+
+        # Generate signed URLs inline — same as get_avatar_url
+        input_url = s3.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': bucket, 'Key': s.input_hair_pic_url},
+            ExpiresIn=3600
+        ) if s.input_hair_pic_url else None
+
+        after_url = s3.generate_presigned_url(
+            'get_object',
+            Params={'Bucket': bucket, 'Key': s.after_hair_pic_url},
+            ExpiresIn=3600
+        ) if s.after_hair_pic_url else None
 
         result.append({
             "id":                 s.session_id,
@@ -573,8 +603,8 @@ def get_sessions():
             "outcome":            s.outcome,
             "notes":              s.notes,
             "stars":              s.stars or 0,
-            "input_hair_pic_url": s.input_hair_pic_url,
-            "after_hair_pic_url": s.after_hair_pic_url,
+            "input_hair_pic_url": input_url,
+            "after_hair_pic_url": after_url,
         })
     return jsonify(result)
 
@@ -584,6 +614,48 @@ def delete_session(id):
     db.session.delete(session)
     db.session.commit()
     return jsonify({"message": "Deleted"})
+
+
+@main.route('/sessions/<int:id>', methods=['PATCH'])
+def update_session(id):
+    session    = DyeSession.query.get_or_404(id)
+    file       = request.files.get('hair_image')
+    after_file = request.files.get('after_image')
+    data       = request.form
+
+    try:
+        s3     = get_s3_client()
+        bucket = current_app.config['AWS_S3_BUCKET']
+
+        # Upload new before photo if provided
+        if file:
+            image_filename = f"{uuid.uuid4()}_{file.filename}"
+            s3.upload_fileobj(file, bucket, image_filename, ExtraArgs={"ContentType": file.content_type})
+            session.input_hair_pic_url = image_filename
+
+        # Upload new after photo if provided
+        if after_file:
+            after_filename = f"{uuid.uuid4()}_{after_file.filename}"
+            s3.upload_fileobj(after_file, bucket, after_filename, ExtraArgs={"ContentType": after_file.content_type})
+            session.after_hair_pic_url = after_filename
+
+        raw_date = data.get('session_date')
+        if raw_date:
+            session.session_date = datetime.strptime(raw_date, '%Y-%m-%d')
+
+        session.desired_shade = data.get('desired_shade', session.desired_shade)
+        session.developer_vol = data.get('developer_vol', session.developer_vol)
+        session.slvl          = data.get('slvl') or session.slvl
+        session.tlvl          = data.get('tlvl') or session.tlvl
+        session.outcome       = data.get('outcome', session.outcome)
+        session.notes         = data.get('notes', session.notes)
+        session.stars         = int(data.get('stars', session.stars or 0))
+
+        db.session.commit()
+        return jsonify({"message": "Updated"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # ============================================

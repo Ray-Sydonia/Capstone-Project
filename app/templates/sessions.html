@@ -49,6 +49,9 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 .btn-danger:hover{background:var(--error);color:#fff;border-color:var(--error)}
 .btn-sm{padding:.42rem .85rem;font-size:.8rem}
 .btn-full{width:100%;justify-content:center}
+.btn-loading{position:relative;pointer-events:none;opacity:.8}
+.btn-loading::after{content:'';position:absolute;right:.75rem;top:50%;transform:translateY(-50%);width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
 /* CARDS */
 .card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.4rem;box-shadow:var(--shadow)}
 .card-title{font-family:var(--font-d);font-size:1.2rem;font-weight:600;margin-bottom:1rem}
@@ -75,6 +78,7 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 .upload-zone{border:2px dashed var(--border);border-radius:var(--r);padding:1.2rem;display:flex;align-items:center;justify-content:center;gap:.6rem;background:var(--s2);cursor:pointer;transition:var(--t);text-align:center;color:var(--muted)}
 .upload-zone:hover{border-color:var(--primary);background:rgba(124,92,191,.05)}
 .upload-zone small{font-size:.78rem}
+.upload-preview{width:100%;height:120px;object-fit:cover;border-radius:var(--r);margin-top:.5rem;display:none}
 /* SESSIONS LIST */
 .sessions-list{display:flex;flex-direction:column;gap:1rem}
 .sess-card{background:var(--surface);border-radius:var(--r-lg);border:1px solid var(--border);padding:1.25rem;box-shadow:var(--shadow);transition:var(--t)}
@@ -178,8 +182,9 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
 <!-- LOG SESSION MODAL -->
 <div class="modal-bg" id="modalBg">
   <div class="modal">
+    <input type="hidden" id="s_editing_id" value="">
     <div class="modal-hdr">
-      <h2 class="modal-title">Log Dye Session</h2>
+      <h2 class="modal-title" id="modalTitle">Log Dye Session</h2>
       <button class="modal-x" onclick="closeModal()">✕</button>
     </div>
 
@@ -213,7 +218,8 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
           <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><rect x="3" y="7" width="26" height="19" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="14" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 22l7-7 4 4 7-7 7 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           <small id="beforeLbl">Upload before photo</small>
         </div>
-        <input type="file" id="s_before" accept="image/*" style="display:none" onchange="labelFile(this,'beforeLbl')">
+        <input type="file" id="s_before" accept="image/*" style="display:none" onchange="previewFile(this,'beforeLbl','beforePreview')">
+        <img id="beforePreview" class="upload-preview">
       </div>
       <div class="fg">
         <label>After Photo</label>
@@ -221,7 +227,8 @@ input,select,textarea{font-family:inherit;border:none;outline:none;background:no
           <svg width="22" height="22" viewBox="0 0 32 32" fill="none"><rect x="3" y="7" width="26" height="19" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="14" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 22l7-7 4 4 7-7 7 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
           <small id="afterLbl">Upload after photo</small>
         </div>
-        <input type="file" id="s_after" accept="image/*" style="display:none" onchange="labelFile(this,'afterLbl')">
+        <input type="file" id="s_after" accept="image/*" style="display:none" onchange="previewFile(this,'afterLbl','afterPreview')">
+        <img id="afterPreview" class="upload-preview">
       </div>
     </div>
 
@@ -347,6 +354,7 @@ function render(){
             </div>
             <div class="sess-actions">
               <span class="badge ${outcomeClass}">${s.outcome || 'Logged'}</span>
+              <button class="btn btn-outline btn-sm" onclick="openEditModal(${s.id})">Edit</button>
               <button class="btn btn-danger btn-sm" onclick="delSession(${s.id})">Delete</button>
             </div>
           </div>
@@ -367,6 +375,8 @@ function render(){
 }
 
 function openModal(){
+  document.getElementById('s_editing_id').value = '';
+  document.getElementById('modalTitle').textContent = 'Log Dye Session';
   selectedStars = 0;
   updateStarUI(0);
   ['s_shade','s_slvl','s_tlvl','s_time','s_formula','s_notes'].forEach(id => {
@@ -378,18 +388,97 @@ function openModal(){
   document.getElementById('s_date').valueAsDate = new Date();
   document.getElementById('beforeLbl').textContent = 'Upload before photo';
   document.getElementById('afterLbl').textContent  = 'Upload after photo';
+  document.getElementById('beforePreview').style.display = 'none';
+  document.getElementById('afterPreview').style.display  = 'none';
+  document.getElementById('beforePreview').src           = '';
+  document.getElementById('afterPreview').src            = '';
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function openEditModal(id){
+  const s = sessions.find(x => x.id === id);
+  if(!s) return;
+
+  document.getElementById('s_editing_id').value      = s.id;
+  document.getElementById('modalTitle').textContent  = 'Edit Dye Session';
+  document.getElementById('s_shade').value           = s.desired_shade || '';
+  document.getElementById('s_date').value            = s.date || '';
+  document.getElementById('s_slvl').value            = s.slvl || '';
+  document.getElementById('s_tlvl').value            = s.tlvl || '';
+  document.getElementById('s_dev').value             = (s.developer_vol ? s.developer_vol + ' vol' : '20 vol');
+  document.getElementById('s_notes').value           = s.notes || '';
+  document.getElementById('beforeLbl').textContent   = s.input_hair_pic_url ? '✓ Existing photo' : 'Upload before photo';
+  document.getElementById('afterLbl').textContent    = s.after_hair_pic_url ? '✓ Existing photo' : 'Upload after photo';
+
+  const beforePreview = document.getElementById('beforePreview');
+  const afterPreview  = document.getElementById('afterPreview');
+  
+  if(s.input_hair_pic_url){
+    beforePreview.src           = s.input_hair_pic_url;
+    beforePreview.style.display = 'block';
+  } else {
+    beforePreview.style.display = 'none';
+  }
+  
+  if(s.after_hair_pic_url){
+    afterPreview.src            = s.after_hair_pic_url;
+    afterPreview.style.display  = 'block';
+  } else {
+    afterPreview.style.display  = 'none';
+  }
+
+  // Set outcome dropdown
+  const outcomeEl = document.getElementById('s_outcome');
+  for(let i = 0; i < outcomeEl.options.length; i++){
+    if(outcomeEl.options[i].value === s.outcome || outcomeEl.options[i].text === s.outcome){
+      outcomeEl.selectedIndex = i; break;
+    }
+  }
+
+  // Set stars
+  selectedStars = s.stars || 0;
+  updateStarUI(selectedStars);
+
+  // Set client dropdown
+  document.getElementById('s_client').value = s.profileID;
+
   document.getElementById('modalBg').classList.add('open');
 }
 
 function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
-function labelFile(inp, lbl){ document.getElementById(lbl).textContent = inp.files[0] ? '✓ ' + inp.files[0].name : 'Upload photo'; }
+function previewFile(inp, lblId, previewId){
+  const file    = inp.files[0];
+  const lbl     = document.getElementById(lblId);
+  const preview = document.getElementById(previewId);
+
+  if(file){
+    lbl.textContent  = '✓ ' + file.name;
+    const reader     = new FileReader();
+    reader.onload    = e => {
+      preview.src          = e.target.result;
+      preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  } else {
+    lbl.textContent       = 'Upload photo';
+    preview.style.display = 'none';
+    preview.src           = '';
+  }
+}
 
 async function saveSession(){
   const shade = document.getElementById('s_shade').value.trim();
   const profileID = document.getElementById('s_client').value;
+  const editingId = document.getElementById('s_editing_id').value;
 
   if(!shade) { alert('Please enter a desired shade.'); return; }
   if(!profileID){ alert('Please select a client.'); return; }
+
+  // ── Show spinner ────────────────────────────────
+  const saveBtn = document.querySelector('.modal-foot .btn-primary');
+  const origText = saveBtn.innerHTML;
+  saveBtn.classList.add('btn-loading');
+  saveBtn.innerHTML = editingId ? 'Saving...' : 'Logging...';
 
   const formData = new FormData();
   formData.append('profileID', profileID);
@@ -407,8 +496,12 @@ async function saveSession(){
   if(beforeFile) formData.append('hair_image', beforeFile);
   if(afterFile)  formData.append('after_image', afterFile);
 
+  // PATCH if editing, POST if new
+  const url    = editingId ? `/sessions/${editingId}` : '/sessions';
+  const method = editingId ? 'PATCH' : 'POST';
+
   try {
-    const res = await fetch('/sessions', { method: 'POST', body: formData });
+    const res  = await fetch(url, { method, body: formData });
     const data = await res.json();
 
     if(!res.ok){
@@ -426,6 +519,9 @@ async function saveSession(){
 
   } catch(e){
     alert('Network error saving session.');
+  } finally {
+    saveBtn.classList.remove('btn-loading');
+    saveBtn.innerHTML = origText;
   }
 }
 
